@@ -1,0 +1,29 @@
+# Produção: `docker compose up --build -d`
+#
+# Variáveis públicas do Nuxt usam o prefixo NUXT_PUBLIC_ (ver nuxt.config → runtimeConfig.public).
+# Exemplo: NUXT_PUBLIC_SITE_URL, NUXT_PUBLIC_WHATSAPP_NUMBER, etc.
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        NODE_VERSION: '24.16'
+    image: sgconsultoraimobiliaria-com-br:prod
+    restart: unless-stopped
+    ports:
+      - '3000:3000'
+    environment:
+      NODE_ENV: production
+      HOST: 0.0.0.0
+      PORT: 3000
+    env_file:
+      - .env
+
+    healthcheck:
+      test: ['CMD', 'wget', '-qO-', 'http://127.0.0.1:3000/api/health']
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
