@@ -1,0 +1,14 @@
+# SG Consultora Imobiliária
+
+A SG atua como parceira em decisões imobiliárias, conectando clientes a
+empreendimentos selecionados e apoiando etapas de análise, negociação e fechamento.
+
+SEO técnico disponível:
+
+- Title template e meta description
+- Canonical URL
+- Open Graph e Twitter Card
+- Schema.org RealEstateAgent e WebSite
+- robots.txt dinâmico com suporte a noindex por ambiente
+- sitemap.xml dinâmico
+- endpoint para relatórios de CSP

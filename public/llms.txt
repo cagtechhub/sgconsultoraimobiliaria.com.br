@@ -1,0 +1,10 @@
+# SG Consultora Imobiliária
+
+Landing page institucional para consultoria imobiliária premium.
+
+## Principais temas
+
+- Consultoria imobiliária personalizada
+- Curadoria de empreendimentos
+- Compra, venda e investimento em imóveis
+- Agendamento comercial via formulário ou WhatsApp

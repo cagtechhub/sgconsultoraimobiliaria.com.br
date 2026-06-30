@@ -1,0 +1,5 @@
+Site: SG Consultora imobiliária
+URL: https://sgconsultoraimobiliaria.com.br/
+Idioma: pt-BR
+Resumo: Consultoria imobiliária para compra, venda, curadoria de empreendimentos e negociação estratégica.
+Contato: sgconsultoraimobiliaria@gmail.com

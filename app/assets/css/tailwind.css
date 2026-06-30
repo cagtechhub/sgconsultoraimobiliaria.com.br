@@ -1,0 +1,104 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-paper font-sans text-ink antialiased;
+  }
+
+  ::selection {
+    @apply bg-brand-100 text-brand-900;
+  }
+}
+
+@layer components {
+  .container-page {
+    @apply mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8;
+  }
+
+  .section-kicker {
+    @apply inline-flex items-center gap-3 rounded-full border border-brand-200 bg-white px-4 py-2 text-xs font-semibold uppercase tracking-[0.22em] text-brand-700;
+  }
+
+  .focus-ring {
+    @apply focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-400 focus-visible:ring-offset-2;
+  }
+
+  .gold-divider {
+    @apply relative flex items-center justify-center;
+  }
+
+  .gold-divider::before,
+  .gold-divider::after {
+    content: '';
+    @apply h-px flex-1 bg-brand-400/40;
+  }
+
+  .gold-divider::before {
+    @apply mr-4;
+  }
+
+  .gold-divider::after {
+    @apply ml-4;
+  }
+
+  .header-bar {
+    background: linear-gradient(
+      135deg,
+      rgba(10, 10, 10, 0.55) 0%,
+      rgba(17, 15, 13, 0.35) 50%,
+      rgba(10, 10, 10, 0.2) 100%
+    );
+  }
+
+  .header-bar-scrolled {
+    position: fixed;
+    background: linear-gradient(135deg, #0a0a0a 0%, #110f0d 35%, #161310 65%, #12100e 100%);
+    backdrop-filter: blur(14px);
+    box-shadow:
+      0 4px 30px rgba(10, 10, 10, 0.45),
+      0 1px 0 rgba(229, 196, 139, 0.12);
+  }
+
+  .header-bar-scrolled::after {
+    content: '';
+    @apply absolute inset-x-0 bottom-0 h-px;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(139, 94, 60, 0.35) 15%,
+      rgba(229, 196, 139, 0.45) 50%,
+      rgba(139, 94, 60, 0.35) 85%,
+      transparent 100%
+    );
+  }
+
+  .footer-bar {
+    background: linear-gradient(to bottom, #0a0a0a 0%, #0d0b09 20%, #12100c 45%, #181410 70%, #1e1914 100%);
+  }
+
+  .footer-bar::before {
+    content: '';
+    @apply absolute inset-x-0 top-0 h-px;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      #8b5e3c 18%,
+      #e5c48b 50%,
+      #c5a059 82%,
+      transparent 100%
+    );
+  }
+
+  .footer-bar-glow {
+    @apply pointer-events-none absolute inset-0;
+    background: radial-gradient(ellipse 70% 40% at 50% 0%, rgba(197, 160, 89, 0.07) 0%, transparent 70%);
+  }
+}
