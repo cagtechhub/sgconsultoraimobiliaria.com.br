@@ -73,6 +73,11 @@ export default defineEventHandler(async (event) => {
       changefreq: 'weekly',
       priority: '1',
     }),
+    urlEntry(`${origin}/empreendimentos`, {
+      lastmod: toLastmod(),
+      changefreq: 'weekly',
+      priority: '0.9',
+    }),
   ]
 
   setResponseHeader(event, 'content-type', 'application/xml; charset=utf-8')

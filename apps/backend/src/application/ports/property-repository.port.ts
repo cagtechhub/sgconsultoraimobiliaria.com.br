@@ -2,6 +2,7 @@ import type {
   CreatePropertyInput,
   Property,
   PropertyMedia,
+  PropertyStatus,
   UpdatePropertyInput,
 } from "@gutierres/shared"
 import type { Effect } from "effect"
@@ -12,6 +13,8 @@ export interface ListPropertiesOptions {
   readonly publishedOnly?: boolean
   readonly featured?: boolean
   readonly selectedOnHome?: boolean
+  readonly categorySlug?: string
+  readonly status?: PropertyStatus
 }
 
 export interface AddPropertyMediaInput {

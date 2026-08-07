@@ -1,4 +1,4 @@
-import type { CreatePropertyInput, UpdatePropertyInput } from "@gutierres/shared"
+import type { CreatePropertyInput, PropertyStatus, UpdatePropertyInput } from "@gutierres/shared"
 import { Effect } from "effect"
 import { PropertyRepository } from "../property-repository.context.js"
 import { ObjectStorage } from "../object-storage.context.js"
@@ -9,6 +9,8 @@ export const listProperties = (opts?: {
   publishedOnly?: boolean
   featured?: boolean
   selectedOnHome?: boolean
+  categorySlug?: string
+  status?: PropertyStatus
 }) =>
   Effect.gen(function* () {
     const repo = yield* PropertyRepository

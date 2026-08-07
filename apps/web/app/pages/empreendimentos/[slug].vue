@@ -4,7 +4,8 @@ import type { Property } from '@gutierres/shared'
 import { mapPropertyToProject, useApiBaseUrl } from '~/utils/mapProperty'
 
 const route = useRoute()
-const { whatsappHref } = useWhatsapp()
+const { whatsappHref, onWhatsAppClick } = useWhatsapp()
+const { trackViewContent } = useAnalytics()
 const baseUrl = useApiBaseUrl()
 const slug = String(route.params.slug)
 
@@ -20,6 +21,12 @@ const { data: project, error } = await useAsyncData(`property-${slug}`, async ()
 if (error.value || !project.value) {
   throw createError({ statusCode: 404, statusMessage: 'Empreendimento não encontrado' })
 }
+
+onMounted(() => {
+  if (project.value) {
+    trackViewContent({ id: project.value.slug, name: project.value.title })
+  }
+})
 
 const statusColors: Record<string, string> = {
   Lançamento: 'bg-brand-100 text-brand-800 border-brand-200',
@@ -83,7 +90,7 @@ useSiteSeoHead({
 
       <div class="container-page relative pb-12 pt-8">
         <NuxtLink
-          to="/#empreendimentos"
+          to="/empreendimentos"
           class="focus-ring mb-8 inline-flex items-center gap-2 text-sm text-white/60 transition hover:text-brand-300"
         >
           <ArrowLeft class="size-4" aria-hidden="true" />
@@ -227,6 +234,7 @@ useSiteSeoHead({
               class="focus-ring flex w-full items-center justify-center gap-2 rounded-md bg-brand-500 px-6 py-4 text-sm font-semibold text-ink transition hover:bg-brand-400"
               target="_blank"
               rel="noopener noreferrer"
+              @click="onWhatsAppClick('property_detail')"
             >
               <MessageCircle class="size-4" aria-hidden="true" />
               Solicitar consultoria de vendas

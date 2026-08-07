@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { ArrowRight, Menu, X } from 'lucide-vue-next'
 
-const { whatsappHref } = useWhatsapp()
+const { whatsappHref, onWhatsAppClick } = useWhatsapp()
 
 const navLinks = [
-  { label: 'Empreendimentos', href: '/#empreendimentos' },
+  { label: 'Empreendimentos', href: '/empreendimentos' },
   { label: 'Serviços', href: '/#servicos' },
   { label: 'Depoimentos', href: '/#depoimentos' },
   { label: 'Contato', href: '/#contato' },
@@ -27,6 +27,11 @@ onUnmounted(() => {
 
 function closeMobileMenu() {
   mobileOpen.value = false
+}
+
+function onMobileWhatsAppClick() {
+  onWhatsAppClick('header_mobile')
+  closeMobileMenu()
 }
 </script>
 
@@ -55,6 +60,7 @@ function closeMobileMenu() {
           class="focus-ring hidden items-center gap-2 rounded-md border border-[#c5a059]/40 bg-[#c5a059]/10 px-5 py-2.5 text-sm font-semibold text-[#e5c48b] transition hover:border-[#e5c48b]/60 hover:bg-[#c5a059]/15 lg:inline-flex"
           target="_blank"
           rel="noopener noreferrer"
+          @click="onWhatsAppClick('header')"
         >
           Fale comigo
           <ArrowRight class="size-4" aria-hidden="true" />
@@ -112,7 +118,7 @@ function closeMobileMenu() {
           style="background: linear-gradient(135deg, #e5c48b 0%, #c5a059 50%, #a8854a 100%)"
           target="_blank"
           rel="noopener noreferrer"
-          @click="closeMobileMenu"
+          @click="onMobileWhatsAppClick"
         >
           Fale comigo
           <ArrowRight class="size-5" aria-hidden="true" />

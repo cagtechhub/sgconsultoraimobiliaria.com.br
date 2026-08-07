@@ -150,11 +150,19 @@ await load()
         </label>
         <label class="block text-sm">
           GA4 Measurement ID
-          <input v-model="form.ga4MeasurementId" class="mt-1 w-full rounded-xl border border-brand-200 px-3 py-2" />
+          <input
+            v-model="form.ga4MeasurementId"
+            class="mt-1 w-full rounded-xl border border-brand-200 px-3 py-2"
+            placeholder="G-XXXXXXXXXX"
+          />
         </label>
         <label class="block text-sm">
           Meta Pixel ID
-          <input v-model="form.metaPixelId" class="mt-1 w-full rounded-xl border border-brand-200 px-3 py-2" />
+          <input
+            v-model="form.metaPixelId"
+            class="mt-1 w-full rounded-xl border border-brand-200 px-3 py-2"
+            placeholder="123456789012345"
+          />
         </label>
       </div>
 

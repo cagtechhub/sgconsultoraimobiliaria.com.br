@@ -4,7 +4,8 @@ definePageMeta({
 })
 
 const { login, isAuthenticated } = useAdminApi()
-const tokenInput = ref('')
+const email = ref('')
+const password = ref('')
 const error = ref('')
 const loading = ref(false)
 
@@ -16,11 +17,15 @@ const onSubmit = async () => {
   error.value = ''
   loading.value = true
   try {
-    await login(tokenInput.value.trim())
+    await login(email.value, password.value)
     await navigateTo('/admin')
   } catch (e: unknown) {
-    error.value = 'Token inválido ou API indisponível.'
-    useAdminApi().logout()
+    const message =
+      e && typeof e === 'object' && 'statusMessage' in e
+        ? String((e as { statusMessage?: string }).statusMessage)
+        : ''
+    error.value = message || 'E-mail ou senha inválidos.'
+    await useAdminApi().logout()
   } finally {
     loading.value = false
   }
@@ -36,12 +41,22 @@ const onSubmit = async () => {
       <p class="text-xs uppercase tracking-[0.22em] text-brand-300">Acesso restrito</p>
       <h1 class="mt-2 font-display text-3xl text-white">Admin</h1>
       <p class="mt-2 text-sm text-white/60">
-        Informe o token administrativo configurado em <code class="text-brand-200">ADMIN_API_TOKEN</code>.
+        Entre com a conta Supabase Auth do painel.
       </p>
       <label class="mt-6 block text-sm text-white/80">
-        Token
+        E-mail
         <input
-          v-model="tokenInput"
+          v-model="email"
+          type="email"
+          required
+          class="mt-2 w-full rounded-xl border border-white/10 bg-black/30 px-4 py-3 text-white outline-none focus:border-brand-400"
+          autocomplete="username"
+        />
+      </label>
+      <label class="mt-4 block text-sm text-white/80">
+        Senha
+        <input
+          v-model="password"
           type="password"
           required
           class="mt-2 w-full rounded-xl border border-white/10 bg-black/30 px-4 py-3 text-white outline-none focus:border-brand-400"

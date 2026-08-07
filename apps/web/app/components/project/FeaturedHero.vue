@@ -6,7 +6,7 @@ defineProps<{
   project: Project
 }>()
 
-const { whatsappHref } = useWhatsapp()
+const { whatsappHref, onWhatsAppClick } = useWhatsapp()
 
 const heroSignals = [
   {
@@ -97,6 +97,7 @@ const heroSignals = [
               class="focus-ring inline-flex items-center justify-center gap-2 rounded-md border border-white/20 px-8 py-4 text-sm font-semibold text-white transition hover:border-brand-500/50 hover:text-brand-300"
               target="_blank"
               rel="noopener noreferrer"
+              @click="onWhatsAppClick('hero')"
             >
               <MessageCircle class="size-4" aria-hidden="true" />
               Falar com a consultoria

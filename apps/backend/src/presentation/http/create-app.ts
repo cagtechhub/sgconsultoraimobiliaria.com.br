@@ -41,6 +41,7 @@ import {
   propertyCategorySchema,
   propertyMediaSchema,
   propertySchema,
+  propertyStatusSchema,
   reorderPropertyMediaSchema,
   siteSettingsSchema,
   testimonialSchema,
@@ -112,6 +113,19 @@ const runEffect = <A, E>(
 }
 
 const parseBoolQuery = (value: unknown) => value === "true" || value === "1"
+
+const parseStringQuery = (value: unknown) => {
+  if (typeof value !== "string") return undefined
+  const trimmed = value.trim()
+  return trimmed || undefined
+}
+
+const parseStatusQuery = (value: unknown) => {
+  const raw = parseStringQuery(value)
+  if (!raw) return undefined
+  const parsed = propertyStatusSchema.safeParse(raw)
+  return parsed.success ? parsed.data : undefined
+}
 
 export const createApp = (
   runtime: ManagedRuntime.ManagedRuntime<AppServices, never>
@@ -198,6 +212,8 @@ export const createApp = (
         publishedOnly: true,
         featured: parseBoolQuery(req.query.featured) || undefined,
         selectedOnHome: parseBoolQuery(req.query.selected) || undefined,
+        categorySlug: parseStringQuery(req.query.category),
+        status: parseStatusQuery(req.query.status),
       }),
       res,
       (items) => {

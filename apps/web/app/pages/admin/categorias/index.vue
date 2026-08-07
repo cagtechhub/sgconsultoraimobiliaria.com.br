@@ -23,6 +23,8 @@ const form = reactive({
   active: true,
 })
 
+const modalTitle = computed(() => (editingId.value ? 'Editar categoria' : 'Nova categoria'))
+
 const toSlug = (value: string) =>
   value
     .normalize('NFD')
@@ -35,7 +37,7 @@ watch(
   () => form.name,
   (name) => {
     if (!slugManual.value) form.slug = toSlug(name)
-  }
+  },
 )
 
 const resetForm = () => {
@@ -46,6 +48,11 @@ const resetForm = () => {
   form.description = ''
   form.sortOrder = 0
   form.active = true
+}
+
+const closeForm = () => {
+  showForm.value = false
+  resetForm()
 }
 
 const load = async () => {
@@ -92,8 +99,7 @@ const onSubmit = async () => {
     } else {
       await api.createCategory(payload)
     }
-    showForm.value = false
-    resetForm()
+    closeForm()
     await load()
   } catch {
     error.value = 'Falha ao salvar categoria.'
@@ -107,6 +113,17 @@ const onDelete = async (item: PropertyCategory) => {
   await api.removeCategory(item.id)
   await load()
 }
+
+const onBackdropClick = (event: MouseEvent) => {
+  if (event.target === event.currentTarget) closeForm()
+}
+
+const onEscape = (event: KeyboardEvent) => {
+  if (event.key === 'Escape' && showForm.value) closeForm()
+}
+
+onMounted(() => window.addEventListener('keydown', onEscape))
+onUnmounted(() => window.removeEventListener('keydown', onEscape))
 
 await load()
 </script>
@@ -126,59 +143,6 @@ await load()
         Nova categoria
       </button>
     </div>
-
-    <form
-      v-if="showForm"
-      class="grid gap-4 rounded-2xl border border-brand-200 bg-white p-6 sm:grid-cols-2"
-      @submit.prevent="onSubmit"
-    >
-      <label class="block text-sm">
-        Nome
-        <input v-model="form.name" required class="mt-1 w-full rounded-xl border border-brand-200 px-3 py-2" />
-      </label>
-      <label class="block text-sm">
-        Slug
-        <input
-          v-model="form.slug"
-          required
-          class="mt-1 w-full rounded-xl border border-brand-200 px-3 py-2"
-          @input="slugManual = true"
-        />
-      </label>
-      <label class="block text-sm sm:col-span-2">
-        Descrição
-        <textarea v-model="form.description" rows="3" class="mt-1 w-full rounded-xl border border-brand-200 px-3 py-2" />
-      </label>
-      <label class="block text-sm">
-        Ordem
-        <input
-          v-model.number="form.sortOrder"
-          type="number"
-          min="0"
-          class="mt-1 w-full rounded-xl border border-brand-200 px-3 py-2"
-        />
-      </label>
-      <label class="mt-7 inline-flex items-center gap-2 text-sm">
-        <input v-model="form.active" type="checkbox" />
-        Ativa
-      </label>
-      <div class="flex gap-3 sm:col-span-2">
-        <button
-          type="submit"
-          class="rounded-full bg-brand-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-brand-500 disabled:opacity-60"
-          :disabled="saving"
-        >
-          {{ saving ? 'Salvando…' : editingId ? 'Salvar' : 'Criar categoria' }}
-        </button>
-        <button
-          type="button"
-          class="rounded-full border border-brand-300 px-5 py-2.5 text-sm"
-          @click="showForm = false; resetForm()"
-        >
-          Cancelar
-        </button>
-      </div>
-    </form>
 
     <p v-if="error" class="text-sm text-red-600">{{ error }}</p>
     <p v-else-if="loading" class="text-sm text-ink/50">Carregando…</p>
@@ -201,8 +165,12 @@ await load()
             <td class="px-4 py-3">{{ item.sortOrder }}</td>
             <td class="px-4 py-3">{{ item.active ? 'Sim' : 'Não' }}</td>
             <td class="px-4 py-3 text-right">
-              <button type="button" class="text-brand-700 hover:underline" @click="openEdit(item)">Editar</button>
-              <button type="button" class="ml-3 text-red-600 hover:underline" @click="onDelete(item)">Excluir</button>
+              <button type="button" class="text-brand-700 hover:underline" @click="openEdit(item)">
+                Editar
+              </button>
+              <button type="button" class="ml-3 text-red-600 hover:underline" @click="onDelete(item)">
+                Excluir
+              </button>
             </td>
           </tr>
           <tr v-if="categories.length === 0">
@@ -211,5 +179,89 @@ await load()
         </tbody>
       </table>
     </div>
+
+    <Teleport to="body">
+      <div
+        v-if="showForm"
+        class="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/50 p-4 pt-10 sm:pt-16"
+        @click="onBackdropClick"
+      >
+        <div
+          class="mb-10 w-full max-w-lg overflow-hidden rounded-2xl border border-brand-200 bg-white shadow-soft"
+          role="dialog"
+          aria-modal="true"
+          :aria-label="modalTitle"
+        >
+          <div class="flex items-center justify-between border-b border-brand-100 px-5 py-4">
+            <h3 class="font-display text-xl text-ink">{{ modalTitle }}</h3>
+            <button
+              type="button"
+              class="grid size-8 place-items-center rounded-full text-xl text-ink/50 hover:bg-brand-50"
+              aria-label="Fechar"
+              @click="closeForm"
+            >
+              ×
+            </button>
+          </div>
+
+          <form class="grid gap-4 p-5 sm:grid-cols-2" @submit.prevent="onSubmit">
+            <label class="block text-sm text-ink/70">
+              Nome
+              <input
+                v-model="form.name"
+                required
+                class="mt-1 w-full rounded-xl border border-brand-200 px-3 py-2 text-ink"
+              />
+            </label>
+            <label class="block text-sm text-ink/70">
+              Slug
+              <input
+                v-model="form.slug"
+                required
+                class="mt-1 w-full rounded-xl border border-brand-200 px-3 py-2 text-ink"
+                @input="slugManual = true"
+              />
+            </label>
+            <label class="block text-sm text-ink/70 sm:col-span-2">
+              Descrição
+              <textarea
+                v-model="form.description"
+                rows="3"
+                class="mt-1 w-full rounded-xl border border-brand-200 px-3 py-2 text-ink"
+              />
+            </label>
+            <label class="block text-sm text-ink/70">
+              Ordem
+              <input
+                v-model.number="form.sortOrder"
+                type="number"
+                min="0"
+                class="mt-1 w-full rounded-xl border border-brand-200 px-3 py-2 text-ink"
+              />
+            </label>
+            <label class="mt-7 inline-flex items-center gap-2 text-sm text-ink/70">
+              <input v-model="form.active" type="checkbox" />
+              Ativa
+            </label>
+            <div class="flex justify-end gap-2 sm:col-span-2">
+              <button
+                type="button"
+                class="rounded-full border border-brand-200 px-4 py-2 text-sm font-medium text-ink hover:bg-brand-50"
+                @click="closeForm"
+              >
+                Cancelar
+              </button>
+              <button
+                type="submit"
+                class="rounded-full bg-brand-600 px-5 py-2 text-sm font-semibold text-white hover:bg-brand-500 disabled:opacity-60"
+                :disabled="saving"
+              >
+                {{ saving ? 'Salvando…' : editingId ? 'Salvar' : 'Criar categoria' }}
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </Teleport>
   </div>
 </template>

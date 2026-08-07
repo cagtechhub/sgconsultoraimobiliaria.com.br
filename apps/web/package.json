@@ -19,6 +19,7 @@
     "@nuxt/eslint": "1.15.2",
     "@nuxt/image": "2.0.0",
     "@pinia/nuxt": "^0.11.3",
+    "@supabase/supabase-js": "^2.112.2",
     "@unhead/schema-org": "^3.0.4",
     "lucide-vue-next": "^0.468.0",
     "nuxt": "^4.4.2",

@@ -38,9 +38,23 @@ export const useAdminApi = () => {
 
   const baseUrl = computed(() => String(config.public.apiUrl || 'http://localhost:3001').replace(/\/$/, ''))
 
-  const authHeaders = (): HeadersInit => {
-    if (!token.value) return {}
-    return { Authorization: `Bearer ${token.value}` }
+  const ensureAccessToken = async (): Promise<string | null> => {
+    if (import.meta.client) {
+      try {
+        const supabase = useSupabaseClient()
+        const { data } = await supabase.auth.getSession()
+        token.value = data.session?.access_token ?? null
+      } catch {
+        // keep cookie value
+      }
+    }
+    return token.value
+  }
+
+  const authHeaders = async (): Promise<HeadersInit> => {
+    const accessToken = await ensureAccessToken()
+    if (!accessToken) return {}
+    return { Authorization: `Bearer ${accessToken}` }
   }
 
   const request = async <T>(path: string, init: RequestInit = {}): Promise<T> => {
@@ -48,7 +62,7 @@ export const useAdminApi = () => {
     if (!(init.body instanceof FormData) && !headers.has('Content-Type') && init.body) {
       headers.set('Content-Type', 'application/json')
     }
-    for (const [key, value] of Object.entries(authHeaders())) {
+    for (const [key, value] of Object.entries(await authHeaders())) {
       headers.set(key, value)
     }
 
@@ -63,6 +77,9 @@ export const useAdminApi = () => {
 
     const data = await response.json().catch(() => ({}))
     if (!response.ok) {
+      if (response.status === 401) {
+        token.value = null
+      }
       throw createError({
         statusCode: response.status,
         statusMessage: data?.message || data?.error || 'Erro na API',
@@ -72,13 +89,30 @@ export const useAdminApi = () => {
     return data as T
   }
 
-  const login = async (apiToken: string) => {
-    token.value = apiToken
+  const login = async (email: string, password: string) => {
+    const supabase = useSupabaseClient()
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email: email.trim(),
+      password,
+    })
+    if (error || !data.session) {
+      throw createError({
+        statusCode: 401,
+        statusMessage: error?.message || 'E-mail ou senha inválidos',
+      })
+    }
+    token.value = data.session.access_token
     await listProperties()
   }
 
-  const logout = () => {
-    token.value = null
+  const logout = async () => {
+    try {
+      if (import.meta.client) {
+        await useSupabaseClient().auth.signOut()
+      }
+    } finally {
+      token.value = null
+    }
   }
 
   const isAuthenticated = computed(() => Boolean(token.value))

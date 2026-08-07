@@ -17,7 +17,7 @@ const isActive = (to: string, exact = false) => {
 }
 
 const onLogout = async () => {
-  logout()
+  await logout()
   await navigateTo('/admin/login')
 }
 </script>
@@ -54,7 +54,7 @@ const onLogout = async () => {
         </nav>
       </div>
     </header>
-    <main class="mx-auto max-w-6xl px-5 py-8">
+    <main class="mx-auto max-w-7xl px-5 py-8">
       <slot />
     </main>
   </div>

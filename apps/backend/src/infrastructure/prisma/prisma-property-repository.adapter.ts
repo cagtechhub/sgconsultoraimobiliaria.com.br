@@ -108,6 +108,10 @@ export const makePrismaPropertyRepository = (prisma: PrismaClient): PropertyRepo
             ...(opts?.publishedOnly ? { published: true } : {}),
             ...(opts?.featured ? { featured: true } : {}),
             ...(opts?.selectedOnHome ? { selectedOnHome: true } : {}),
+            ...(opts?.status ? { status: opts.status } : {}),
+            ...(opts?.categorySlug
+              ? { category: { slug: opts.categorySlug, active: true } }
+              : {}),
           },
           include: includeRelations,
           orderBy: [{ featured: "desc" }, { updatedAt: "desc" }],

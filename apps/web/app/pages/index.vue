@@ -21,7 +21,8 @@ useSiteSeoHead()
 const config = useRuntimeConfig()
 const { featuredProject, allProjects } = useProjects()
 const { testimonials } = useTestimonials()
-const { whatsappHref } = useWhatsapp()
+const { whatsappHref, onWhatsAppClick } = useWhatsapp()
+const { trackLead } = useAnalytics()
 const apiBase = useApiBaseUrl()
 
 const steps = [
@@ -135,6 +136,7 @@ async function submitLead() {
     })
     submitSuccess.value = true
     form.message = ''
+    trackLead('contact_form')
   } catch {
     submitError.value = 'Não foi possível enviar. Tente novamente ou fale pelo WhatsApp.'
   } finally {
@@ -182,6 +184,16 @@ async function submitLead() {
 
         <div class="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           <ProjectCard v-for="item in allProjects" :key="item.slug" :project="item" />
+        </div>
+
+        <div class="mt-10 flex justify-center">
+          <NuxtLink
+            to="/empreendimentos"
+            class="focus-ring inline-flex items-center gap-2 rounded-md border border-slate-200 bg-white px-5 py-3 text-sm font-semibold text-ink shadow-card transition hover:border-brand-300 hover:text-brand-700"
+          >
+            Ver todos os empreendimentos
+            <ArrowRight class="size-4" aria-hidden="true" />
+          </NuxtLink>
         </div>
       </div>
     </section>
@@ -393,6 +405,7 @@ async function submitLead() {
                 class="ml-1 font-semibold text-brand-700 underline"
                 target="_blank"
                 rel="noopener noreferrer"
+                @click="onWhatsAppClick('contact_success')"
               >
                 Preferir WhatsApp?
               </a>
@@ -430,6 +443,7 @@ async function submitLead() {
           class="focus-ring inline-flex items-center justify-center gap-2 rounded-md bg-brand-500 px-8 py-4 text-sm font-semibold text-ink transition hover:bg-brand-400"
           target="_blank"
           rel="noopener noreferrer"
+          @click="onWhatsAppClick('home_cta')"
         >
           Falar agora
           <ArrowRight class="size-4" aria-hidden="true" />

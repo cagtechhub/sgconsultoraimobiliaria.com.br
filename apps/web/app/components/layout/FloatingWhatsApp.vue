@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const { whatsappHref } = useWhatsapp()
+const { whatsappHref, onWhatsAppClick } = useWhatsapp()
 </script>
 
 <template>
@@ -9,6 +9,7 @@ const { whatsappHref } = useWhatsapp()
     target="_blank"
     rel="noopener noreferrer"
     aria-label="Contato via WhatsApp"
+    @click="onWhatsAppClick('floating')"
   >
     <svg class="size-7 sm:size-8" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
       <path

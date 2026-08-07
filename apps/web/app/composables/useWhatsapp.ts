@@ -1,5 +1,6 @@
 export function useWhatsapp(customMessage?: string) {
   const config = useRuntimeConfig()
+  const { trackWhatsApp } = useAnalytics()
 
   const whatsappHref = computed(() => {
     const digits = String(config.public.whatsappNumber || '').replace(/\D/g, '')
@@ -10,5 +11,11 @@ export function useWhatsapp(customMessage?: string) {
     return digits ? `https://wa.me/${digits}?text=${message}` : '#contato'
   })
 
-  return { whatsappHref }
+  const onWhatsAppClick = (placement = 'unknown') => {
+    if (whatsappHref.value.startsWith('https://wa.me/')) {
+      trackWhatsApp(placement)
+    }
+  }
+
+  return { whatsappHref, onWhatsAppClick }
 }

@@ -3,7 +3,7 @@ import { ArrowRight, Facebook, Instagram, Linkedin, Mail, MapPin, MessageCircle,
 import type { Component } from 'vue'
 
 const config = useRuntimeConfig()
-const { whatsappHref } = useWhatsapp()
+const { whatsappHref, onWhatsAppClick } = useWhatsapp()
 const currentYear = new Date().getFullYear()
 
 const siteName = computed(() => String(config.public.siteName || 'Stefanny Gutierres'))
@@ -15,7 +15,7 @@ const displayPhone = computed(() => String(config.public.businessPhone || 'Whats
 const businessAddress = computed(() => String(config.public.businessAddress || 'Atendimento consultivo online'))
 
 const footerLinks = [
-  { label: 'Empreendimentos', href: '/#empreendimentos' },
+  { label: 'Empreendimentos', href: '/empreendimentos' },
   { label: 'Serviços', href: '/#servicos' },
   { label: 'Depoimentos', href: '/#depoimentos' },
   { label: 'Contato', href: '/#contato' },
@@ -59,6 +59,7 @@ const socialLinks = computed<FooterSocialLink[]>(() => {
             class="focus-ring mt-7 inline-flex items-center justify-center gap-2 rounded-md bg-[#c5a059] px-5 py-3 text-sm font-semibold text-ink transition hover:bg-[#e5c48b]"
             target="_blank"
             rel="noopener noreferrer"
+            @click="onWhatsAppClick('footer_cta')"
           >
             Receber curadoria
             <ArrowRight class="size-4" aria-hidden="true" />
@@ -99,6 +100,7 @@ const socialLinks = computed<FooterSocialLink[]>(() => {
               :href="whatsappHref"
               target="_blank"
               rel="noopener noreferrer"
+              @click="onWhatsAppClick('footer_phone')"
             >
               <PhoneCall class="size-4 text-[#e5c48b]" aria-hidden="true" />
               {{ displayPhone }}
