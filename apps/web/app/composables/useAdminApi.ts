@@ -2,6 +2,7 @@ import {
   createLeadSchema,
   createPropertyCategorySchema,
   createPropertySchema,
+  createTestimonialSchema,
   leadChannelSchema,
   leadSchema,
   leadStatusSchema,
@@ -10,15 +11,22 @@ import {
   updateLeadSchema,
   updatePropertyCategorySchema,
   updatePropertySchema,
+  updateSiteSettingsSchema,
+  updateTestimonialSchema,
   type CreateLeadInput,
   type CreatePropertyCategoryInput,
   type CreatePropertyInput,
+  type CreateTestimonialInput,
   type Lead,
   type Property,
   type PropertyCategory,
+  type SiteSettings,
+  type Testimonial,
   type UpdateLeadInput,
   type UpdatePropertyCategoryInput,
   type UpdatePropertyInput,
+  type UpdateSiteSettingsInput,
+  type UpdateTestimonialInput,
 } from '@gutierres/shared'
 
 export const useAdminApi = () => {
@@ -172,6 +180,27 @@ export const useAdminApi = () => {
   const removeCategory = (id: string) =>
     request<void>(`/admin/categories/${id}`, { method: 'DELETE' })
 
+  const getSettings = () => request<SiteSettings>('/admin/settings')
+  const updateSettings = (input: UpdateSiteSettingsInput) =>
+    request<SiteSettings>('/admin/settings', {
+      method: 'PUT',
+      body: JSON.stringify(updateSiteSettingsSchema.parse(input)),
+    })
+
+  const listTestimonials = () => request<Testimonial[]>('/admin/testimonials')
+  const createTestimonial = (input: CreateTestimonialInput) =>
+    request<Testimonial>('/admin/testimonials', {
+      method: 'POST',
+      body: JSON.stringify(createTestimonialSchema.parse(input)),
+    })
+  const updateTestimonial = (id: string, input: UpdateTestimonialInput) =>
+    request<Testimonial>(`/admin/testimonials/${id}`, {
+      method: 'PATCH',
+      body: JSON.stringify(updateTestimonialSchema.parse(input)),
+    })
+  const removeTestimonial = (id: string) =>
+    request<void>(`/admin/testimonials/${id}`, { method: 'DELETE' })
+
   return {
     token,
     isAuthenticated,
@@ -194,6 +223,12 @@ export const useAdminApi = () => {
     createCategory,
     updateCategory,
     removeCategory,
+    getSettings,
+    updateSettings,
+    listTestimonials,
+    createTestimonial,
+    updateTestimonial,
+    removeTestimonial,
     propertySchema,
     propertyStatusSchema,
     leadSchema,

@@ -33,6 +33,7 @@ export const createPropertySchema = z.object({
     .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, "Slug inválido"),
   title: z.string().trim().min(2).max(160),
   description: z.string().trim().min(10).max(10000),
+  longDescription: z.string().trim().max(20000).default(""),
   location: z.string().trim().max(200).default(""),
   status: propertyStatusSchema.default("LAUNCH"),
   constructionStartDate: z
@@ -46,7 +47,14 @@ export const createPropertySchema = z.object({
     .nullable()
     .transform((v) => (v === "" || v == null ? null : v)),
   availableUnits: z.number().int().min(0).default(0),
+  progress: z.number().int().min(0).max(100).default(0),
+  highlights: z.array(z.string().trim().min(1).max(80)).default([]),
+  floorPlanUrl: z
+    .union([z.string().url(), z.literal(""), z.null()])
+    .optional()
+    .transform((v) => (v === "" || v == null ? null : v)),
   featured: z.boolean().default(false),
+  selectedOnHome: z.boolean().default(false),
   published: z.boolean().default(true),
   categoryId: z.string().optional().nullable(),
 })

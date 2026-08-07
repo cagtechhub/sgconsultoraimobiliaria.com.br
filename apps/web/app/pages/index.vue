@@ -20,7 +20,9 @@ useSiteSeoHead()
 
 const config = useRuntimeConfig()
 const { featuredProject, allProjects } = useProjects()
+const { testimonials } = useTestimonials()
 const { whatsappHref } = useWhatsapp()
+const apiBase = useApiBaseUrl()
 
 const steps = [
   {
@@ -37,27 +39,6 @@ const steps = [
     title: 'Condução comercial',
     text: 'Apresentação e encaminhamento junto à incorporadora, com transparência em cada etapa.',
     icon: BadgeCheck,
-  },
-]
-
-const testimonials = [
-  {
-    name: 'Marina T.',
-    role: 'Compradora',
-    quote:
-      'A consultoria trouxe segurança para comparar opções e entender detalhes que eu não teria visto sozinha.',
-  },
-  {
-    name: 'Carlos M.',
-    role: 'Investidor',
-    quote:
-      'Processo objetivo, com boas análises de localização e documentação antes da proposta comercial.',
-  },
-  {
-    name: 'Renata P.',
-    role: 'Interessada',
-    quote:
-      'Recebi orientação clara do início ao encaminhamento. Tudo conduzido com transparência e rapidez.',
   },
 ]
 
@@ -118,26 +99,47 @@ const form = reactive({
   message: '',
 })
 
+const submitting = ref(false)
+const submitError = ref('')
+const submitSuccess = ref(false)
+
 const contactEmail = computed(() => String(config.public.contactEmail || 'contato@gutierresconsultoria.com.br'))
 const displayPhone = computed(() => String(config.public.businessPhone || 'Atualize o telefone no ambiente'))
 
-const submitLabel = computed(() =>
-  form.name ? `Solicitar contato, ${form.name.split(' ')[0]}` : 'Solicitar contato',
-)
+const submitLabel = computed(() => {
+  if (submitting.value) return 'Enviando…'
+  return form.name ? `Solicitar contato, ${form.name.split(' ')[0]}` : 'Solicitar contato'
+})
 
-function submitLead() {
-  const digits = String(config.public.whatsappNumber || '').replace(/\D/g, '')
-  if (!digits) return
+async function submitLead() {
+  submitError.value = ''
+  submitSuccess.value = false
+  submitting.value = true
 
-  const detail = [
-    `Nome: ${form.name || 'Não informado'}`,
-    `E-mail: ${form.email || 'Não informado'}`,
-    `Telefone: ${form.phone || 'Não informado'}`,
-    `Tipo: ${form.propertyType}`,
-    `Mensagem: ${form.message || 'Sem mensagem'}`,
-  ].join('\n')
+  const composedMessage = [
+    `Tipo de imóvel: ${form.propertyType}`,
+    form.message ? form.message : null,
+  ]
+    .filter(Boolean)
+    .join('\n')
 
-  window.location.href = `https://wa.me/${digits}?text=${encodeURIComponent(detail)}`
+  try {
+    await $fetch(`${apiBase.value}/contacts`, {
+      method: 'POST',
+      body: {
+        fullName: form.name,
+        email: form.email,
+        phone: form.phone,
+        message: composedMessage,
+      },
+    })
+    submitSuccess.value = true
+    form.message = ''
+  } catch {
+    submitError.value = 'Não foi possível enviar. Tente novamente ou fale pelo WhatsApp.'
+  } finally {
+    submitting.value = false
+  }
 }
 </script>
 
@@ -227,14 +229,19 @@ function submitLead() {
         <h2 class="mt-5 max-w-2xl font-display text-3xl font-bold leading-tight sm:text-4xl">
           O que dizem sobre a consultoria
         </h2>
-        <div class="mt-10 grid gap-5 lg:grid-cols-3">
+        <div v-if="testimonials?.length" class="mt-10 grid gap-5 lg:grid-cols-3">
           <figure
             v-for="testimonial in testimonials"
-            :key="testimonial.name"
+            :key="testimonial.id"
             class="rounded-lg bg-white p-6 shadow-card ring-1 ring-slate-200/60"
           >
             <div class="mb-4 flex gap-1 text-brand-500">
-              <Star v-for="star in 5" :key="star" class="size-4 fill-current" aria-hidden="true" />
+              <Star
+                v-for="star in testimonial.rating || 5"
+                :key="star"
+                class="size-4 fill-current"
+                aria-hidden="true"
+              />
             </div>
             <blockquote class="text-sm leading-7 text-slate-700">
               "{{ testimonial.quote }}"
@@ -245,6 +252,7 @@ function submitLead() {
             </figcaption>
           </figure>
         </div>
+        <p v-else class="mt-10 text-sm text-slate-500">Depoimentos em breve.</p>
       </div>
     </section>
 
@@ -306,7 +314,7 @@ function submitLead() {
               Prioridade de atendimento
             </p>
             <p class="mt-1 text-sm leading-6 text-slate-600">
-              Preencha os dados essenciais e receba uma triagem objetiva pelo WhatsApp.
+              Preencha os dados essenciais. Cadastramos seu contato e retornamos em horário útil.
             </p>
           </div>
 
@@ -333,6 +341,7 @@ function submitLead() {
                   type="email"
                   autocomplete="email"
                   placeholder="seu@email.com"
+                  required
                 />
               </label>
               <label class="grid gap-1.5">
@@ -375,9 +384,24 @@ function submitLead() {
               <span class="text-right text-xs text-slate-400">{{ form.message.length }}/500</span>
             </label>
 
+            <p v-if="submitError" class="text-sm text-red-600">{{ submitError }}</p>
+            <p v-if="submitSuccess" class="text-sm text-emerald-700">
+              Contato enviado! Em breve retornaremos.
+              <a
+                v-if="whatsappHref !== '#contato'"
+                :href="whatsappHref"
+                class="ml-1 font-semibold text-brand-700 underline"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Preferir WhatsApp?
+              </a>
+            </p>
+
             <button
-              class="focus-ring inline-flex h-12 items-center justify-center gap-2 rounded-md bg-brand-500 px-6 text-sm font-semibold text-ink transition hover:bg-brand-400"
+              class="focus-ring inline-flex h-12 items-center justify-center gap-2 rounded-md bg-brand-500 px-6 text-sm font-semibold text-ink transition hover:bg-brand-400 disabled:opacity-60"
               type="submit"
+              :disabled="submitting"
             >
               {{ submitLabel }}
               <Send class="size-4" aria-hidden="true" />

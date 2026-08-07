@@ -1,14 +1,23 @@
 <script setup lang="ts">
 import { ArrowLeft, ArrowRight, BadgeCheck, Calendar, Clock3, MapPin, MessageCircle, ShieldCheck, TrendingUp } from 'lucide-vue-next'
+import type { Property } from '@gutierres/shared'
+import { mapPropertyToProject, useApiBaseUrl } from '~/utils/mapProperty'
 
 const route = useRoute()
-const { getProjectBySlug } = useProjects()
 const { whatsappHref } = useWhatsapp()
-
+const baseUrl = useApiBaseUrl()
 const slug = String(route.params.slug)
-const project = getProjectBySlug(slug)
 
-if (!project) {
+const { data: project, error } = await useAsyncData(`property-${slug}`, async () => {
+  try {
+    const property = await $fetch<Property>(`${baseUrl.value}/properties/${slug}`)
+    return mapPropertyToProject(property)
+  } catch {
+    return null
+  }
+})
+
+if (error.value || !project.value) {
   throw createError({ statusCode: 404, statusMessage: 'Empreendimento não encontrado' })
 }
 
@@ -37,7 +46,7 @@ const projectSignals = [
 ]
 
 const formattedDeadline = computed(() =>
-  new Date(project.deadline).toLocaleDateString('pt-BR', {
+  new Date(project.value!.deadline).toLocaleDateString('pt-BR', {
     day: '2-digit',
     month: 'long',
     year: 'numeric',
@@ -48,19 +57,19 @@ const whatsappProjectHref = computed(() => {
   const config = useRuntimeConfig()
   const digits = String(config.public.whatsappNumber || '').replace(/\D/g, '')
   const message = encodeURIComponent(
-    `Olá! Tenho interesse no empreendimento ${project.title}. Gostaria de mais informações.`,
+    `Olá! Tenho interesse no empreendimento ${project.value!.title}. Gostaria de mais informações.`,
   )
   return digits ? `https://wa.me/${digits}?text=${message}` : whatsappHref.value
 })
 
 useSiteSeoHead({
-  title: project.title,
-  description: project.description,
+  title: project.value.title,
+  description: project.value.description,
 })
 </script>
 
 <template>
-  <div>
+  <div v-if="project">
     <section class="relative bg-ink pt-24 text-white">
       <img
         class="absolute inset-0 h-full w-full object-cover opacity-40"

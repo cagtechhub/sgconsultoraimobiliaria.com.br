@@ -48,3 +48,15 @@ export type {
   LeadStatus,
   UpdateLeadInput,
 } from "./schemas/lead.js"
+export { siteSettingsSchema, updateSiteSettingsSchema } from "./schemas/settings.js"
+export type { SiteSettings, UpdateSiteSettingsInput } from "./schemas/settings.js"
+export {
+  createTestimonialSchema,
+  testimonialSchema,
+  updateTestimonialSchema,
+} from "./schemas/testimonial.js"
+export type {
+  CreateTestimonialInput,
+  Testimonial,
+  UpdateTestimonialInput,
+} from "./schemas/testimonial.js"

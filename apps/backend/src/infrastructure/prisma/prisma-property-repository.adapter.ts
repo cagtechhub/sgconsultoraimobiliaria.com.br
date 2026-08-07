@@ -8,6 +8,7 @@ import {
 } from "@gutierres/shared"
 import type {
   AddPropertyMediaInput,
+  ListPropertiesOptions,
   PropertyRepositoryPort,
 } from "@/application/ports/property-repository.port.js"
 import { InfraError } from "@/domain/errors/infra-error.js"
@@ -31,18 +32,28 @@ type PropertyRecord = {
   slug: string
   title: string
   description: string
+  longDescription: string
   location: string
   status: "LAUNCH" | "UNDER_CONSTRUCTION" | "READY"
   constructionStartDate: Date | null
   constructionEndDate: Date | null
   availableUnits: number
+  progress: number
+  highlights: unknown
+  floorPlanUrl: string | null
   featured: boolean
+  selectedOnHome: boolean
   published: boolean
   categoryId: string | null
   createdAt: Date
   updatedAt: Date
   category: { id: string; name: string; slug: string } | null
   media: MediaRecord[]
+}
+
+const parseHighlights = (value: unknown): string[] => {
+  if (!Array.isArray(value)) return []
+  return value.filter((item): item is string => typeof item === "string")
 }
 
 const mapMedia = (media: MediaRecord): PropertyMedia =>
@@ -64,12 +75,17 @@ const mapProperty = (record: PropertyRecord): Property =>
     slug: record.slug,
     title: record.title,
     description: record.description,
+    longDescription: record.longDescription,
     location: record.location,
     status: record.status,
     constructionStartDate: record.constructionStartDate,
     constructionEndDate: record.constructionEndDate,
     availableUnits: record.availableUnits,
+    progress: record.progress,
+    highlights: parseHighlights(record.highlights),
+    floorPlanUrl: record.floorPlanUrl,
     featured: record.featured,
+    selectedOnHome: record.selectedOnHome,
     published: record.published,
     categoryId: record.categoryId,
     category: record.category,
@@ -84,11 +100,15 @@ const includeRelations = {
 }
 
 export const makePrismaPropertyRepository = (prisma: PrismaClient): PropertyRepositoryPort => ({
-  list: (opts) =>
+  list: (opts?: ListPropertiesOptions) =>
     Effect.tryPromise({
       try: () =>
         prisma.property.findMany({
-          where: opts?.publishedOnly ? { published: true } : undefined,
+          where: {
+            ...(opts?.publishedOnly ? { published: true } : {}),
+            ...(opts?.featured ? { featured: true } : {}),
+            ...(opts?.selectedOnHome ? { selectedOnHome: true } : {}),
+          },
           include: includeRelations,
           orderBy: [{ featured: "desc" }, { updatedAt: "desc" }],
         }),
@@ -115,12 +135,17 @@ export const makePrismaPropertyRepository = (prisma: PrismaClient): PropertyRepo
             slug: input.slug,
             title: input.title,
             description: input.description,
+            longDescription: input.longDescription ?? "",
             location: input.location ?? "",
             status: input.status,
             constructionStartDate: input.constructionStartDate ?? null,
             constructionEndDate: input.constructionEndDate ?? null,
             availableUnits: input.availableUnits ?? 0,
+            progress: input.progress ?? 0,
+            highlights: input.highlights ?? [],
+            floorPlanUrl: input.floorPlanUrl ?? null,
             featured: input.featured ?? false,
+            selectedOnHome: input.selectedOnHome ?? false,
             published: input.published ?? true,
             categoryId: input.categoryId ?? null,
           },
@@ -138,6 +163,9 @@ export const makePrismaPropertyRepository = (prisma: PrismaClient): PropertyRepo
             ...(input.slug !== undefined ? { slug: input.slug } : {}),
             ...(input.title !== undefined ? { title: input.title } : {}),
             ...(input.description !== undefined ? { description: input.description } : {}),
+            ...(input.longDescription !== undefined
+              ? { longDescription: input.longDescription }
+              : {}),
             ...(input.location !== undefined ? { location: input.location } : {}),
             ...(input.status !== undefined ? { status: input.status } : {}),
             ...(input.constructionStartDate !== undefined
@@ -149,7 +177,13 @@ export const makePrismaPropertyRepository = (prisma: PrismaClient): PropertyRepo
             ...(input.availableUnits !== undefined
               ? { availableUnits: input.availableUnits }
               : {}),
+            ...(input.progress !== undefined ? { progress: input.progress } : {}),
+            ...(input.highlights !== undefined ? { highlights: input.highlights } : {}),
+            ...(input.floorPlanUrl !== undefined ? { floorPlanUrl: input.floorPlanUrl } : {}),
             ...(input.featured !== undefined ? { featured: input.featured } : {}),
+            ...(input.selectedOnHome !== undefined
+              ? { selectedOnHome: input.selectedOnHome }
+              : {}),
             ...(input.published !== undefined ? { published: input.published } : {}),
             ...(input.categoryId !== undefined ? { categoryId: input.categoryId } : {}),
           },
@@ -246,9 +280,7 @@ export const makePrismaPropertyRepository = (prisma: PrismaClient): PropertyRepo
         ])
         return prisma.propertyMedia.findUniqueOrThrow({ where: { id: mediaId } })
       },
-      catch: (cause) => new InfraError(
-        cause instanceof Error ? cause.message : "Failed to set cover media",
-        cause
-      ),
+      catch: (cause) =>
+        new InfraError(cause instanceof Error ? cause.message : "Failed to set cover media", cause),
     }).pipe(Effect.map(mapMedia)),
 })

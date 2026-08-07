@@ -65,6 +65,7 @@ await load()
             <th class="px-4 py-3">Status</th>
             <th class="px-4 py-3">Unidades</th>
             <th class="px-4 py-3">Mídias</th>
+            <th class="px-4 py-3">Flags</th>
             <th class="px-4 py-3">Pub.</th>
             <th class="px-4 py-3" />
           </tr>
@@ -79,6 +80,11 @@ await load()
             <td class="px-4 py-3">{{ statusLabel[item.status] }}</td>
             <td class="px-4 py-3">{{ item.availableUnits }}</td>
             <td class="px-4 py-3">{{ item.media.length }}</td>
+            <td class="px-4 py-3 text-xs">
+              <span v-if="item.featured" class="mr-1 rounded bg-brand-100 px-1.5 py-0.5 text-brand-800">Hero</span>
+              <span v-if="item.selectedOnHome" class="rounded bg-emerald-50 px-1.5 py-0.5 text-emerald-800">Home</span>
+              <span v-if="!item.featured && !item.selectedOnHome">—</span>
+            </td>
             <td class="px-4 py-3">{{ item.published ? 'Sim' : 'Não' }}</td>
             <td class="px-4 py-3 text-right">
               <NuxtLink :to="`/admin/imoveis/${item.id}`" class="text-brand-700 hover:underline">
@@ -90,7 +96,7 @@ await load()
             </td>
           </tr>
           <tr v-if="properties.length === 0">
-            <td colspan="7" class="px-4 py-8 text-center text-ink/50">Nenhum imóvel cadastrado.</td>
+            <td colspan="8" class="px-4 py-8 text-center text-ink/50">Nenhum imóvel cadastrado.</td>
           </tr>
         </tbody>
       </table>

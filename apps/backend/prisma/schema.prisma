@@ -41,6 +41,15 @@ enum LeadStatus {
   @@schema("gutierres")
 }
 
+enum MediaKind {
+  IMAGE
+  VIDEO
+  DOCUMENT
+
+  @@map("media_kind")
+  @@schema("gutierres")
+}
+
 model Contact {
   id        String   @id @default(cuid())
   fullName  String   @map("full_name")
@@ -73,26 +82,22 @@ model PropertyCategory {
   @@schema("gutierres")
 }
 
-enum MediaKind {
-  IMAGE
-  VIDEO
-  DOCUMENT
-
-  @@map("media_kind")
-  @@schema("gutierres")
-}
-
 model Property {
   id                    String            @id @default(cuid())
   slug                  String            @unique
   title                 String
   description           String
+  longDescription       String            @default("") @map("long_description")
   location              String            @default("")
   status                PropertyStatus    @default(LAUNCH)
   constructionStartDate DateTime?         @map("construction_start_date")
   constructionEndDate   DateTime?         @map("construction_end_date")
   availableUnits        Int               @default(0) @map("available_units")
+  progress              Int               @default(0)
+  highlights            Json              @default("[]")
+  floorPlanUrl          String?           @map("floor_plan_url")
   featured              Boolean           @default(false)
+  selectedOnHome        Boolean           @default(false) @map("selected_on_home")
   published             Boolean           @default(true)
   categoryId            String?           @map("category_id")
   createdAt             DateTime          @default(now()) @map("created_at")
@@ -103,6 +108,8 @@ model Property {
 
   @@index([status])
   @@index([published])
+  @@index([featured])
+  @@index([selectedOnHome])
   @@index([categoryId])
   @@map("properties")
   @@schema("gutierres")
@@ -147,5 +154,46 @@ model Lead {
   @@index([email])
   @@index([createdAt])
   @@map("leads")
+  @@schema("gutierres")
+}
+
+model SiteSettings {
+  id                String   @id @default(cuid())
+  siteUrl           String   @default("") @map("site_url")
+  siteName          String   @default("Stefanny Gutierres") @map("site_name")
+  seoLocality       String   @default("Brasil") @map("seo_locality")
+  noIndex           Boolean  @default(false) @map("no_index")
+  businessAddress   String   @default("") @map("business_address")
+  businessPhone     String   @default("") @map("business_phone")
+  contactEmail      String   @default("") @map("contact_email")
+  whatsappNumber    String   @default("") @map("whatsapp_number")
+  whatsappMessage   String   @default("") @map("whatsapp_message")
+  instagramUrl      String   @default("") @map("instagram_url")
+  facebookUrl       String   @default("") @map("facebook_url")
+  linkedinUrl       String   @default("") @map("linkedin_url")
+  defaultOgImageUrl String   @default("") @map("default_og_image_url")
+  ga4MeasurementId  String   @default("") @map("ga4_measurement_id")
+  metaPixelId       String   @default("") @map("meta_pixel_id")
+  createdAt         DateTime @default(now()) @map("created_at")
+  updatedAt         DateTime @updatedAt @map("updated_at")
+
+  @@map("site_settings")
+  @@schema("gutierres")
+}
+
+model Testimonial {
+  id        String   @id @default(cuid())
+  name      String
+  role      String   @default("")
+  quote     String
+  rating    Int      @default(5)
+  sortOrder Int      @default(0) @map("sort_order")
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@index([active])
+  @@index([sortOrder])
+  @@map("testimonials")
   @@schema("gutierres")
 }

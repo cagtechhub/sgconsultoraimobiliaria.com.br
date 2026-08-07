@@ -4,22 +4,29 @@ import {
   createContact,
   createLead,
   createProperty,
+  createTestimonial,
   deleteCategory,
   deleteLead,
   deleteProperty,
   deletePropertyMedia,
+  deleteTestimonial,
   getCategoryById,
   getLeadById,
   getPropertyById,
   getPropertyBySlug,
+  getSiteSettings,
+  getTestimonialById,
   listCategories,
   listLeads,
   listProperties,
+  listTestimonials,
   reorderPropertyMedia,
   setPropertyCoverMedia,
   updateCategory,
   updateLead,
   updateProperty,
+  updateSiteSettings,
+  updateTestimonial,
   uploadPropertyMedia,
 } from "../../application/index.js"
 import {
@@ -28,15 +35,20 @@ import {
   createLeadSchema,
   createPropertyCategorySchema,
   createPropertySchema,
+  createTestimonialSchema,
   healthResponseSchema,
   leadSchema,
   propertyCategorySchema,
   propertyMediaSchema,
   propertySchema,
   reorderPropertyMediaSchema,
+  siteSettingsSchema,
+  testimonialSchema,
   updateLeadSchema,
   updatePropertyCategorySchema,
   updatePropertySchema,
+  updateSiteSettingsSchema,
+  updateTestimonialSchema,
 } from "@gutierres/shared"
 import { Cause, Effect, Exit, ManagedRuntime } from "effect"
 import express, { type Express, type Request, type Response } from "express"
@@ -49,7 +61,11 @@ const upload = multer({
   storage: multer.memoryStorage(),
   limits: { fileSize: 50 * 1024 * 1024 },
   fileFilter: (_req, file, cb) => {
-    if (ALLOWED_MEDIA_MIME_TYPES.has(file.mimetype) || file.mimetype.startsWith("image/") || file.mimetype.startsWith("video/")) {
+    if (
+      ALLOWED_MEDIA_MIME_TYPES.has(file.mimetype) ||
+      file.mimetype.startsWith("image/") ||
+      file.mimetype.startsWith("video/")
+    ) {
       cb(null, true)
       return
     }
@@ -66,7 +82,11 @@ const failureMessage = (exit: Exit.Exit<unknown, unknown>, fallback: string) => 
   return fallback
 }
 
-const sendExitError = (res: Response, exit: Exit.Exit<unknown, unknown>, notFoundMessage: string) => {
+const sendExitError = (
+  res: Response,
+  exit: Exit.Exit<unknown, unknown>,
+  notFoundMessage: string
+) => {
   const message = failureMessage(exit, notFoundMessage)
   const isNotFound = message.toLowerCase().includes("not found")
   res.status(isNotFound ? 404 : 500).json({
@@ -91,6 +111,8 @@ const runEffect = <A, E>(
   })
 }
 
+const parseBoolQuery = (value: unknown) => value === "true" || value === "1"
+
 export const createApp = (
   runtime: ManagedRuntime.ManagedRuntime<AppServices, never>
 ): Express => {
@@ -113,6 +135,8 @@ export const createApp = (
       docs: {
         health: "GET /health",
         properties: "GET /properties",
+        settings: "GET /settings",
+        testimonials: "GET /testimonials",
         contacts: "POST /contacts",
         admin: "/admin/*",
       },
@@ -155,16 +179,43 @@ export const createApp = (
     })
   })
 
-  app.get("/properties", (_req, res) => {
-    runEffect(runtime, listProperties({ publishedOnly: true }), res, (items) => {
-      res.json(items.map((item) => propertySchema.parse(item)))
+  app.get("/settings", (_req, res) => {
+    runEffect(runtime, getSiteSettings, res, (item) => {
+      res.json(siteSettingsSchema.parse(item))
     })
   })
 
+  app.get("/testimonials", (_req, res) => {
+    runEffect(runtime, listTestimonials({ activeOnly: true }), res, (items) => {
+      res.json(items.map((item) => testimonialSchema.parse(item)))
+    })
+  })
+
+  app.get("/properties", (req, res) => {
+    runEffect(
+      runtime,
+      listProperties({
+        publishedOnly: true,
+        featured: parseBoolQuery(req.query.featured) || undefined,
+        selectedOnHome: parseBoolQuery(req.query.selected) || undefined,
+      }),
+      res,
+      (items) => {
+        res.json(items.map((item) => propertySchema.parse(item)))
+      }
+    )
+  })
+
   app.get("/properties/:slug", (req, res) => {
-    runEffect(runtime, getPropertyBySlug(req.params.slug), res, (item) => {
-      res.json(propertySchema.parse(item))
-    }, "Property not found")
+    runEffect(
+      runtime,
+      getPropertyBySlug(req.params.slug, { publishedOnly: true }),
+      res,
+      (item) => {
+        res.json(propertySchema.parse(item))
+      },
+      "Property not found"
+    )
   })
 
   app.get("/admin/properties", requireAdmin, (_req, res) => {
@@ -174,9 +225,15 @@ export const createApp = (
   })
 
   app.get("/admin/properties/:id", requireAdmin, (req, res) => {
-    runEffect(runtime, getPropertyById(req.params.id), res, (item) => {
-      res.json(propertySchema.parse(item))
-    }, "Property not found")
+    runEffect(
+      runtime,
+      getPropertyById(req.params.id),
+      res,
+      (item) => {
+        res.json(propertySchema.parse(item))
+      },
+      "Property not found"
+    )
   })
 
   app.post("/admin/properties", requireAdmin, (req, res) => {
@@ -202,15 +259,27 @@ export const createApp = (
       })
       return
     }
-    runEffect(runtime, updateProperty(req.params.id, parsed.data), res, (item) => {
-      res.json(propertySchema.parse(item))
-    }, "Property not found")
+    runEffect(
+      runtime,
+      updateProperty(req.params.id, parsed.data),
+      res,
+      (item) => {
+        res.json(propertySchema.parse(item))
+      },
+      "Property not found"
+    )
   })
 
   app.delete("/admin/properties/:id", requireAdmin, (req, res) => {
-    runEffect(runtime, deleteProperty(req.params.id), res, () => {
-      res.status(204).send()
-    }, "Property not found")
+    runEffect(
+      runtime,
+      deleteProperty(req.params.id),
+      res,
+      () => {
+        res.status(204).send()
+      },
+      "Property not found"
+    )
   })
 
   app.post("/admin/properties/:id/media", requireAdmin, (req, res) => {
@@ -307,9 +376,15 @@ export const createApp = (
   })
 
   app.get("/admin/categories/:id", requireAdmin, (req, res) => {
-    runEffect(runtime, getCategoryById(req.params.id), res, (item) => {
-      res.json(propertyCategorySchema.parse(item))
-    }, "Category not found")
+    runEffect(
+      runtime,
+      getCategoryById(req.params.id),
+      res,
+      (item) => {
+        res.json(propertyCategorySchema.parse(item))
+      },
+      "Category not found"
+    )
   })
 
   app.post("/admin/categories", requireAdmin, (req, res) => {
@@ -335,15 +410,27 @@ export const createApp = (
       })
       return
     }
-    runEffect(runtime, updateCategory(req.params.id, parsed.data), res, (item) => {
-      res.json(propertyCategorySchema.parse(item))
-    }, "Category not found")
+    runEffect(
+      runtime,
+      updateCategory(req.params.id, parsed.data),
+      res,
+      (item) => {
+        res.json(propertyCategorySchema.parse(item))
+      },
+      "Category not found"
+    )
   })
 
   app.delete("/admin/categories/:id", requireAdmin, (req, res) => {
-    runEffect(runtime, deleteCategory(req.params.id), res, () => {
-      res.status(204).send()
-    }, "Category not found")
+    runEffect(
+      runtime,
+      deleteCategory(req.params.id),
+      res,
+      () => {
+        res.status(204).send()
+      },
+      "Category not found"
+    )
   })
 
   app.get("/admin/leads", requireAdmin, (_req, res) => {
@@ -353,9 +440,15 @@ export const createApp = (
   })
 
   app.get("/admin/leads/:id", requireAdmin, (req, res) => {
-    runEffect(runtime, getLeadById(req.params.id), res, (item) => {
-      res.json(leadSchema.parse(item))
-    }, "Lead not found")
+    runEffect(
+      runtime,
+      getLeadById(req.params.id),
+      res,
+      (item) => {
+        res.json(leadSchema.parse(item))
+      },
+      "Lead not found"
+    )
   })
 
   app.post("/admin/leads", requireAdmin, (req, res) => {
@@ -381,15 +474,111 @@ export const createApp = (
       })
       return
     }
-    runEffect(runtime, updateLead(req.params.id, parsed.data), res, (item) => {
-      res.json(leadSchema.parse(item))
-    }, "Lead not found")
+    runEffect(
+      runtime,
+      updateLead(req.params.id, parsed.data),
+      res,
+      (item) => {
+        res.json(leadSchema.parse(item))
+      },
+      "Lead not found"
+    )
   })
 
   app.delete("/admin/leads/:id", requireAdmin, (req, res) => {
-    runEffect(runtime, deleteLead(req.params.id), res, () => {
-      res.status(204).send()
-    }, "Lead not found")
+    runEffect(
+      runtime,
+      deleteLead(req.params.id),
+      res,
+      () => {
+        res.status(204).send()
+      },
+      "Lead not found"
+    )
+  })
+
+  app.get("/admin/settings", requireAdmin, (_req, res) => {
+    runEffect(runtime, getSiteSettings, res, (item) => {
+      res.json(siteSettingsSchema.parse(item))
+    })
+  })
+
+  app.put("/admin/settings", requireAdmin, (req, res) => {
+    const parsed = updateSiteSettingsSchema.safeParse(req.body)
+    if (!parsed.success) {
+      res.status(400).json({
+        error: "validation_error",
+        issues: parsed.error.flatten().fieldErrors,
+      })
+      return
+    }
+    runEffect(runtime, updateSiteSettings(parsed.data), res, (item) => {
+      res.json(siteSettingsSchema.parse(item))
+    })
+  })
+
+  app.get("/admin/testimonials", requireAdmin, (_req, res) => {
+    runEffect(runtime, listTestimonials(), res, (items) => {
+      res.json(items.map((item) => testimonialSchema.parse(item)))
+    })
+  })
+
+  app.get("/admin/testimonials/:id", requireAdmin, (req, res) => {
+    runEffect(
+      runtime,
+      getTestimonialById(req.params.id),
+      res,
+      (item) => {
+        res.json(testimonialSchema.parse(item))
+      },
+      "Testimonial not found"
+    )
+  })
+
+  app.post("/admin/testimonials", requireAdmin, (req, res) => {
+    const parsed = createTestimonialSchema.safeParse(req.body)
+    if (!parsed.success) {
+      res.status(400).json({
+        error: "validation_error",
+        issues: parsed.error.flatten().fieldErrors,
+      })
+      return
+    }
+    runEffect(runtime, createTestimonial(parsed.data), res, (item) => {
+      res.status(201).json(testimonialSchema.parse(item))
+    })
+  })
+
+  app.patch("/admin/testimonials/:id", requireAdmin, (req, res) => {
+    const parsed = updateTestimonialSchema.safeParse(req.body)
+    if (!parsed.success) {
+      res.status(400).json({
+        error: "validation_error",
+        issues: parsed.error.flatten().fieldErrors,
+      })
+      return
+    }
+    runEffect(
+      runtime,
+      updateTestimonial(req.params.id, parsed.data),
+      res,
+      (item) => {
+        res.json(testimonialSchema.parse(item))
+      },
+      "Testimonial not found"
+    )
+  })
+
+  app.delete("/admin/testimonials/:id", requireAdmin, (req, res) => {
+    runEffect(
+      runtime,
+      deleteTestimonial(req.params.id),
+      res,
+      () => {
+        res.status(204).send()
+      },
+      "Testimonial not found"
+    )
   })
 
   return app

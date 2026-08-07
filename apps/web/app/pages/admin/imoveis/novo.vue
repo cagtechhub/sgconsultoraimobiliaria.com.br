@@ -16,15 +16,26 @@ const form = reactive({
   title: '',
   slug: '',
   description: '',
+  longDescription: '',
   location: '',
   status: 'LAUNCH' as PropertyStatus,
   constructionStartDate: '',
   constructionEndDate: '',
   availableUnits: 0,
+  progress: 0,
+  highlightsText: '',
+  floorPlanUrl: '',
   featured: false,
+  selectedOnHome: false,
   published: true,
   categoryId: '',
 })
+
+const parseHighlights = (value: string) =>
+  value
+    .split('\n')
+    .map((item) => item.trim())
+    .filter(Boolean)
 
 const toSlug = (value: string) =>
   value
@@ -69,12 +80,17 @@ const onSubmit = async () => {
       title: form.title,
       slug: form.slug || toSlug(form.title),
       description: form.description,
+      longDescription: form.longDescription,
       location: form.location,
       status: form.status,
       constructionStartDate: form.constructionStartDate || null,
       constructionEndDate: form.constructionEndDate || null,
       availableUnits: Number(form.availableUnits) || 0,
+      progress: Number(form.progress) || 0,
+      highlights: parseHighlights(form.highlightsText),
+      floorPlanUrl: form.floorPlanUrl || null,
       featured: form.featured,
+      selectedOnHome: form.selectedOnHome,
       published: form.published,
       categoryId: form.categoryId || null,
     })
@@ -123,13 +139,39 @@ const onSubmit = async () => {
         </select>
       </label>
       <label class="block text-sm">
-        Descrição
+        Descrição curta
         <textarea
           v-model="form.description"
           required
-          rows="6"
+          rows="4"
           minlength="10"
           class="mt-1 w-full rounded-xl border border-brand-200 px-3 py-2"
+        />
+      </label>
+      <label class="block text-sm">
+        Descrição completa (página do empreendimento)
+        <textarea
+          v-model="form.longDescription"
+          rows="6"
+          class="mt-1 w-full rounded-xl border border-brand-200 px-3 py-2"
+        />
+      </label>
+      <label class="block text-sm">
+        Destaques (um por linha)
+        <textarea
+          v-model="form.highlightsText"
+          rows="4"
+          class="mt-1 w-full rounded-xl border border-brand-200 px-3 py-2"
+          placeholder="Piscina&#10;Academia&#10;Varanda gourmet"
+        />
+      </label>
+      <label class="block text-sm">
+        URL da planta
+        <input
+          v-model="form.floorPlanUrl"
+          type="url"
+          class="mt-1 w-full rounded-xl border border-brand-200 px-3 py-2"
+          placeholder="https://..."
         />
       </label>
       <div class="grid gap-4 sm:grid-cols-2">
@@ -151,6 +193,16 @@ const onSubmit = async () => {
           />
         </label>
         <label class="block text-sm">
+          Progresso da obra (%)
+          <input
+            v-model.number="form.progress"
+            type="number"
+            min="0"
+            max="100"
+            class="mt-1 w-full rounded-xl border border-brand-200 px-3 py-2"
+          />
+        </label>
+        <label class="block text-sm">
           Início da obra
           <input
             v-model="form.constructionStartDate"
@@ -159,7 +211,7 @@ const onSubmit = async () => {
           />
         </label>
         <label class="block text-sm">
-          Conclusão
+          Conclusão (prazo)
           <input
             v-model="form.constructionEndDate"
             type="date"
@@ -167,10 +219,14 @@ const onSubmit = async () => {
           />
         </label>
       </div>
-      <div class="flex gap-6 text-sm">
+      <div class="flex flex-wrap gap-6 text-sm">
         <label class="inline-flex items-center gap-2">
           <input v-model="form.featured" type="checkbox" />
-          Destaque
+          Destaque (hero)
+        </label>
+        <label class="inline-flex items-center gap-2">
+          <input v-model="form.selectedOnHome" type="checkbox" />
+          Oportunidades selecionadas
         </label>
         <label class="inline-flex items-center gap-2">
           <input v-model="form.published" type="checkbox" />

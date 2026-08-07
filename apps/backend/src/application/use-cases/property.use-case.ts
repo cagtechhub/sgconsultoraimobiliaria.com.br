@@ -5,7 +5,11 @@ import { ObjectStorage } from "../object-storage.context.js"
 import { InfraError } from "@/domain/errors/infra-error.js"
 import { resolveMediaKind } from "@/domain/media/media-kind.js"
 
-export const listProperties = (opts?: { publishedOnly?: boolean }) =>
+export const listProperties = (opts?: {
+  publishedOnly?: boolean
+  featured?: boolean
+  selectedOnHome?: boolean
+}) =>
   Effect.gen(function* () {
     const repo = yield* PropertyRepository
     return yield* repo.list(opts)
@@ -21,11 +25,11 @@ export const getPropertyById = (id: string) =>
     return property
   })
 
-export const getPropertyBySlug = (slug: string) =>
+export const getPropertyBySlug = (slug: string, opts?: { publishedOnly?: boolean }) =>
   Effect.gen(function* () {
     const repo = yield* PropertyRepository
     const property = yield* repo.findBySlug(slug)
-    if (!property) {
+    if (!property || (opts?.publishedOnly && !property.published)) {
       return yield* Effect.fail(new InfraError("Property not found"))
     }
     return property

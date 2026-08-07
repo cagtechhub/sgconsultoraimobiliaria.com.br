@@ -1,12 +1,38 @@
-import { projects } from '~/data/projects'
+import type { Property } from '@gutierres/shared'
 import type { Project } from '~/types/project'
+import { mapPropertyToProject, useApiBaseUrl } from '~/utils/mapProperty'
 
 export function useProjects() {
-  const featuredProject = computed<Project | undefined>(() => projects.find((p) => p.featured))
-  const allProjects = computed(() => projects)
+  const baseUrl = useApiBaseUrl()
 
-  function getProjectBySlug(slug: string): Project | undefined {
-    return projects.find((p) => p.slug === slug)
+  const { data: featuredRaw } = useAsyncData(
+    'properties-featured',
+    () => $fetch<Property[]>(`${baseUrl.value}/properties?featured=true`),
+    { default: () => [] },
+  )
+
+  const { data: selectedRaw } = useAsyncData(
+    'properties-selected',
+    () => $fetch<Property[]>(`${baseUrl.value}/properties?selected=true`),
+    { default: () => [] },
+  )
+
+  const featuredProject = computed<Project | undefined>(() => {
+    const first = featuredRaw.value?.[0]
+    return first ? mapPropertyToProject(first) : undefined
+  })
+
+  const allProjects = computed<Project[]>(() =>
+    (selectedRaw.value || []).map(mapPropertyToProject),
+  )
+
+  async function getProjectBySlug(slug: string): Promise<Project | null> {
+    try {
+      const property = await $fetch<Property>(`${baseUrl.value}/properties/${slug}`)
+      return mapPropertyToProject(property)
+    } catch {
+      return null
+    }
   }
 
   return { featuredProject, allProjects, getProjectBySlug }

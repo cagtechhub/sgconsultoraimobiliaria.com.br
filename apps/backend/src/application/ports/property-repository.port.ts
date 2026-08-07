@@ -8,6 +8,12 @@ import type { Effect } from "effect"
 import type { InfraError } from "@/domain/errors/infra-error.js"
 import type { MediaKind } from "@/domain/media/media-kind.js"
 
+export interface ListPropertiesOptions {
+  readonly publishedOnly?: boolean
+  readonly featured?: boolean
+  readonly selectedOnHome?: boolean
+}
+
 export interface AddPropertyMediaInput {
   readonly propertyId: string
   readonly url: string
@@ -20,7 +26,7 @@ export interface AddPropertyMediaInput {
 }
 
 export interface PropertyRepositoryPort {
-  readonly list: (opts?: { publishedOnly?: boolean }) => Effect.Effect<Property[], InfraError, never>
+  readonly list: (opts?: ListPropertiesOptions) => Effect.Effect<Property[], InfraError, never>
   readonly findById: (id: string) => Effect.Effect<Property | null, InfraError, never>
   readonly findBySlug: (slug: string) => Effect.Effect<Property | null, InfraError, never>
   readonly create: (input: CreatePropertyInput) => Effect.Effect<Property, InfraError, never>

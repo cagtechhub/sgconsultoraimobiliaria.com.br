@@ -75,6 +75,7 @@ export default defineNuxtConfig({
           'http://127.0.0.1:54321',
           'https://*.google-analytics.com',
           'https://*.facebook.net',
+          'https://cdnm.com.br/'
         ],
         'media-src': ["'self'", 'blob:', 'https://*.supabase.co', 'http://127.0.0.1:54321'],
         'connect-src': [

@@ -7,6 +7,8 @@ const links = [
   { to: '/admin/imoveis', label: 'Imóveis' },
   { to: '/admin/categorias', label: 'Categorias' },
   { to: '/admin/leads', label: 'Leads' },
+  { to: '/admin/depoimentos', label: 'Depoimentos' },
+  { to: '/admin/configuracoes', label: 'Configurações' },
 ]
 
 const isActive = (to: string, exact = false) => {
