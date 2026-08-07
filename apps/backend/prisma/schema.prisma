@@ -1,0 +1,151 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/infrastructure/prisma/output"
+}
+
+datasource db {
+  provider = "postgresql"
+  schemas  = ["gutierres"]
+}
+
+enum PropertyStatus {
+  LAUNCH
+  UNDER_CONSTRUCTION
+  READY
+
+  @@map("property_status")
+  @@schema("gutierres")
+}
+
+enum LeadChannel {
+  WEBSITE
+  ADSENSE
+  WHATSAPP
+  INSTAGRAM
+  FACEBOOK
+  REFERRAL
+  OTHER
+
+  @@map("lead_channel")
+  @@schema("gutierres")
+}
+
+enum LeadStatus {
+  NEW
+  CONTACTED
+  QUALIFIED
+  CONVERTED
+  LOST
+
+  @@map("lead_status")
+  @@schema("gutierres")
+}
+
+model Contact {
+  id        String   @id @default(cuid())
+  fullName  String   @map("full_name")
+  email     String
+  phone     String?
+  message   String?
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  leads     Lead[]
+
+  @@index([email])
+  @@map("contacts")
+  @@schema("gutierres")
+}
+
+model PropertyCategory {
+  id          String     @id @default(cuid())
+  name        String
+  slug        String     @unique
+  description String?
+  sortOrder   Int        @default(0) @map("sort_order")
+  active      Boolean    @default(true)
+  createdAt   DateTime   @default(now()) @map("created_at")
+  updatedAt   DateTime   @updatedAt @map("updated_at")
+  properties  Property[]
+
+  @@index([active])
+  @@index([sortOrder])
+  @@map("property_categories")
+  @@schema("gutierres")
+}
+
+enum MediaKind {
+  IMAGE
+  VIDEO
+  DOCUMENT
+
+  @@map("media_kind")
+  @@schema("gutierres")
+}
+
+model Property {
+  id                    String            @id @default(cuid())
+  slug                  String            @unique
+  title                 String
+  description           String
+  location              String            @default("")
+  status                PropertyStatus    @default(LAUNCH)
+  constructionStartDate DateTime?         @map("construction_start_date")
+  constructionEndDate   DateTime?         @map("construction_end_date")
+  availableUnits        Int               @default(0) @map("available_units")
+  featured              Boolean           @default(false)
+  published             Boolean           @default(true)
+  categoryId            String?           @map("category_id")
+  createdAt             DateTime          @default(now()) @map("created_at")
+  updatedAt             DateTime          @updatedAt @map("updated_at")
+  category              PropertyCategory? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  media                 PropertyMedia[]
+  leads                 Lead[]
+
+  @@index([status])
+  @@index([published])
+  @@index([categoryId])
+  @@map("properties")
+  @@schema("gutierres")
+}
+
+model PropertyMedia {
+  id          String    @id @default(cuid())
+  propertyId  String    @map("property_id")
+  url         String
+  storagePath String    @map("storage_path")
+  kind        MediaKind @default(IMAGE)
+  mimeType    String    @map("mime_type")
+  fileName    String    @map("file_name")
+  sortOrder   Int       @default(0) @map("sort_order")
+  isCover     Boolean   @default(false) @map("is_cover")
+  createdAt   DateTime  @default(now()) @map("created_at")
+  property    Property  @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+
+  @@index([propertyId])
+  @@index([isCover])
+  @@map("property_media")
+  @@schema("gutierres")
+}
+
+model Lead {
+  id         String      @id @default(cuid())
+  fullName   String      @map("full_name")
+  email      String?
+  phone      String?
+  notes      String?
+  channel    LeadChannel @default(WEBSITE)
+  status     LeadStatus  @default(NEW)
+  contactId  String?     @map("contact_id")
+  propertyId String?     @map("property_id")
+  createdAt  DateTime    @default(now()) @map("created_at")
+  updatedAt  DateTime    @updatedAt @map("updated_at")
+  contact    Contact?    @relation(fields: [contactId], references: [id], onDelete: SetNull)
+  property   Property?   @relation(fields: [propertyId], references: [id], onDelete: SetNull)
+
+  @@index([channel])
+  @@index([status])
+  @@index([email])
+  @@index([createdAt])
+  @@map("leads")
+  @@schema("gutierres")
+}

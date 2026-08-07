@@ -1,35 +1,27 @@
 {
-  "name": "gutierresconsultoria-com-br",
-  "type": "module",
+  "name": "gutierresconsultoria-monorepo",
   "private": true,
+  "type": "module",
   "engines": {
     "node": "^20.19.0 || >=22.12.0"
   },
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
   "scripts": {
-    "build": "nuxt build",
-    "dev": "nuxt dev",
-    "generate": "nuxt generate",
-    "preview": "nuxt preview",
-    "postinstall": "nuxt prepare",
-    "lint": "eslint ."
-  },
-  "dependencies": {
-    "@nuxt/eslint": "1.15.2",
-    "@nuxt/image": "2.0.0",
-    "@pinia/nuxt": "^0.11.3",
-    "@unhead/schema-org": "^3.0.4",
-    "lucide-vue-next": "^0.468.0",
-    "nuxt": "^4.4.2",
-    "nuxt-security": "2.5.1",
-    "pinia": "^3.0.4",
-    "vue": "^3.5.32",
-    "vue-router": "^5.0.4"
+    "dev": "concurrently -n web,api -c cyan,green \"yarn workspace @gutierres/web dev\" \"yarn workspace @gutierres/backend dev\"",
+    "dev:web": "yarn workspace @gutierres/web dev",
+    "dev:backend": "yarn workspace @gutierres/backend dev",
+    "build": "yarn workspace @gutierres/shared build && yarn workspace @gutierres/backend build && yarn workspace @gutierres/web build",
+    "generate": "yarn workspace @gutierres/web generate",
+    "preview": "yarn workspace @gutierres/web preview",
+    "lint": "yarn workspace @gutierres/web lint",
+    "db:generate": "yarn workspace @gutierres/backend db:generate",
+    "db:migrate": "yarn workspace @gutierres/backend db:migrate",
+    "postinstall": "yarn workspace @gutierres/shared build && yarn workspace @gutierres/web postinstall"
   },
   "devDependencies": {
-    "@nuxtjs/tailwindcss": "^6.14.0",
-    "eslint": "^9.39.0",
-    "eslint-config-prettier": "^10.1.0",
-    "prettier": "^3.6.0",
-    "typescript": "^5.9.0"
+    "concurrently": "^9.1.2"
   }
 }

@@ -1,8 +1,8 @@
 # syntax=docker/dockerfile:1
-# Nuxt 4 + Nitro (preset node-server): build com Yarn 1, runtime só com `.output/`.
+# Nuxt 4 + Nitro (preset node-server): monorepo Yarn workspaces, runtime só com `.output/`.
 #
-# Build:  docker build -t gmbovinos-web .
-# Run:    docker run --rm -p 3000:3000 -e NUXT_PUBLIC_SITE_URL=https://exemplo.com gmbovinos-web
+# Build:  docker build -t gutierresconsultoria-web .
+# Run:    docker run --rm -p 3000:3000 -e NUXT_PUBLIC_SITE_URL=https://exemplo.com gutierresconsultoria-web
 
 # >=22.13 por engines de dependências transitivas (ex.: eslint-plugin-jsdoc)
 ARG NODE_VERSION=24.16
@@ -19,6 +19,9 @@ RUN apk add --no-cache libc6-compat \
   && corepack prepare yarn@1.22.22 --activate
 
 COPY package.json yarn.lock ./
+COPY apps/web/package.json ./apps/web/
+COPY apps/backend/package.json ./apps/backend/
+COPY packages/shared/package.json ./packages/shared/
 
 RUN yarn install --frozen-lockfile --non-interactive
 
@@ -27,14 +30,14 @@ RUN yarn install --frozen-lockfile --non-interactive
 # -----------------------------------------------------------------------------
 FROM deps AS build
 
-COPY . .
+COPY apps/web ./apps/web
 
 ENV NODE_ENV=production
 # O trace de dependências do Nitro pode deixar `unhead` em `.output/server/node_modules`
 # incompleto (sem `dist/server.mjs`). Copiamos o pacote completo da instalação raiz.
-RUN yarn build \
-  && rm -rf /app/.output/server/node_modules/unhead \
-  && cp -a /app/node_modules/unhead /app/.output/server/node_modules/unhead
+RUN yarn workspace @gutierres/web build \
+  && rm -rf /app/apps/web/.output/server/node_modules/unhead \
+  && cp -a /app/node_modules/unhead /app/apps/web/.output/server/node_modules/unhead
 
 # -----------------------------------------------------------------------------
 # Imagem final (apenas artefacto Nitro)
@@ -54,7 +57,7 @@ RUN apk add --no-cache libc6-compat wget \
   && addgroup -g 1001 -S nodejs \
   && adduser -S nuxt -u 1001 -G nodejs
 
-COPY --from=build --chown=nuxt:nodejs /app/.output ./.output
+COPY --from=build --chown=nuxt:nodejs /app/apps/web/.output ./.output
 
 USER nuxt
 

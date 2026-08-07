@@ -3,10 +3,14 @@ export default defineNuxtConfig({
   compatibilityDate: '2026-04-01',
   devtools: { enabled: true },
   modules: ['@nuxtjs/tailwindcss', '@pinia/nuxt', '@nuxt/eslint', 'nuxt-security', '@nuxt/image'],
+  build: {
+    transpile: ['@gutierres/shared'],
+  },
   runtimeConfig: {
     public: {
       siteUrl: '',
       siteName: 'Stefanny Gutierres',
+      apiUrl: 'http://localhost:3001',
       noIndex: false,
       seoLocality: 'Brasil',
       businessAddress: '',
@@ -35,6 +39,10 @@ export default defineNuxtConfig({
     editorSupport: true,
   },
   routeRules: {
+    '/admin/**': {
+      robots: false,
+      headers: { 'X-Robots-Tag': 'noindex, nofollow' },
+    },
     '/img/**': {
       headers: { 'Cache-Control': 'public, max-age=31536000, s-maxage=31536000, immutable' },
     },
@@ -61,11 +69,22 @@ export default defineNuxtConfig({
         'img-src': [
           "'self'",
           'data:',
+          'blob:',
           'https://images.unsplash.com',
+          'https://*.supabase.co',
+          'http://127.0.0.1:54321',
           'https://*.google-analytics.com',
           'https://*.facebook.net',
         ],
-        'connect-src': ["'self'", 'https://*.google-analytics.com'],
+        'media-src': ["'self'", 'blob:', 'https://*.supabase.co', 'http://127.0.0.1:54321'],
+        'connect-src': [
+          "'self'",
+          'http://localhost:3001',
+          'http://127.0.0.1:3001',
+          'https://*.google-analytics.com',
+          'https://*.supabase.co',
+          'http://127.0.0.1:54321',
+        ],
         'font-src': ["'self'", 'data:', 'https://fonts.gstatic.com'],
         'object-src': ["'none'"],
         'base-uri': ["'self'"],
