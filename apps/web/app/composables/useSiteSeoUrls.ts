@@ -10,15 +10,20 @@ export function usePublicSiteOrigin() {
     const configured = normalizeOrigin(String(config.public.siteUrl || ''))
     if (configured) return configured
     if (requestUrl) return normalizeOrigin(requestUrl.origin)
-    return window.location.origin.replace(/\/$/, '')
+    if (import.meta.client) return window.location.origin.replace(/\/$/, '')
+    return ''
   })
 }
 
-export function useCanonicalUrl(path = '/') {
+/** Canonical da página atual (ou path explícito). */
+export function useCanonicalUrl(path?: string) {
   const origin = usePublicSiteOrigin()
+  const route = useRoute()
 
   return computed(() => {
-    const cleanPath = path.startsWith('/') ? path : `/${path}`
-    return `${origin.value}${cleanPath}`
+    const raw = path ?? route.path ?? '/'
+    const cleanPath = raw === '/' ? '/' : raw.replace(/\/$/, '')
+    const normalized = cleanPath.startsWith('/') ? cleanPath : `/${cleanPath}`
+    return `${origin.value}${normalized}`
   })
 }

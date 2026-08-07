@@ -4,9 +4,15 @@ function noIndexEnabled(value: boolean | string | undefined) {
   return value === true || value === 'true' || value === '1'
 }
 
-export function useSiteSeoHead(overrides?: { title?: string; description?: string }) {
+export function useSiteSeoHead(overrides?: {
+  title?: string
+  description?: string
+  image?: string
+  path?: string
+  type?: 'website' | 'article'
+}) {
   const config = useRuntimeConfig()
-  const canonicalUrl = useCanonicalUrl()
+  const canonicalUrl = useCanonicalUrl(overrides?.path)
 
   const siteName = computed(() => String(config.public.siteName || 'Stefanny Gutierres').trim())
   const locality = computed(() => String(config.public.seoLocality || '').trim())
@@ -20,18 +26,21 @@ export function useSiteSeoHead(overrides?: { title?: string; description?: strin
     const localText = locality.value ? ` Atendimento em ${locality.value}.` : ''
     return `Consultora de vendas imobiliárias. Apresentação comercial de empreendimentos com curadoria e acompanhamento — sem registro CRECI.${localText}`
   })
-  const ogImage = computed(() => String(config.public.defaultOgImageUrl || '').trim())
+  const ogImage = computed(
+    () => String(overrides?.image || config.public.defaultOgImageUrl || '').trim(),
+  )
+  const ogType = computed(() => overrides?.type || 'website')
 
   useSeoMeta({
     title: pageTitle,
     description,
     ogSiteName: siteName,
-    ogType: 'website',
+    ogType,
     ogLocale: 'pt_BR',
     ogTitle: socialTitle,
     ogDescription: description,
     ogImage,
-    ogImageAlt: 'Consultoria imobiliária premium com vista urbana ao pôr do sol',
+    ogImageAlt: socialTitle,
     ogUrl: canonicalUrl,
     twitterCard: 'summary_large_image',
     twitterTitle: socialTitle,
@@ -47,14 +56,15 @@ export function useSiteSeoHead(overrides?: { title?: string; description?: strin
     const instagram = String(config.public.instagramUrl || '').trim()
     const facebook = String(config.public.facebookUrl || '').trim()
     const sameAs = [instagram, facebook].filter(Boolean)
+    const siteOrigin = canonicalUrl.value.replace(/\/empreendimentos\/.*$/, '').replace(/\/$/, '') || canonicalUrl.value
 
     const organization: Record<string, unknown> = {
       '@type': 'ProfessionalService',
-      '@id': `${canonicalUrl.value}#organization`,
+      '@id': `${siteOrigin}/#organization`,
       name: siteName.value,
-      url: canonicalUrl.value,
+      url: `${siteOrigin}/`,
       description: description.value,
-      image: ogImage.value,
+      image: String(config.public.defaultOgImageUrl || ogImage.value).trim(),
       areaServed: 'BR',
       address: {
         '@type': 'PostalAddress',
@@ -76,18 +86,32 @@ export function useSiteSeoHead(overrides?: { title?: string; description?: strin
       }
     }
 
-    return [
+    const nodes: Record<string, unknown>[] = [
       organization,
       {
         '@type': 'WebSite',
-        '@id': `${canonicalUrl.value}#website`,
-        url: canonicalUrl.value,
+        '@id': `${siteOrigin}/#website`,
+        url: `${siteOrigin}/`,
         name: siteName.value,
         description: description.value,
         inLanguage: 'pt-BR',
-        publisher: { '@id': `${canonicalUrl.value}#organization` },
+        publisher: { '@id': `${siteOrigin}/#organization` },
       },
     ]
+
+    if (overrides?.title && overrides?.path?.includes('/empreendimentos/')) {
+      nodes.push({
+        '@type': 'RealEstateListing',
+        '@id': `${canonicalUrl.value}#listing`,
+        name: overrides.title,
+        description: description.value,
+        url: canonicalUrl.value,
+        image: ogImage.value || undefined,
+        inLanguage: 'pt-BR',
+      })
+    }
+
+    return nodes
   })
 
   useHead(() => ({

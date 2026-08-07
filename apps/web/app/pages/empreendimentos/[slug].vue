@@ -65,6 +65,9 @@ const whatsappProjectHref = computed(() => {
 useSiteSeoHead({
   title: project.value.title,
   description: project.value.description,
+  image: project.value.image,
+  path: `/empreendimentos/${project.value.slug}`,
+  type: 'article',
 })
 </script>
 
