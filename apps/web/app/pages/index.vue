@@ -234,21 +234,54 @@ async function submitLead() {
       </div>
     </section>
 
-    <section id="cases" class="bg-white py-20 sm:py-24">
-      <div class="container-page">
-        <span class="section-kicker">Cases vendidos</span>
-        <h2 class="mt-5 max-w-2xl font-display text-3xl font-bold leading-tight sm:text-4xl">
-          Histórias de quem comprou com a consultoria
-        </h2>
-        <p class="mt-4 max-w-2xl text-sm leading-7 text-slate-600">
-          Resultados reais com autorização dos clientes — imóvel vendido e a experiência de
-          quem confiou no processo.
-        </p>
+    <section id="cases" class="relative overflow-hidden bg-ink py-24 text-white sm:py-28">
+      <div
+        class="pointer-events-none absolute inset-0"
+        aria-hidden="true"
+        style="
+          background:
+            radial-gradient(ellipse 55% 45% at 15% 20%, rgba(197, 160, 89, 0.16) 0%, transparent 60%),
+            radial-gradient(ellipse 40% 50% at 90% 80%, rgba(139, 94, 60, 0.12) 0%, transparent 55%);
+        "
+      />
+      <div
+        class="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#e5c48b]/50 to-transparent"
+        aria-hidden="true"
+      />
 
-        <div v-if="soldCases?.length" class="mt-10 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+      <div class="container-page relative">
+        <div class="mx-auto max-w-3xl text-center">
+          <span
+            class="inline-flex items-center gap-3 rounded-full border border-[#e5c48b]/35 bg-white/5 px-4 py-2 text-xs font-semibold uppercase tracking-[0.22em] text-[#e5c48b]"
+          >
+            Cases vendidos
+          </span>
+          <h2 class="mt-6 font-display text-4xl font-bold leading-tight sm:text-5xl">
+            Histórias de quem comprou com a consultoria
+          </h2>
+          <p class="mx-auto mt-5 max-w-2xl text-base leading-8 text-white/70">
+            Resultados reais com autorização dos clientes — o imóvel vendido e a experiência de
+            quem confiou no processo.
+          </p>
+        </div>
+
+        <div v-if="soldCases?.length" class="mt-14 grid gap-7 md:grid-cols-2 xl:grid-cols-3">
           <ProjectSoldCaseCard v-for="item in soldCases" :key="item.id" :item="item" />
         </div>
-        <p v-else class="mt-10 text-sm text-slate-500">Cases em breve.</p>
+        <p v-else class="mt-14 text-center text-sm text-white/50">Cases em breve.</p>
+
+        <div class="mt-14 flex justify-center">
+          <a
+            :href="whatsappHref"
+            class="focus-ring inline-flex items-center gap-2 rounded-md bg-brand-500 px-6 py-3.5 text-sm font-semibold text-ink transition hover:bg-brand-400"
+            target="_blank"
+            rel="noopener noreferrer"
+            @click="onWhatsAppClick('sold_cases_cta')"
+          >
+            Quero minha história de compra
+            <ArrowRight class="size-4" aria-hidden="true" />
+          </a>
+        </div>
       </div>
     </section>
 
