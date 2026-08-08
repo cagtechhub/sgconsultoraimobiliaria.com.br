@@ -2,7 +2,7 @@ export default defineNuxtConfig({
   srcDir: 'app/',
   compatibilityDate: '2026-04-01',
   devtools: { enabled: true },
-  modules: ['@nuxtjs/tailwindcss', '@pinia/nuxt', '@nuxt/eslint', 'nuxt-security', '@nuxt/image'],
+  modules: ['@nuxtjs/tailwindcss', '@nuxt/eslint', 'nuxt-security'],
   build: {
     transpile: ['@gutierres/shared'],
   },

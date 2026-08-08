@@ -7,7 +7,6 @@ import { ObjectStorage } from "../application/object-storage.context.js"
 import { PropertyRepository } from "../application/property-repository.context.js"
 import { SiteSettingsRepository } from "../application/site-settings-repository.context.js"
 import { SoldCaseRepository } from "../application/sold-case-repository.context.js"
-import { TestimonialRepository } from "../application/testimonial-repository.context.js"
 import { CategoryRepositoryFromPrisma } from "./prisma/category-repository.layer.js"
 import { ContactRepositoryFromPrisma } from "./prisma/contact-repository.layer.js"
 import { DatabaseHealthFromPrisma } from "./prisma/database-health.layer.js"
@@ -15,7 +14,6 @@ import { LeadRepositoryFromPrisma } from "./prisma/lead-repository.layer.js"
 import { PropertyRepositoryFromPrisma } from "./prisma/property-repository.layer.js"
 import { SiteSettingsRepositoryFromPrisma } from "./prisma/site-settings-repository.layer.js"
 import { SoldCaseRepositoryFromPrisma } from "./prisma/sold-case-repository.layer.js"
-import { TestimonialRepositoryFromPrisma } from "./prisma/testimonial-repository.layer.js"
 import { PrismaLayer } from "./prisma/prisma.service.js"
 import { ObjectStorageFromSupabase } from "./supabase/object-storage.layer.js"
 
@@ -27,7 +25,6 @@ export type AppServices =
   | LeadRepository
   | ObjectStorage
   | SiteSettingsRepository
-  | TestimonialRepository
   | SoldCaseRepository
 
 export const AppRuntimeLayer: Layer.Layer<AppServices, never, never> = Layer.mergeAll(
@@ -38,6 +35,5 @@ export const AppRuntimeLayer: Layer.Layer<AppServices, never, never> = Layer.mer
   LeadRepositoryFromPrisma,
   ObjectStorageFromSupabase,
   SiteSettingsRepositoryFromPrisma,
-  TestimonialRepositoryFromPrisma,
   SoldCaseRepositoryFromPrisma
 ).pipe(Layer.provide(PrismaLayer))

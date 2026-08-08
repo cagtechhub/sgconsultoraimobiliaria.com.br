@@ -181,23 +181,6 @@ model SiteSettings {
   @@schema("gutierres")
 }
 
-model Testimonial {
-  id        String   @id @default(cuid())
-  name      String
-  role      String   @default("")
-  quote     String
-  rating    Int      @default(5)
-  sortOrder Int      @default(0) @map("sort_order")
-  active    Boolean  @default(true)
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
-
-  @@index([active])
-  @@index([sortOrder])
-  @@map("testimonials")
-  @@schema("gutierres")
-}
-
 model SoldCase {
   id               String    @id @default(cuid())
   propertyTitle    String    @map("property_title")

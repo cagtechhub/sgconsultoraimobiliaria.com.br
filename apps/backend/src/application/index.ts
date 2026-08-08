@@ -5,7 +5,6 @@ export { CategoryRepository } from "./category-repository.context.js"
 export { LeadRepository } from "./lead-repository.context.js"
 export { ObjectStorage } from "./object-storage.context.js"
 export { SiteSettingsRepository } from "./site-settings-repository.context.js"
-export { TestimonialRepository } from "./testimonial-repository.context.js"
 export { SoldCaseRepository } from "./sold-case-repository.context.js"
 export type { DatabaseHealthPort } from "./ports/database-health.port.js"
 export type { ContactRepositoryPort } from "./ports/contact-repository.port.js"
@@ -14,14 +13,12 @@ export type { CategoryRepositoryPort } from "./ports/category-repository.port.js
 export type { LeadRepositoryPort } from "./ports/lead-repository.port.js"
 export type { ObjectStoragePort } from "./ports/object-storage.port.js"
 export type { SiteSettingsRepositoryPort } from "./ports/site-settings-repository.port.js"
-export type { TestimonialRepositoryPort } from "./ports/testimonial-repository.port.js"
 export type { SoldCaseRepositoryPort } from "./ports/sold-case-repository.port.js"
 export { checkHealth } from "./use-cases/check-health.use-case.js"
 export { createContact } from "./use-cases/create-contact.use-case.js"
 export {
   createProperty,
   deleteProperty,
-  deletePropertyImage,
   deletePropertyMedia,
   getPropertyById,
   getPropertyBySlug,
@@ -29,7 +26,6 @@ export {
   reorderPropertyMedia,
   setPropertyCoverMedia,
   updateProperty,
-  uploadPropertyImage,
   uploadPropertyMedia,
 } from "./use-cases/property.use-case.js"
 export {
@@ -47,13 +43,6 @@ export {
   updateLead,
 } from "./use-cases/create-lead.use-case.js"
 export { getSiteSettings, updateSiteSettings } from "./use-cases/site-settings.use-case.js"
-export {
-  createTestimonial,
-  deleteTestimonial,
-  getTestimonialById,
-  listTestimonials,
-  updateTestimonial,
-} from "./use-cases/testimonial.use-case.js"
 export {
   createSoldCase,
   deleteSoldCase,

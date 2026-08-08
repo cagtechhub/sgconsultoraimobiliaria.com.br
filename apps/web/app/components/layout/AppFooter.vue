@@ -17,7 +17,7 @@ const businessAddress = computed(() => String(config.public.businessAddress || '
 const footerLinks = [
   { label: 'Empreendimentos', href: '/empreendimentos' },
   { label: 'Serviços', href: '/#servicos' },
-  { label: 'Depoimentos', href: '/#depoimentos' },
+  { label: 'Cases', href: '/#cases' },
   { label: 'Contato', href: '/#contato' },
 ]
 

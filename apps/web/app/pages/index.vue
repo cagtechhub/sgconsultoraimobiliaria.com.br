@@ -12,7 +12,6 @@ import {
   Send,
   ShieldCheck,
   Sparkles,
-  Star,
   TrendingUp,
 } from 'lucide-vue-next'
 
@@ -20,7 +19,6 @@ useSiteSeoHead()
 
 const config = useRuntimeConfig()
 const { featuredProject, allProjects } = useProjects()
-const { testimonials } = useTestimonials()
 const { soldCases } = useSoldCases()
 const { whatsappHref, onWhatsAppClick } = useWhatsapp()
 const { trackLead } = useAnalytics()
@@ -254,40 +252,7 @@ async function submitLead() {
       </div>
     </section>
 
-    <section id="depoimentos" class="bg-paper py-20 sm:py-24">
-      <div class="container-page">
-        <span class="section-kicker">Depoimentos</span>
-        <h2 class="mt-5 max-w-2xl font-display text-3xl font-bold leading-tight sm:text-4xl">
-          O que dizem sobre a consultoria
-        </h2>
-        <div v-if="testimonials?.length" class="mt-10 grid gap-5 lg:grid-cols-3">
-          <figure
-            v-for="testimonial in testimonials"
-            :key="testimonial.id"
-            class="rounded-lg bg-white p-6 shadow-card ring-1 ring-slate-200/60"
-          >
-            <div class="mb-4 flex gap-1 text-brand-500">
-              <Star
-                v-for="star in testimonial.rating || 5"
-                :key="star"
-                class="size-4 fill-current"
-                aria-hidden="true"
-              />
-            </div>
-            <blockquote class="text-sm leading-7 text-slate-700">
-              "{{ testimonial.quote }}"
-            </blockquote>
-            <figcaption class="mt-5">
-              <strong class="block text-sm">{{ testimonial.name }}</strong>
-              <span class="text-xs text-slate-500">{{ testimonial.role }}</span>
-            </figcaption>
-          </figure>
-        </div>
-        <p v-else class="mt-10 text-sm text-slate-500">Depoimentos em breve.</p>
-      </div>
-    </section>
-
-    <section id="contato" class="bg-white py-20 sm:py-24">
+    <section id="contato" class="bg-paper py-20 sm:py-24">
       <div class="container-page grid gap-12 lg:grid-cols-[0.85fr_1.15fr] lg:items-start">
         <div>
           <span class="section-kicker">Contato</span>

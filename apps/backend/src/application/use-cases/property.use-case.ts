@@ -139,8 +139,3 @@ export const setPropertyCoverMedia = (propertyId: string, mediaId: string) =>
     }
     return yield* repo.setCoverMedia(propertyId, mediaId)
   })
-
-/** @deprecated */
-export const uploadPropertyImage = uploadPropertyMedia
-/** @deprecated */
-export const deletePropertyImage = deletePropertyMedia

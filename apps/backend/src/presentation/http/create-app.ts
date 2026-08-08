@@ -5,25 +5,21 @@ import {
   createLead,
   createProperty,
   createSoldCase,
-  createTestimonial,
   deleteCategory,
   deleteLead,
   deleteProperty,
   deletePropertyMedia,
   deleteSoldCase,
-  deleteTestimonial,
   getCategoryById,
   getLeadById,
   getPropertyById,
   getPropertyBySlug,
   getSiteSettings,
   getSoldCaseById,
-  getTestimonialById,
   listCategories,
   listLeads,
   listProperties,
   listSoldCases,
-  listTestimonials,
   removeSoldCaseCover,
   reorderPropertyMedia,
   setPropertyCoverMedia,
@@ -32,7 +28,6 @@ import {
   updateProperty,
   updateSiteSettings,
   updateSoldCase,
-  updateTestimonial,
   uploadPropertyMedia,
   uploadSoldCaseCover,
 } from "../../application/index.js"
@@ -43,7 +38,6 @@ import {
   createPropertyCategorySchema,
   createPropertySchema,
   createSoldCaseSchema,
-  createTestimonialSchema,
   healthResponseSchema,
   leadSchema,
   propertyCategorySchema,
@@ -53,13 +47,11 @@ import {
   reorderPropertyMediaSchema,
   siteSettingsSchema,
   soldCaseSchema,
-  testimonialSchema,
   updateLeadSchema,
   updatePropertyCategorySchema,
   updatePropertySchema,
   updateSiteSettingsSchema,
   updateSoldCaseSchema,
-  updateTestimonialSchema,
 } from "@gutierres/shared"
 import { Cause, Effect, Exit, ManagedRuntime } from "effect"
 import express, { type Express, type Request, type Response } from "express"
@@ -160,7 +152,6 @@ export const createApp = (
         health: "GET /health",
         properties: "GET /properties",
         settings: "GET /settings",
-        testimonials: "GET /testimonials",
         soldCases: "GET /sold-cases",
         contacts: "POST /contacts",
         admin: "/admin/*",
@@ -207,12 +198,6 @@ export const createApp = (
   app.get("/settings", (_req, res) => {
     runEffect(runtime, getSiteSettings, res, (item) => {
       res.json(siteSettingsSchema.parse(item))
-    })
-  })
-
-  app.get("/testimonials", (_req, res) => {
-    runEffect(runtime, listTestimonials({ activeOnly: true }), res, (items) => {
-      res.json(items.map((item) => testimonialSchema.parse(item)))
     })
   })
 
@@ -548,70 +533,6 @@ export const createApp = (
     runEffect(runtime, updateSiteSettings(parsed.data), res, (item) => {
       res.json(siteSettingsSchema.parse(item))
     })
-  })
-
-  app.get("/admin/testimonials", requireAdmin, (_req, res) => {
-    runEffect(runtime, listTestimonials(), res, (items) => {
-      res.json(items.map((item) => testimonialSchema.parse(item)))
-    })
-  })
-
-  app.get("/admin/testimonials/:id", requireAdmin, (req, res) => {
-    runEffect(
-      runtime,
-      getTestimonialById(req.params.id),
-      res,
-      (item) => {
-        res.json(testimonialSchema.parse(item))
-      },
-      "Testimonial not found"
-    )
-  })
-
-  app.post("/admin/testimonials", requireAdmin, (req, res) => {
-    const parsed = createTestimonialSchema.safeParse(req.body)
-    if (!parsed.success) {
-      res.status(400).json({
-        error: "validation_error",
-        issues: parsed.error.flatten().fieldErrors,
-      })
-      return
-    }
-    runEffect(runtime, createTestimonial(parsed.data), res, (item) => {
-      res.status(201).json(testimonialSchema.parse(item))
-    })
-  })
-
-  app.patch("/admin/testimonials/:id", requireAdmin, (req, res) => {
-    const parsed = updateTestimonialSchema.safeParse(req.body)
-    if (!parsed.success) {
-      res.status(400).json({
-        error: "validation_error",
-        issues: parsed.error.flatten().fieldErrors,
-      })
-      return
-    }
-    runEffect(
-      runtime,
-      updateTestimonial(req.params.id, parsed.data),
-      res,
-      (item) => {
-        res.json(testimonialSchema.parse(item))
-      },
-      "Testimonial not found"
-    )
-  })
-
-  app.delete("/admin/testimonials/:id", requireAdmin, (req, res) => {
-    runEffect(
-      runtime,
-      deleteTestimonial(req.params.id),
-      res,
-      () => {
-        res.status(204).send()
-      },
-      "Testimonial not found"
-    )
   })
 
   app.get("/admin/sold-cases", requireAdmin, (_req, res) => {

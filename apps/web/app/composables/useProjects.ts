@@ -26,14 +26,5 @@ export function useProjects() {
     (selectedRaw.value || []).map(mapPropertyToProject),
   )
 
-  async function getProjectBySlug(slug: string): Promise<Project | null> {
-    try {
-      const property = await $fetch<Property>(`${baseUrl.value}/properties/${slug}`)
-      return mapPropertyToProject(property)
-    } catch {
-      return null
-    }
-  }
-
-  return { featuredProject, allProjects, getProjectBySlug }
+  return { featuredProject, allProjects }
 }

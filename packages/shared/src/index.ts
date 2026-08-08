@@ -5,7 +5,6 @@ export type { Contact, CreateContactInput } from "./schemas/contact.js"
 export {
   createPropertySchema,
   mediaKindSchema,
-  propertyImageSchema,
   propertyMediaSchema,
   propertySchema,
   propertyStatusSchema,
@@ -16,7 +15,6 @@ export type {
   CreatePropertyInput,
   MediaKind,
   Property,
-  PropertyImage,
   PropertyMedia,
   PropertyStatus,
   ReorderPropertyMediaInput,
@@ -50,16 +48,6 @@ export type {
 } from "./schemas/lead.js"
 export { siteSettingsSchema, updateSiteSettingsSchema } from "./schemas/settings.js"
 export type { SiteSettings, UpdateSiteSettingsInput } from "./schemas/settings.js"
-export {
-  createTestimonialSchema,
-  testimonialSchema,
-  updateTestimonialSchema,
-} from "./schemas/testimonial.js"
-export type {
-  CreateTestimonialInput,
-  Testimonial,
-  UpdateTestimonialInput,
-} from "./schemas/testimonial.js"
 export {
   createSoldCaseSchema,
   soldCaseSchema,

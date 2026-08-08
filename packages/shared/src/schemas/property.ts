@@ -17,9 +17,6 @@ export const propertyMediaSchema = z.object({
   createdAt: z.coerce.date(),
 })
 
-/** @deprecated use propertyMediaSchema */
-export const propertyImageSchema = propertyMediaSchema
-
 export const reorderPropertyMediaSchema = z.object({
   mediaIds: z.array(z.string()).min(1),
 })
@@ -72,7 +69,6 @@ export const propertySchema = createPropertySchema.extend({
 export type PropertyStatus = z.infer<typeof propertyStatusSchema>
 export type MediaKind = z.infer<typeof mediaKindSchema>
 export type PropertyMedia = z.infer<typeof propertyMediaSchema>
-export type PropertyImage = PropertyMedia
 export type ReorderPropertyMediaInput = z.infer<typeof reorderPropertyMediaSchema>
 export type CreatePropertyInput = z.infer<typeof createPropertySchema>
 export type UpdatePropertyInput = z.infer<typeof updatePropertySchema>

@@ -3,35 +3,25 @@ import {
   createPropertyCategorySchema,
   createPropertySchema,
   createSoldCaseSchema,
-  createTestimonialSchema,
-  leadChannelSchema,
-  leadSchema,
-  leadStatusSchema,
-  propertySchema,
-  propertyStatusSchema,
   updateLeadSchema,
   updatePropertyCategorySchema,
   updatePropertySchema,
   updateSiteSettingsSchema,
   updateSoldCaseSchema,
-  updateTestimonialSchema,
   type CreateLeadInput,
   type CreatePropertyCategoryInput,
   type CreatePropertyInput,
   type CreateSoldCaseInput,
-  type CreateTestimonialInput,
   type Lead,
   type Property,
   type PropertyCategory,
   type SiteSettings,
   type SoldCase,
-  type Testimonial,
   type UpdateLeadInput,
   type UpdatePropertyCategoryInput,
   type UpdatePropertyInput,
   type UpdateSiteSettingsInput,
   type UpdateSoldCaseInput,
-  type UpdateTestimonialInput,
 } from '@gutierres/shared'
 
 export const useAdminApi = () => {
@@ -226,20 +216,6 @@ export const useAdminApi = () => {
       body: JSON.stringify(updateSiteSettingsSchema.parse(input)),
     })
 
-  const listTestimonials = () => request<Testimonial[]>('/admin/testimonials')
-  const createTestimonial = (input: CreateTestimonialInput) =>
-    request<Testimonial>('/admin/testimonials', {
-      method: 'POST',
-      body: JSON.stringify(createTestimonialSchema.parse(input)),
-    })
-  const updateTestimonial = (id: string, input: UpdateTestimonialInput) =>
-    request<Testimonial>(`/admin/testimonials/${id}`, {
-      method: 'PATCH',
-      body: JSON.stringify(updateTestimonialSchema.parse(input)),
-    })
-  const removeTestimonial = (id: string) =>
-    request<void>(`/admin/testimonials/${id}`, { method: 'DELETE' })
-
   const listSoldCases = () => request<SoldCase[]>('/admin/sold-cases')
   const createSoldCase = (input: CreateSoldCaseInput) =>
     request<SoldCase>('/admin/sold-cases', {
@@ -288,20 +264,11 @@ export const useAdminApi = () => {
     removeCategory,
     getSettings,
     updateSettings,
-    listTestimonials,
-    createTestimonial,
-    updateTestimonial,
-    removeTestimonial,
     listSoldCases,
     createSoldCase,
     updateSoldCase,
     removeSoldCase,
     uploadSoldCaseCover,
     removeSoldCaseCover,
-    propertySchema,
-    propertyStatusSchema,
-    leadSchema,
-    leadChannelSchema,
-    leadStatusSchema,
   }
 }
