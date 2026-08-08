@@ -4,30 +4,37 @@ import {
   createContact,
   createLead,
   createProperty,
+  createSoldCase,
   createTestimonial,
   deleteCategory,
   deleteLead,
   deleteProperty,
   deletePropertyMedia,
+  deleteSoldCase,
   deleteTestimonial,
   getCategoryById,
   getLeadById,
   getPropertyById,
   getPropertyBySlug,
   getSiteSettings,
+  getSoldCaseById,
   getTestimonialById,
   listCategories,
   listLeads,
   listProperties,
+  listSoldCases,
   listTestimonials,
+  removeSoldCaseCover,
   reorderPropertyMedia,
   setPropertyCoverMedia,
   updateCategory,
   updateLead,
   updateProperty,
   updateSiteSettings,
+  updateSoldCase,
   updateTestimonial,
   uploadPropertyMedia,
+  uploadSoldCaseCover,
 } from "../../application/index.js"
 import {
   contactSchema,
@@ -35,6 +42,7 @@ import {
   createLeadSchema,
   createPropertyCategorySchema,
   createPropertySchema,
+  createSoldCaseSchema,
   createTestimonialSchema,
   healthResponseSchema,
   leadSchema,
@@ -44,11 +52,13 @@ import {
   propertyStatusSchema,
   reorderPropertyMediaSchema,
   siteSettingsSchema,
+  soldCaseSchema,
   testimonialSchema,
   updateLeadSchema,
   updatePropertyCategorySchema,
   updatePropertySchema,
   updateSiteSettingsSchema,
+  updateSoldCaseSchema,
   updateTestimonialSchema,
 } from "@gutierres/shared"
 import { Cause, Effect, Exit, ManagedRuntime } from "effect"
@@ -151,6 +161,7 @@ export const createApp = (
         properties: "GET /properties",
         settings: "GET /settings",
         testimonials: "GET /testimonials",
+        soldCases: "GET /sold-cases",
         contacts: "POST /contacts",
         admin: "/admin/*",
       },
@@ -202,6 +213,12 @@ export const createApp = (
   app.get("/testimonials", (_req, res) => {
     runEffect(runtime, listTestimonials({ activeOnly: true }), res, (items) => {
       res.json(items.map((item) => testimonialSchema.parse(item)))
+    })
+  })
+
+  app.get("/sold-cases", (_req, res) => {
+    runEffect(runtime, listSoldCases({ activeOnly: true }), res, (items) => {
+      res.json(items.map((item) => soldCaseSchema.parse(item)))
     })
   })
 
@@ -594,6 +611,119 @@ export const createApp = (
         res.status(204).send()
       },
       "Testimonial not found"
+    )
+  })
+
+  app.get("/admin/sold-cases", requireAdmin, (_req, res) => {
+    runEffect(runtime, listSoldCases(), res, (items) => {
+      res.json(items.map((item) => soldCaseSchema.parse(item)))
+    })
+  })
+
+  app.get("/admin/sold-cases/:id", requireAdmin, (req, res) => {
+    runEffect(
+      runtime,
+      getSoldCaseById(req.params.id),
+      res,
+      (item) => {
+        res.json(soldCaseSchema.parse(item))
+      },
+      "Sold case not found"
+    )
+  })
+
+  app.post("/admin/sold-cases", requireAdmin, (req, res) => {
+    const parsed = createSoldCaseSchema.safeParse(req.body)
+    if (!parsed.success) {
+      res.status(400).json({
+        error: "validation_error",
+        issues: parsed.error.flatten().fieldErrors,
+      })
+      return
+    }
+    runEffect(runtime, createSoldCase(parsed.data), res, (item) => {
+      res.status(201).json(soldCaseSchema.parse(item))
+    })
+  })
+
+  app.patch("/admin/sold-cases/:id", requireAdmin, (req, res) => {
+    const parsed = updateSoldCaseSchema.safeParse(req.body)
+    if (!parsed.success) {
+      res.status(400).json({
+        error: "validation_error",
+        issues: parsed.error.flatten().fieldErrors,
+      })
+      return
+    }
+    runEffect(
+      runtime,
+      updateSoldCase(req.params.id, parsed.data),
+      res,
+      (item) => {
+        res.json(soldCaseSchema.parse(item))
+      },
+      "Sold case not found"
+    )
+  })
+
+  app.delete("/admin/sold-cases/:id", requireAdmin, (req, res) => {
+    runEffect(
+      runtime,
+      deleteSoldCase(req.params.id),
+      res,
+      () => {
+        res.status(204).send()
+      },
+      "Sold case not found"
+    )
+  })
+
+  app.post("/admin/sold-cases/:id/cover", requireAdmin, (req, res) => {
+    const handleUpload = upload.single("file") as unknown as (
+      req: Request,
+      res: Response,
+      cb: (err?: unknown) => void
+    ) => void
+
+    handleUpload(req, res, (err) => {
+      if (err) {
+        res.status(400).json({ error: "upload_error", message: String(err) })
+        return
+      }
+      const file = (
+        req as Request & {
+          file?: { originalname: string; mimetype: string; buffer: Buffer }
+        }
+      ).file
+      if (!file) {
+        res.status(400).json({ error: "validation_error", message: "File is required" })
+        return
+      }
+      runEffect(
+        runtime,
+        uploadSoldCaseCover(req.params.id, {
+          fileName: file.originalname,
+          contentType: file.mimetype,
+          body: file.buffer,
+        }),
+        res,
+        (item) => {
+          res.json(soldCaseSchema.parse(item))
+        },
+        "Sold case not found"
+      )
+    })
+  })
+
+  app.delete("/admin/sold-cases/:id/cover", requireAdmin, (req, res) => {
+    runEffect(
+      runtime,
+      removeSoldCaseCover(req.params.id),
+      res,
+      (item) => {
+        res.json(soldCaseSchema.parse(item))
+      },
+      "Sold case not found"
     )
   })
 

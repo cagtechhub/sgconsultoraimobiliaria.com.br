@@ -6,6 +6,7 @@ const { whatsappHref, onWhatsAppClick } = useWhatsapp()
 const navLinks = [
   { label: 'Empreendimentos', href: '/empreendimentos' },
   { label: 'Serviços', href: '/#servicos' },
+  { label: 'Cases', href: '/#cases' },
   { label: 'Depoimentos', href: '/#depoimentos' },
   { label: 'Contato', href: '/#contato' },
 ]

@@ -2,6 +2,7 @@ import {
   createLeadSchema,
   createPropertyCategorySchema,
   createPropertySchema,
+  createSoldCaseSchema,
   createTestimonialSchema,
   leadChannelSchema,
   leadSchema,
@@ -12,20 +13,24 @@ import {
   updatePropertyCategorySchema,
   updatePropertySchema,
   updateSiteSettingsSchema,
+  updateSoldCaseSchema,
   updateTestimonialSchema,
   type CreateLeadInput,
   type CreatePropertyCategoryInput,
   type CreatePropertyInput,
+  type CreateSoldCaseInput,
   type CreateTestimonialInput,
   type Lead,
   type Property,
   type PropertyCategory,
   type SiteSettings,
+  type SoldCase,
   type Testimonial,
   type UpdateLeadInput,
   type UpdatePropertyCategoryInput,
   type UpdatePropertyInput,
   type UpdateSiteSettingsInput,
+  type UpdateSoldCaseInput,
   type UpdateTestimonialInput,
 } from '@gutierres/shared'
 
@@ -235,6 +240,30 @@ export const useAdminApi = () => {
   const removeTestimonial = (id: string) =>
     request<void>(`/admin/testimonials/${id}`, { method: 'DELETE' })
 
+  const listSoldCases = () => request<SoldCase[]>('/admin/sold-cases')
+  const createSoldCase = (input: CreateSoldCaseInput) =>
+    request<SoldCase>('/admin/sold-cases', {
+      method: 'POST',
+      body: JSON.stringify(createSoldCaseSchema.parse(input)),
+    })
+  const updateSoldCase = (id: string, input: UpdateSoldCaseInput) =>
+    request<SoldCase>(`/admin/sold-cases/${id}`, {
+      method: 'PATCH',
+      body: JSON.stringify(updateSoldCaseSchema.parse(input)),
+    })
+  const removeSoldCase = (id: string) =>
+    request<void>(`/admin/sold-cases/${id}`, { method: 'DELETE' })
+  const uploadSoldCaseCover = async (id: string, file: File) => {
+    const form = new FormData()
+    form.append('file', file)
+    return request<SoldCase>(`/admin/sold-cases/${id}/cover`, {
+      method: 'POST',
+      body: form,
+    })
+  }
+  const removeSoldCaseCover = (id: string) =>
+    request<SoldCase>(`/admin/sold-cases/${id}/cover`, { method: 'DELETE' })
+
   return {
     token,
     isAuthenticated,
@@ -263,6 +292,12 @@ export const useAdminApi = () => {
     createTestimonial,
     updateTestimonial,
     removeTestimonial,
+    listSoldCases,
+    createSoldCase,
+    updateSoldCase,
+    removeSoldCase,
+    uploadSoldCaseCover,
+    removeSoldCaseCover,
     propertySchema,
     propertyStatusSchema,
     leadSchema,

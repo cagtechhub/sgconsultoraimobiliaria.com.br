@@ -197,3 +197,24 @@ model Testimonial {
   @@map("testimonials")
   @@schema("gutierres")
 }
+
+model SoldCase {
+  id               String    @id @default(cuid())
+  propertyTitle    String    @map("property_title")
+  location         String    @default("")
+  coverUrl         String?   @map("cover_url")
+  coverStoragePath String?   @map("cover_storage_path")
+  clientName       String    @map("client_name")
+  clientRole       String    @default("") @map("client_role")
+  quote            String
+  soldAt           DateTime? @map("sold_at")
+  sortOrder        Int       @default(0) @map("sort_order")
+  active           Boolean   @default(true)
+  createdAt        DateTime  @default(now()) @map("created_at")
+  updatedAt        DateTime  @updatedAt @map("updated_at")
+
+  @@index([active])
+  @@index([sortOrder])
+  @@map("sold_cases")
+  @@schema("gutierres")
+}

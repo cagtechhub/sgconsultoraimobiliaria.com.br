@@ -7,6 +7,7 @@ const links = [
   { to: '/admin/imoveis', label: 'Imóveis' },
   { to: '/admin/categorias', label: 'Categorias' },
   { to: '/admin/leads', label: 'Leads' },
+  { to: '/admin/cases', label: 'Cases vendidos' },
   { to: '/admin/depoimentos', label: 'Depoimentos' },
   { to: '/admin/configuracoes', label: 'Configurações' },
 ]

@@ -60,3 +60,13 @@ export type {
   Testimonial,
   UpdateTestimonialInput,
 } from "./schemas/testimonial.js"
+export {
+  createSoldCaseSchema,
+  soldCaseSchema,
+  updateSoldCaseSchema,
+} from "./schemas/sold-case.js"
+export type {
+  CreateSoldCaseInput,
+  SoldCase,
+  UpdateSoldCaseInput,
+} from "./schemas/sold-case.js"

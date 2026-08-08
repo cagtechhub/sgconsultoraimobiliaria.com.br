@@ -21,6 +21,7 @@ useSiteSeoHead()
 const config = useRuntimeConfig()
 const { featuredProject, allProjects } = useProjects()
 const { testimonials } = useTestimonials()
+const { soldCases } = useSoldCases()
 const { whatsappHref, onWhatsAppClick } = useWhatsapp()
 const { trackLead } = useAnalytics()
 const apiBase = useApiBaseUrl()
@@ -232,6 +233,24 @@ async function submitLead() {
             </div>
           </article>
         </div>
+      </div>
+    </section>
+
+    <section id="cases" class="bg-white py-20 sm:py-24">
+      <div class="container-page">
+        <span class="section-kicker">Cases vendidos</span>
+        <h2 class="mt-5 max-w-2xl font-display text-3xl font-bold leading-tight sm:text-4xl">
+          Histórias de quem comprou com a consultoria
+        </h2>
+        <p class="mt-4 max-w-2xl text-sm leading-7 text-slate-600">
+          Resultados reais com autorização dos clientes — imóvel vendido e a experiência de
+          quem confiou no processo.
+        </p>
+
+        <div v-if="soldCases?.length" class="mt-10 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+          <ProjectSoldCaseCard v-for="item in soldCases" :key="item.id" :item="item" />
+        </div>
+        <p v-else class="mt-10 text-sm text-slate-500">Cases em breve.</p>
       </div>
     </section>
 
