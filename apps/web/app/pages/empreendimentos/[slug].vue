@@ -150,6 +150,12 @@ useSiteSeoHead({
               </div>
             </article>
 
+            <ProjectGallery
+              v-if="project.gallery.length"
+              :images="project.gallery"
+              :title="project.title"
+            />
+
             <article class="rounded-lg bg-white p-8 shadow-card ring-1 ring-slate-200/60">
               <h2 class="font-display text-2xl font-semibold">Planta do projeto</h2>
               <p class="mt-2 text-sm text-slate-500">
