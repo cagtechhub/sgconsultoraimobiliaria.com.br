@@ -4,7 +4,7 @@ import type {
   UpdatePropertyCategoryInput,
 } from "@gutierres/shared"
 import type { Effect } from "effect"
-import type { InfraError } from "@/domain/errors/infra-error.js"
+import type { InfraError } from "../../domain/errors/infra-error.js"
 
 export interface CategoryRepositoryPort {
   readonly list: (opts?: { activeOnly?: boolean }) => Effect.Effect<PropertyCategory[], InfraError, never>

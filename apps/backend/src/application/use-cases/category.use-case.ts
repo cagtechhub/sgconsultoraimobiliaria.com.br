@@ -1,7 +1,7 @@
 import type { CreatePropertyCategoryInput, UpdatePropertyCategoryInput } from "@gutierres/shared"
 import { Effect } from "effect"
 import { CategoryRepository } from "../category-repository.context.js"
-import { InfraError } from "@/domain/errors/infra-error.js"
+import { InfraError } from "../../domain/errors/infra-error.js"
 
 export const listCategories = (opts?: { activeOnly?: boolean }) =>
   Effect.gen(function* () {

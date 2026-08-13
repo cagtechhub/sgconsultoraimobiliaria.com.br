@@ -4,8 +4,8 @@ import {
   type PropertyCategory,
   type UpdatePropertyCategoryInput,
 } from "@gutierres/shared"
-import type { CategoryRepositoryPort } from "@/application/ports/category-repository.port.js"
-import { InfraError } from "@/domain/errors/infra-error.js"
+import type { CategoryRepositoryPort } from "../../application/ports/category-repository.port.js"
+import { InfraError } from "../../domain/errors/infra-error.js"
 import { Effect } from "effect"
 import type { PrismaClient } from "./output/client.js"
 

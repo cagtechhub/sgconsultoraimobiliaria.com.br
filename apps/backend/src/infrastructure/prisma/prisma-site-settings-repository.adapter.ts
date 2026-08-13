@@ -1,6 +1,6 @@
 import { siteSettingsSchema, type SiteSettings, type UpdateSiteSettingsInput } from "@gutierres/shared"
-import type { SiteSettingsRepositoryPort } from "@/application/ports/site-settings-repository.port.js"
-import { InfraError } from "@/domain/errors/infra-error.js"
+import type { SiteSettingsRepositoryPort } from "../../application/ports/site-settings-repository.port.js"
+import { InfraError } from "../../domain/errors/infra-error.js"
 import { Effect } from "effect"
 import type { PrismaClient } from "./output/client.js"
 import { buildSiteSettingsSeedFromEnv } from "./site-settings-seed.js"

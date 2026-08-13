@@ -2,8 +2,8 @@ import type { CreatePropertyInput, PropertyStatus, UpdatePropertyInput } from "@
 import { Effect } from "effect"
 import { PropertyRepository } from "../property-repository.context.js"
 import { ObjectStorage } from "../object-storage.context.js"
-import { InfraError } from "@/domain/errors/infra-error.js"
-import { resolveMediaKind } from "@/domain/media/media-kind.js"
+import { InfraError } from "../../domain/errors/infra-error.js"
+import { resolveMediaKind } from "../../domain/media/media-kind.js"
 
 export const listProperties = (opts?: {
   publishedOnly?: boolean

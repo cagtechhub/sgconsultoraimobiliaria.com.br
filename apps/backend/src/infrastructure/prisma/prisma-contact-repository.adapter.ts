@@ -1,6 +1,6 @@
 import { contactSchema, type Contact, type CreateContactInput } from "@gutierres/shared"
-import type { ContactRepositoryPort } from "@/application/ports/contact-repository.port.js"
-import { InfraError } from "@/domain/errors/infra-error.js"
+import type { ContactRepositoryPort } from "../../application/ports/contact-repository.port.js"
+import { InfraError } from "../../domain/errors/infra-error.js"
 import { Effect } from "effect"
 import type { PrismaClient } from "./output/client.js"
 

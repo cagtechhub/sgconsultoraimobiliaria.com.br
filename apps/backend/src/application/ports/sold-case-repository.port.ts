@@ -1,6 +1,6 @@
 import type { CreateSoldCaseInput, SoldCase, UpdateSoldCaseInput } from "@gutierres/shared"
 import type { Effect } from "effect"
-import type { InfraError } from "@/domain/errors/infra-error.js"
+import type { InfraError } from "../../domain/errors/infra-error.js"
 
 export interface SoldCaseRepositoryPort {
   readonly list: (opts?: { activeOnly?: boolean }) => Effect.Effect<SoldCase[], InfraError, never>

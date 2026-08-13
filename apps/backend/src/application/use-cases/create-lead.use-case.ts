@@ -1,7 +1,7 @@
 import type { CreateLeadInput, UpdateLeadInput } from "@gutierres/shared"
 import { Effect } from "effect"
 import { LeadRepository } from "../lead-repository.context.js"
-import { InfraError } from "@/domain/errors/infra-error.js"
+import { InfraError } from "../../domain/errors/infra-error.js"
 
 export const listLeads = Effect.gen(function* () {
   const repo = yield* LeadRepository

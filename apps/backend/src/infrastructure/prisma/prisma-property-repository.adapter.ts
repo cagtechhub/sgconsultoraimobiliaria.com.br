@@ -10,8 +10,8 @@ import type {
   AddPropertyMediaInput,
   ListPropertiesOptions,
   PropertyRepositoryPort,
-} from "@/application/ports/property-repository.port.js"
-import { InfraError } from "@/domain/errors/infra-error.js"
+} from "../../application/ports/property-repository.port.js"
+import { InfraError } from "../../domain/errors/infra-error.js"
 import { Effect } from "effect"
 import type { PrismaClient } from "./output/client.js"
 

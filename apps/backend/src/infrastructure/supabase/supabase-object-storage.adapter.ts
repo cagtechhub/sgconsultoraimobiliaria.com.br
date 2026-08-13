@@ -1,8 +1,8 @@
 import type {
   ObjectStoragePort,
   UploadObjectInput,
-} from "@/application/ports/object-storage.port.js"
-import { InfraError } from "@/domain/errors/infra-error.js"
+} from "../../application/ports/object-storage.port.js"
+import { InfraError } from "../../domain/errors/infra-error.js"
 import { Effect } from "effect"
 import { randomUUID } from "node:crypto"
 import path from "node:path"

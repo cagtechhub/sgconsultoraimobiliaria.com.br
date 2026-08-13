@@ -6,8 +6,8 @@ import type {
   UpdatePropertyInput,
 } from "@gutierres/shared"
 import type { Effect } from "effect"
-import type { InfraError } from "@/domain/errors/infra-error.js"
-import type { MediaKind } from "@/domain/media/media-kind.js"
+import type { InfraError } from "../../domain/errors/infra-error.js"
+import type { MediaKind } from "../../domain/media/media-kind.js"
 
 export interface ListPropertiesOptions {
   readonly publishedOnly?: boolean

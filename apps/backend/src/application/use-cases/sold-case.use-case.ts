@@ -2,7 +2,7 @@ import type { CreateSoldCaseInput, UpdateSoldCaseInput } from "@gutierres/shared
 import { Effect } from "effect"
 import { ObjectStorage } from "../object-storage.context.js"
 import { SoldCaseRepository } from "../sold-case-repository.context.js"
-import { InfraError } from "@/domain/errors/infra-error.js"
+import { InfraError } from "../../domain/errors/infra-error.js"
 
 export const listSoldCases = (opts?: { activeOnly?: boolean }) =>
   Effect.gen(function* () {

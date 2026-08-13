@@ -4,8 +4,8 @@ import {
   type SoldCase,
   type UpdateSoldCaseInput,
 } from "@gutierres/shared"
-import type { SoldCaseRepositoryPort } from "@/application/ports/sold-case-repository.port.js"
-import { InfraError } from "@/domain/errors/infra-error.js"
+import type { SoldCaseRepositoryPort } from "../../application/ports/sold-case-repository.port.js"
+import { InfraError } from "../../domain/errors/infra-error.js"
 import { Effect } from "effect"
 import type { PrismaClient } from "./output/client.js"
 
