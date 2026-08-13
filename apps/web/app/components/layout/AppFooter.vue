@@ -2,17 +2,20 @@
 import { ArrowRight, Facebook, Instagram, Linkedin, Mail, MapPin, MessageCircle, PhoneCall } from 'lucide-vue-next'
 import type { Component } from 'vue'
 
-const config = useRuntimeConfig()
 const { whatsappHref, onWhatsAppClick } = useWhatsapp()
 const currentYear = new Date().getFullYear()
+const {
+  siteName,
+  instagramUrl,
+  facebookUrl,
+  linkedinUrl,
+  contactEmail,
+  businessPhone,
+  businessAddress,
+} = useSiteSettings()
 
-const siteName = computed(() => String(config.public.siteName || 'Stefanny Gutierres'))
-const instagramUrl = computed(() => String(config.public.instagramUrl || ''))
-const facebookUrl = computed(() => String(config.public.facebookUrl || ''))
-const linkedinUrl = computed(() => String(config.public.linkedinUrl || ''))
-const contactEmail = computed(() => String(config.public.contactEmail || 'contato@gutierresconsultoria.com.br'))
-const displayPhone = computed(() => String(config.public.businessPhone || 'WhatsApp disponível'))
-const businessAddress = computed(() => String(config.public.businessAddress || 'Atendimento consultivo online'))
+const displayPhone = computed(() => businessPhone.value || 'WhatsApp disponível')
+const displayAddress = computed(() => businessAddress.value || 'Atendimento consultivo online')
 
 const footerLinks = [
   { label: 'Empreendimentos', href: '/empreendimentos' },
@@ -107,7 +110,7 @@ const socialLinks = computed<FooterSocialLink[]>(() => {
             </a>
             <p class="inline-flex items-center gap-3">
               <MapPin class="size-4 text-[#e5c48b]" aria-hidden="true" />
-              {{ businessAddress }}
+              {{ displayAddress }}
             </p>
           </div>
 

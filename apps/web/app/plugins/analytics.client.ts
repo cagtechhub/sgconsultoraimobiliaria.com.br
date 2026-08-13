@@ -59,12 +59,12 @@ export default defineNuxtPlugin({
   setup() {
     if (!import.meta.client) return
 
-    const config = useRuntimeConfig()
+    const settings = useSiteSettings()
     const router = useRouter()
     const { trackPageView } = useAnalytics()
 
-    const gaId = String(config.public.ga4MeasurementId || '').trim()
-    const pixelId = String(config.public.metaPixelId || '').trim()
+    const gaId = settings.ga4MeasurementId.value.trim()
+    const pixelId = settings.metaPixelId.value.trim()
 
     if (gaId) loadGa4(gaId)
     if (pixelId) loadMetaPixel(pixelId)

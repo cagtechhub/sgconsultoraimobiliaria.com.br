@@ -17,12 +17,12 @@ import {
 
 useSiteSeoHead()
 
-const config = useRuntimeConfig()
 const { featuredProject, allProjects } = useProjects()
 const { soldCases } = useSoldCases()
 const { whatsappHref, onWhatsAppClick } = useWhatsapp()
 const { trackLead } = useAnalytics()
 const apiBase = useApiBase()
+const { contactEmail, businessPhone } = useSiteSettings()
 
 const steps = [
   {
@@ -103,8 +103,7 @@ const submitting = ref(false)
 const submitError = ref('')
 const submitSuccess = ref(false)
 
-const contactEmail = computed(() => String(config.public.contactEmail || 'contato@gutierresconsultoria.com.br'))
-const displayPhone = computed(() => String(config.public.businessPhone || 'Atualize o telefone no ambiente'))
+const displayPhone = computed(() => businessPhone.value || 'Atualize o telefone no ambiente')
 
 const submitLabel = computed(() => {
   if (submitting.value) return 'Enviando…'

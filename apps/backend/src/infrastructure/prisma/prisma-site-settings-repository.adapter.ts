@@ -3,6 +3,7 @@ import type { SiteSettingsRepositoryPort } from "@/application/ports/site-settin
 import { InfraError } from "@/domain/errors/infra-error.js"
 import { Effect } from "effect"
 import type { PrismaClient } from "./output/client.js"
+import { buildSiteSettingsSeedFromEnv } from "./site-settings-seed.js"
 
 const DEFAULT_SETTINGS_ID = "default"
 
@@ -38,7 +39,10 @@ export const makePrismaSiteSettingsRepository = (
         })
         if (existing) return existing
         return prisma.siteSettings.create({
-          data: { id: DEFAULT_SETTINGS_ID },
+          data: {
+            id: DEFAULT_SETTINGS_ID,
+            ...buildSiteSettingsSeedFromEnv(),
+          },
         })
       },
       catch: (cause) => new InfraError("Failed to get site settings", cause),
@@ -54,6 +58,7 @@ export const makePrismaSiteSettingsRepository = (
           return prisma.siteSettings.create({
             data: {
               id: DEFAULT_SETTINGS_ID,
+              ...buildSiteSettingsSeedFromEnv(),
               ...input,
             },
           })

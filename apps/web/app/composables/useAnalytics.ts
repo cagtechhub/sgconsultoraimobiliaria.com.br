@@ -10,11 +10,11 @@ declare global {
 }
 
 export function useAnalytics() {
-  const config = useRuntimeConfig()
+  const settings = useSiteSettings()
   const route = useRoute()
 
-  const gaId = computed(() => String(config.public.ga4MeasurementId || '').trim())
-  const pixelId = computed(() => String(config.public.metaPixelId || '').trim())
+  const gaId = computed(() => settings.ga4MeasurementId.value.trim())
+  const pixelId = computed(() => settings.metaPixelId.value.trim())
 
   const isAdminRoute = (path = route.path) => path.startsWith('/admin')
 

@@ -4,7 +4,7 @@ import type { Property } from '@gutierres/shared'
 import { mapPropertyToProject } from '~/utils/mapProperty'
 
 const route = useRoute()
-const { whatsappHref, onWhatsAppClick } = useWhatsapp()
+const { onWhatsAppClick, buildHref } = useWhatsapp()
 const { trackViewContent } = useAnalytics()
 const baseUrl = useApiBase()
 const slug = String(route.params.slug)
@@ -60,14 +60,11 @@ const formattedDeadline = computed(() =>
   }),
 )
 
-const whatsappProjectHref = computed(() => {
-  const config = useRuntimeConfig()
-  const digits = String(config.public.whatsappNumber || '').replace(/\D/g, '')
-  const message = encodeURIComponent(
+const whatsappProjectHref = computed(() =>
+  buildHref(
     `Olá! Tenho interesse no empreendimento ${project.value!.title}. Gostaria de mais informações.`,
-  )
-  return digits ? `https://wa.me/${digits}?text=${message}` : whatsappHref.value
-})
+  ),
+)
 
 useSiteSeoHead({
   title: project.value.title,

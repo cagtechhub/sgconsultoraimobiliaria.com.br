@@ -1,9 +1,5 @@
 import { useSchemaOrg } from '@unhead/schema-org/vue'
 
-function noIndexEnabled(value: boolean | string | undefined) {
-  return value === true || value === 'true' || value === '1'
-}
-
 export function useSiteSeoHead(overrides?: {
   title?: string
   description?: string
@@ -11,12 +7,12 @@ export function useSiteSeoHead(overrides?: {
   path?: string
   type?: 'website' | 'article'
 }) {
-  const config = useRuntimeConfig()
+  const settings = useSiteSettings()
   const canonicalUrl = useCanonicalUrl(overrides?.path)
 
-  const siteName = computed(() => String(config.public.siteName || 'Stefanny Gutierres').trim())
-  const locality = computed(() => String(config.public.seoLocality || '').trim())
-  const noIndex = computed(() => noIndexEnabled(config.public.noIndex as boolean | string | undefined))
+  const siteName = computed(() => settings.siteName.value.trim())
+  const locality = computed(() => settings.seoLocality.value.trim())
+  const noIndex = computed(() => settings.noIndex.value)
   const pageTitle = computed(() => overrides?.title || 'Consultora de vendas imobiliárias')
   const socialTitle = computed(() =>
     overrides?.title ? `${overrides.title} | ${siteName.value}` : `${siteName.value} | ${pageTitle.value}`,
@@ -27,7 +23,7 @@ export function useSiteSeoHead(overrides?: {
     return `Consultora de vendas imobiliárias. Apresentação comercial de empreendimentos com curadoria e acompanhamento — sem registro CRECI.${localText}`
   })
   const ogImage = computed(
-    () => String(overrides?.image || config.public.defaultOgImageUrl || '').trim(),
+    () => String(overrides?.image || settings.defaultOgImageUrl.value || '').trim(),
   )
   const ogType = computed(() => overrides?.type || 'website')
 
@@ -50,12 +46,15 @@ export function useSiteSeoHead(overrides?: {
   })
 
   useSchemaOrg(() => {
-    const phone = String(config.public.businessPhone || config.public.whatsappNumber || '').replace(/\D/g, '')
+    const phone = String(
+      settings.businessPhone.value || settings.whatsappNumber.value || '',
+    ).replace(/\D/g, '')
     const tel = phone ? `+${phone}` : ''
-    const contactEmail = String(config.public.contactEmail || '').trim()
-    const instagram = String(config.public.instagramUrl || '').trim()
-    const facebook = String(config.public.facebookUrl || '').trim()
-    const sameAs = [instagram, facebook].filter(Boolean)
+    const contactEmail = settings.contactEmail.value.trim()
+    const instagram = settings.instagramUrl.value.trim()
+    const facebook = settings.facebookUrl.value.trim()
+    const linkedin = settings.linkedinUrl.value.trim()
+    const sameAs = [instagram, facebook, linkedin].filter(Boolean)
     const siteOrigin = canonicalUrl.value.replace(/\/empreendimentos\/.*$/, '').replace(/\/$/, '') || canonicalUrl.value
 
     const organization: Record<string, unknown> = {
@@ -64,7 +63,7 @@ export function useSiteSeoHead(overrides?: {
       name: siteName.value,
       url: `${siteOrigin}/`,
       description: description.value,
-      image: String(config.public.defaultOgImageUrl || ogImage.value).trim(),
+      image: String(settings.defaultOgImageUrl.value || ogImage.value).trim(),
       areaServed: 'BR',
       address: {
         '@type': 'PostalAddress',
