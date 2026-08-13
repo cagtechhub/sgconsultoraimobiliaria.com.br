@@ -11,13 +11,18 @@ COPY apps/backend/package.json apps/backend/package.json
 COPY apps/web/package.json apps/web/package.json
 COPY packages/shared/package.json packages/shared/package.json
 
-RUN yarn install --frozen-lockfile --non-interactive
+RUN yarn install --frozen-lockfile --non-interactive --ignore-scripts
 
 COPY . .
 
-RUN yarn workspace @gutierres/shared build \
-  && yarn workspace @gutierres/backend db:generate \
-  && yarn workspace @gutierres/backend build
+# Prisma 7 (`prisma-client`) gera TypeScript em src/.../output; o tsc emite client.js.
+# O script de build copia wasm/runtime que o tsc não emite. Reforço + fail-fast:
+RUN yarn workspace @gutierres/backend db:generate \
+  && yarn workspace @gutierres/backend build \
+  && mkdir -p apps/backend/dist/infrastructure/prisma/output \
+  && cp -a apps/backend/src/infrastructure/prisma/output/. \
+         apps/backend/dist/infrastructure/prisma/output/ \
+  && test -f apps/backend/dist/infrastructure/prisma/output/client.js
 
 EXPOSE 3001
 

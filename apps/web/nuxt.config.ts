@@ -1,3 +1,17 @@
+function envOrigin(value: string | undefined) {
+  if (!value) return ''
+  try {
+    return new URL(value).origin
+  } catch {
+    return value.replace(/\/$/, '')
+  }
+}
+
+const publicApiBase =
+  process.env.NUXT_PUBLIC_API_BASE?.trim() || 'http://localhost:3001'
+const publicApiOrigin = envOrigin(publicApiBase)
+const publicSupabaseOrigin = envOrigin(process.env.NUXT_PUBLIC_SUPABASE_URL)
+
 export default defineNuxtConfig({
   srcDir: 'app/',
   compatibilityDate: '2026-04-01',
@@ -7,10 +21,11 @@ export default defineNuxtConfig({
     transpile: ['@gutierres/shared'],
   },
   runtimeConfig: {
+    apiBase: process.env.NUXT_API_BASE?.trim() || '',
     public: {
       siteUrl: '',
       siteName: 'Stefanny Gutierres',
-      apiUrl: 'http://localhost:3001',
+      apiBase: publicApiBase,
       supabaseUrl: '',
       supabaseAnonKey: '',
       noIndex: false,
@@ -87,6 +102,7 @@ export default defineNuxtConfig({
         'media-src': ["'self'", 'blob:', 'https://*.supabase.co', 'http://127.0.0.1:54321'],
         'connect-src': [
           "'self'",
+          publicApiOrigin,
           'http://localhost:3001',
           'http://127.0.0.1:3001',
           'https://*.google-analytics.com',
@@ -98,8 +114,10 @@ export default defineNuxtConfig({
           'https://*.facebook.com',
           'https://connect.facebook.net',
           'https://*.supabase.co',
+          'wss://*.supabase.co',
           'http://127.0.0.1:54321',
           'ws://127.0.0.1:54321',
+          ...(publicSupabaseOrigin ? [publicSupabaseOrigin] : []),
         ],
         'font-src': ["'self'", 'data:', 'https://fonts.gstatic.com'],
         'object-src': ["'none'"],

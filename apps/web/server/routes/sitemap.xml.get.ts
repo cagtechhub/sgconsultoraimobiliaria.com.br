@@ -48,11 +48,11 @@ export default defineEventHandler(async (event) => {
     .trim()
     .replace(/\/$/, '')
   const origin = configured || getRequestURL(event).origin
-  const apiUrl = String(config.public?.apiUrl || 'http://localhost:3001').replace(/\/$/, '')
+  const apiBase = resolveApiBase()
 
   let properties: SitemapProperty[] = []
   try {
-    properties = await $fetch<SitemapProperty[]>(`${apiUrl}/properties`)
+    properties = await $fetch<SitemapProperty[]>(`${apiBase}/properties`)
   } catch {
     properties = []
   }

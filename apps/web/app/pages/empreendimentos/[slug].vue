@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { ArrowLeft, ArrowRight, BadgeCheck, Calendar, Clock3, MapPin, MessageCircle, ShieldCheck, TrendingUp } from 'lucide-vue-next'
 import type { Property } from '@gutierres/shared'
-import { mapPropertyToProject, useApiBaseUrl } from '~/utils/mapProperty'
+import { mapPropertyToProject } from '~/utils/mapProperty'
 
 const route = useRoute()
 const { whatsappHref, onWhatsAppClick } = useWhatsapp()
 const { trackViewContent } = useAnalytics()
-const baseUrl = useApiBaseUrl()
+const baseUrl = useApiBase()
 const slug = String(route.params.slug)
 
 const { data: project, error } = await useAsyncData(`property-${slug}`, async () => {

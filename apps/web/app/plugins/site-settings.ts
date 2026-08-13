@@ -5,7 +5,7 @@ export default defineNuxtPlugin({
   enforce: 'pre',
   async setup() {
     const config = useRuntimeConfig()
-    const baseUrl = String(config.public.apiUrl || 'http://localhost:3001').replace(/\/$/, '')
+    const baseUrl = resolveApiBase()
 
     try {
       const settings = await $fetch<SiteSettings>(`${baseUrl}/settings`)

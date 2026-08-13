@@ -25,7 +25,7 @@ export const ObjectStorageFromSupabase = Layer.succeed(
   (() => {
     const url = process.env.SUPABASE_URL
     const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY
-    const bucket = process.env.SUPABASE_STORAGE_BUCKET ?? "properties"
+    const bucket = process.env.SUPABASE_STORAGE_BUCKET ?? "sgconsultoriaimobiliaria"
 
     if (!url || !serviceRoleKey) {
       return missingStorage

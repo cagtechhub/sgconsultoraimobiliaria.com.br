@@ -2,7 +2,7 @@
 import { Filter, SearchX } from 'lucide-vue-next'
 import type { Property, PropertyCategory, PropertyStatus } from '@gutierres/shared'
 import type { Project } from '~/types/project'
-import { mapPropertyToProject, useApiBaseUrl } from '~/utils/mapProperty'
+import { mapPropertyToProject } from '~/utils/mapProperty'
 
 useSiteSeoHead({
   title: 'Empreendimentos',
@@ -13,7 +13,7 @@ useSiteSeoHead({
 
 const route = useRoute()
 const router = useRouter()
-const baseUrl = useApiBaseUrl()
+const baseUrl = useApiBase()
 
 const statusOptions: { value: PropertyStatus | ''; label: string }[] = [
   { value: '', label: 'Todas' },

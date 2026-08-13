@@ -25,13 +25,12 @@ import {
 } from '@gutierres/shared'
 
 export const useAdminApi = () => {
-  const config = useRuntimeConfig()
   const token = useCookie<string | null>('admin_token', {
     sameSite: 'lax',
     maxAge: 60 * 60 * 24 * 7,
   })
 
-  const baseUrl = computed(() => String(config.public.apiUrl || 'http://localhost:3001').replace(/\/$/, ''))
+  const baseUrl = useApiBase()
 
   const ensureAccessToken = async (): Promise<string | null> => {
     if (import.meta.client) {

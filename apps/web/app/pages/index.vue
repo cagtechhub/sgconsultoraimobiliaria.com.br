@@ -22,7 +22,7 @@ const { featuredProject, allProjects } = useProjects()
 const { soldCases } = useSoldCases()
 const { whatsappHref, onWhatsAppClick } = useWhatsapp()
 const { trackLead } = useAnalytics()
-const apiBase = useApiBaseUrl()
+const apiBase = useApiBase()
 
 const steps = [
   {

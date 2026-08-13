@@ -19,7 +19,19 @@
     "lint": "yarn workspace @gutierres/web lint",
     "db:generate": "yarn workspace @gutierres/backend db:generate",
     "db:migrate": "yarn workspace @gutierres/backend db:migrate",
+    "db:push": "yarn workspace @gutierres/backend db:push",
     "postinstall": "yarn workspace @gutierres/shared build && yarn workspace @gutierres/web postinstall"
+  },
+  "resolutions": {
+    "vue": "3.5.39",
+    "@vue/compiler-core": "3.5.39",
+    "@vue/compiler-dom": "3.5.39",
+    "@vue/compiler-sfc": "3.5.39",
+    "@vue/reactivity": "3.5.39",
+    "@vue/runtime-core": "3.5.39",
+    "@vue/runtime-dom": "3.5.39",
+    "@vue/server-renderer": "3.5.39",
+    "@vue/shared": "3.5.39"
   },
   "devDependencies": {
     "concurrently": "^9.1.2"

@@ -1,9 +1,9 @@
 import type { Property } from '@gutierres/shared'
 import type { Project } from '~/types/project'
-import { mapPropertyToProject, useApiBaseUrl } from '~/utils/mapProperty'
+import { mapPropertyToProject } from '~/utils/mapProperty'
 
 export function useProjects() {
-  const baseUrl = useApiBaseUrl()
+  const baseUrl = useApiBase()
 
   const { data: featuredRaw } = useAsyncData(
     'properties-featured',

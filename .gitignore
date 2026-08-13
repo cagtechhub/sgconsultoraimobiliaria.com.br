@@ -13,3 +13,7 @@ dist
 .nitro
 
 .env.*
+!.env.example
+!**/.env.example
+
+gha_deploy*

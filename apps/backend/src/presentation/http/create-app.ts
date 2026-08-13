@@ -129,16 +129,37 @@ const parseStatusQuery = (value: unknown) => {
   return parsed.success ? parsed.data : undefined
 }
 
+const allowedOrigins = () => {
+  const origins = [
+    process.env.NUXT_PUBLIC_SITE_URL,
+    process.env.SITE_URL,
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+  ]
+    .map((value) => value?.trim().replace(/\/$/, ""))
+    .filter((value): value is string => Boolean(value))
+  return new Set(origins)
+}
+
 export const createApp = (
   runtime: ManagedRuntime.ManagedRuntime<AppServices, never>
 ): Express => {
   const app = express()
   app.use(express.json({ limit: "2mb" }))
-  app.use((_req, res, next) => {
-    res.setHeader("Access-Control-Allow-Origin", "*")
+  app.use((req, res, next) => {
+    const origin = req.headers.origin?.replace(/\/$/, "")
+    const allowlist = allowedOrigins()
+    if (origin && allowlist.has(origin)) {
+      res.setHeader("Access-Control-Allow-Origin", origin)
+      res.setHeader("Vary", "Origin")
+    } else if (!origin) {
+      // SSR / same-origin
+    } else if (allowlist.size === 0) {
+      res.setHeader("Access-Control-Allow-Origin", "*")
+    }
     res.setHeader("Access-Control-Allow-Methods", "GET,POST,PUT,PATCH,DELETE,OPTIONS")
     res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization")
-    if (_req.method === "OPTIONS") {
+    if (req.method === "OPTIONS") {
       res.sendStatus(204)
       return
     }

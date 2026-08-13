@@ -1,8 +1,7 @@
 import type { SoldCase } from '@gutierres/shared'
-import { useApiBaseUrl } from '~/utils/mapProperty'
 
 export function useSoldCases() {
-  const baseUrl = useApiBaseUrl()
+  const baseUrl = useApiBase()
 
   const { data: soldCases, pending, error } = useAsyncData(
     'sold-cases',

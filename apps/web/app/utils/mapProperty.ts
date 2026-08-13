@@ -44,8 +44,3 @@ export function mapPropertyToProject(property: Property): Project {
     })),
   }
 }
-
-export function useApiBaseUrl() {
-  const config = useRuntimeConfig()
-  return computed(() => String(config.public.apiUrl || 'http://localhost:3001').replace(/\/$/, ''))
-}
