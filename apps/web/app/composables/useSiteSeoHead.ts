@@ -1,4 +1,4 @@
-import { useSchemaOrg } from '@unhead/schema-org/vue'
+import { useJsonLdGraph } from './useJsonLdGraph'
 import { limitSeoText, useCanonicalUrl, usePublicSiteOrigin } from './useSiteSeoUrls'
 
 function trimUrl(value: string) {
@@ -173,7 +173,7 @@ export function useSiteSeoHead() {
     return graph
   })
 
-  useSchemaOrg(() => schemaNodes.value)
+  useJsonLdGraph('schema-site', () => schemaNodes.value)
 
   useHead(() => {
     const admin = isAdminRoute.value
@@ -202,8 +202,12 @@ export function useSiteSeoHead() {
         ...(admin
           ? []
           : [
-              { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
-              { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: '' },
+              { rel: 'preconnect' as const, href: 'https://fonts.googleapis.com' },
+              {
+                rel: 'preconnect' as const,
+                href: 'https://fonts.gstatic.com',
+                crossorigin: 'anonymous' as const,
+              },
             ]),
         { rel: 'icon', type: 'image/png', href: '/favicon.png' },
         {

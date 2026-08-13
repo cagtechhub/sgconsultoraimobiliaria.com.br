@@ -2,15 +2,16 @@
 import { ArrowLeft, ArrowRight, BadgeCheck, Calendar, Clock3, MapPin, MessageCircle, ShieldCheck, TrendingUp } from 'lucide-vue-next'
 import type { Property } from '@gutierres/shared'
 import { mapPropertyToProject } from '~/utils/mapProperty'
-import { useSchemaOrg } from '@unhead/schema-org/vue'
 
 const route = useRoute()
 const { onWhatsAppClick, buildHref } = useWhatsapp()
 const { trackViewContent } = useAnalytics()
 const baseUrl = useApiBase()
+const settings = useSiteSettings()
+const origin = usePublicSiteOrigin()
 const slug = String(route.params.slug)
 
-const { data: project, error } = await useAsyncData(`property-${slug}`, async () => {
+const projectAsync = useAsyncData(`property-${slug}`, async () => {
   try {
     const property = await $fetch<Property>(`${baseUrl.value}/properties/${slug}`)
     return mapPropertyToProject(property)
@@ -18,6 +19,75 @@ const { data: project, error } = await useAsyncData(`property-${slug}`, async ()
     return null
   }
 })
+const { data: project, error } = projectAsync
+
+const pageTitle = computed(() =>
+  project.value
+    ? limitSeoText(`${project.value.title} | ${settings.siteName.value}`, 65)
+    : settings.siteName.value,
+)
+const pageDescription = computed(() =>
+  project.value ? limitSeoText(project.value.description, 160) : '',
+)
+const pageUrl = computed(() => {
+  const o = origin.value
+  if (!o || !project.value) return ''
+  return `${o}/empreendimentos/${project.value.slug}`
+})
+
+useSeoMeta({
+  title: pageTitle,
+  description: pageDescription,
+  ogType: 'article',
+  ogTitle: pageTitle,
+  ogDescription: pageDescription,
+  ogImage: computed(() => project.value?.image || ''),
+  ogUrl: pageUrl,
+  twitterCard: 'summary_large_image',
+  twitterTitle: pageTitle,
+  twitterDescription: pageDescription,
+  twitterImage: computed(() => project.value?.image || ''),
+})
+
+useHead(() => ({
+  link: pageUrl.value ? [{ rel: 'canonical', href: pageUrl.value }] : [],
+}))
+
+useJsonLdGraph('schema-listing', () => {
+  if (!project.value || !pageUrl.value) return []
+  const home = origin.value ? `${origin.value}/` : '/'
+  return [
+    {
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Início', item: home },
+        {
+          '@type': 'ListItem',
+          position: 2,
+          name: 'Empreendimentos',
+          item: origin.value ? `${origin.value}/empreendimentos` : '/empreendimentos',
+        },
+        {
+          '@type': 'ListItem',
+          position: 3,
+          name: project.value.title,
+          item: pageUrl.value,
+        },
+      ],
+    },
+    {
+      '@type': 'RealEstateListing',
+      '@id': `${pageUrl.value}#listing`,
+      name: project.value.title,
+      description: pageDescription.value,
+      url: pageUrl.value,
+      image: project.value.image || undefined,
+      inLanguage: 'pt-BR',
+    },
+  ]
+})
+
+await projectAsync
 
 if (error.value || !project.value) {
   throw createError({ statusCode: 404, statusMessage: 'Empreendimento não encontrado' })
@@ -66,73 +136,6 @@ const whatsappProjectHref = computed(() =>
     `Olá! Tenho interesse no empreendimento ${project.value!.title}. Gostaria de mais informações.`,
   ),
 )
-
-const settings = useSiteSettings()
-const origin = usePublicSiteOrigin()
-
-const pageTitle = computed(() =>
-  limitSeoText(`${project.value!.title} | ${settings.siteName.value}`, 65),
-)
-const pageDescription = computed(() =>
-  limitSeoText(project.value!.description, 160),
-)
-const pageUrl = computed(() => {
-  const o = origin.value
-  if (!o || !project.value) return ''
-  return `${o}/empreendimentos/${project.value.slug}`
-})
-
-useSeoMeta({
-  title: pageTitle,
-  description: pageDescription,
-  ogType: 'article',
-  ogTitle: pageTitle,
-  ogDescription: pageDescription,
-  ogImage: computed(() => project.value?.image || ''),
-  ogUrl: pageUrl,
-  twitterCard: 'summary_large_image',
-  twitterTitle: pageTitle,
-  twitterDescription: pageDescription,
-  twitterImage: computed(() => project.value?.image || ''),
-})
-
-useHead(() => ({
-  link: pageUrl.value ? [{ rel: 'canonical', href: pageUrl.value }] : [],
-}))
-
-useSchemaOrg(() => {
-  if (!project.value || !pageUrl.value) return []
-  const home = origin.value ? `${origin.value}/` : '/'
-  return [
-    {
-      '@type': 'BreadcrumbList',
-      itemListElement: [
-        { '@type': 'ListItem', position: 1, name: 'Início', item: home },
-        {
-          '@type': 'ListItem',
-          position: 2,
-          name: 'Empreendimentos',
-          item: origin.value ? `${origin.value}/empreendimentos` : '/empreendimentos',
-        },
-        {
-          '@type': 'ListItem',
-          position: 3,
-          name: project.value.title,
-          item: pageUrl.value,
-        },
-      ],
-    },
-    {
-      '@type': 'RealEstateListing',
-      '@id': `${pageUrl.value}#listing`,
-      name: project.value.title,
-      description: pageDescription.value,
-      url: pageUrl.value,
-      image: project.value.image || undefined,
-      inLanguage: 'pt-BR',
-    },
-  ]
-})
 </script>
 
 <template>

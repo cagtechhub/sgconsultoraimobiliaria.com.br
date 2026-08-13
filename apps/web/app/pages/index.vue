@@ -14,7 +14,6 @@ import {
   Sparkles,
   TrendingUp,
 } from 'lucide-vue-next'
-import { useSchemaOrg } from '@unhead/schema-org/vue'
 
 const settings = useSiteSettings()
 const origin = usePublicSiteOrigin()
@@ -57,7 +56,7 @@ useHead(() => ({
   link: homeCanonical.value ? [{ rel: 'canonical', href: homeCanonical.value }] : [],
 }))
 
-useSchemaOrg(() => {
+useJsonLdGraph('schema-home', () => {
   const home = homeCanonical.value || '/'
   return [
     {

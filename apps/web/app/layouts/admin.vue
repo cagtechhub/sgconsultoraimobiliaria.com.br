@@ -1,4 +1,6 @@
 <script setup lang="ts">
+useSiteSeoHead()
+
 const route = useRoute()
 const { logout } = useAdminApi()
 

@@ -3,10 +3,12 @@ import { Filter, SearchX } from 'lucide-vue-next'
 import type { Property, PropertyCategory, PropertyStatus } from '@gutierres/shared'
 import type { Project } from '~/types/project'
 import { mapPropertyToProject } from '~/utils/mapProperty'
-import { useSchemaOrg } from '@unhead/schema-org/vue'
 
 const settings = useSiteSettings()
 const origin = usePublicSiteOrigin()
+const route = useRoute()
+const router = useRouter()
+const baseUrl = useApiBase()
 
 const listTitle = computed(() =>
   limitSeoText(`Empreendimentos | ${settings.siteName.value}`, 65),
@@ -35,10 +37,6 @@ useSeoMeta({
 useHead(() => ({
   link: listCanonical.value ? [{ rel: 'canonical', href: listCanonical.value }] : [],
 }))
-
-const route = useRoute()
-const router = useRouter()
-const baseUrl = useApiBase()
 
 const statusOptions: { value: PropertyStatus | ''; label: string }[] = [
   { value: '', label: 'Todas' },
@@ -71,13 +69,14 @@ const selectedStatus = computed({
   },
 })
 
-const { data: categories } = await useAsyncData(
+const categoriesAsync = useAsyncData(
   'property-categories',
   () => $fetch<PropertyCategory[]>(`${baseUrl.value}/categories`),
   { default: () => [] },
 )
+const { data: categories } = categoriesAsync
 
-const { data: projects, pending } = await useAsyncData(
+const projectsAsync = useAsyncData(
   'properties-list',
   async () => {
     const category = String(route.query.categoria || '')
@@ -96,8 +95,9 @@ const { data: projects, pending } = await useAsyncData(
     watch: [() => route.query.categoria, () => route.query.disponibilidade],
   },
 )
+const { data: projects, pending } = projectsAsync
 
-useSchemaOrg(() => {
+useJsonLdGraph('schema-listings', () => {
   const listUrl = listCanonical.value || '/empreendimentos'
   const home = origin.value ? `${origin.value}/` : '/'
   const items = (projects.value || []).slice(0, 20).map((item, index) => ({
@@ -126,6 +126,9 @@ useSchemaOrg(() => {
     },
   ]
 })
+
+await categoriesAsync
+await projectsAsync
 
 const resultLabel = computed(() => {
   const count = projects.value.length

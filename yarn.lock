@@ -2442,14 +2442,6 @@
     "@typescript-eslint/types" "8.62.1"
     eslint-visitor-keys "^5.0.0"
 
-"@unhead/schema-org@^3.0.4":
-  version "3.1.7"
-  resolved "https://registry.yarnpkg.com/@unhead/schema-org/-/schema-org-3.1.7.tgz#f792e962174e7de8578efcec7729d45a090bdc67"
-  integrity sha512-regij1Up7tsXbYApb8xG6gKqIk0zGxIkLujTwBuP+ekQ2YHvMuW4cxTe/kQOsQR89PJtPI/E+JzNlmcB3QODAQ==
-  dependencies:
-    ufo "^1.6.4"
-    unhead "3.1.7"
-
 "@unhead/vue@^2.1.15":
   version "2.1.15"
   resolved "https://registry.yarnpkg.com/@unhead/vue/-/vue-2.1.15.tgz#e890da2addd5d56511b1d7edc2878562cd7bc49c"
@@ -7848,14 +7840,6 @@ unhead@2.1.15, unhead@^2.1.15:
   dependencies:
     hookable "^6.0.1"
 
-unhead@3.1.7:
-  version "3.1.7"
-  resolved "https://registry.yarnpkg.com/unhead/-/unhead-3.1.7.tgz#d6d1cd59f144ec47e9d6303b1263fa2ea8ee6d4d"
-  integrity sha512-Db1M8yQmxdzhQFMmlZ6cr/ZlpGPRabTMDPBE4GGBv69TYUNP6jV8z54H8PTU08gMsWXVtqPBs9VwCldjrqknGw==
-  dependencies:
-    hookable "^6.1.1"
-    unplugin "^3.2.0"
-
 unicorn-magic@^0.3.0:
   version "0.3.0"
   resolved "https://registry.yarnpkg.com/unicorn-magic/-/unicorn-magic-0.3.0.tgz#4efd45c85a69e0dd576d25532fbfa22aa5c8a104"
@@ -7955,7 +7939,7 @@ unplugin@^2.3.11:
     picomatch "^4.0.3"
     webpack-virtual-modules "^0.6.2"
 
-unplugin@^3.0.0, unplugin@^3.2.0:
+unplugin@^3.0.0:
   version "3.3.0"
   resolved "https://registry.yarnpkg.com/unplugin/-/unplugin-3.3.0.tgz#18de476b6130a6cde94db87f70ac32b97757f3c9"
   integrity sha512-qa66K+crbfyE6JK10GjvbJeRrOsuC/JpbnHctfyp/i4oBTxWOzJfRZyDiOk1PtErMFRu8JhsU/wPvOdBNWe5Rg==
