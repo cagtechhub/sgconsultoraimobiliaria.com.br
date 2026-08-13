@@ -3,13 +3,38 @@ import { Filter, SearchX } from 'lucide-vue-next'
 import type { Property, PropertyCategory, PropertyStatus } from '@gutierres/shared'
 import type { Project } from '~/types/project'
 import { mapPropertyToProject } from '~/utils/mapProperty'
+import { useSchemaOrg } from '@unhead/schema-org/vue'
 
-useSiteSeoHead({
-  title: 'Empreendimentos',
-  description:
+const settings = useSiteSettings()
+const origin = usePublicSiteOrigin()
+
+const listTitle = computed(() =>
+  limitSeoText(`Empreendimentos | ${settings.siteName.value}`, 65),
+)
+const listDescription = computed(() =>
+  limitSeoText(
     'Lista completa de empreendimentos com curadoria comercial. Filtre por categoria e disponibilidade.',
-  path: '/empreendimentos',
+    160,
+  ),
+)
+const listCanonical = computed(() => {
+  const o = origin.value
+  return o ? `${o}/empreendimentos` : ''
 })
+
+useSeoMeta({
+  title: listTitle,
+  description: listDescription,
+  ogTitle: listTitle,
+  ogDescription: listDescription,
+  ogUrl: listCanonical,
+  twitterTitle: listTitle,
+  twitterDescription: listDescription,
+})
+
+useHead(() => ({
+  link: listCanonical.value ? [{ rel: 'canonical', href: listCanonical.value }] : [],
+}))
 
 const route = useRoute()
 const router = useRouter()
@@ -71,6 +96,36 @@ const { data: projects, pending } = await useAsyncData(
     watch: [() => route.query.categoria, () => route.query.disponibilidade],
   },
 )
+
+useSchemaOrg(() => {
+  const listUrl = listCanonical.value || '/empreendimentos'
+  const home = origin.value ? `${origin.value}/` : '/'
+  const items = (projects.value || []).slice(0, 20).map((item, index) => ({
+    '@type': 'ListItem',
+    position: index + 1,
+    name: item.title,
+    url: origin.value
+      ? `${origin.value}/empreendimentos/${item.slug}`
+      : `/empreendimentos/${item.slug}`,
+  }))
+
+  return [
+    {
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Início', item: home },
+        { '@type': 'ListItem', position: 2, name: 'Empreendimentos', item: listUrl },
+      ],
+    },
+    {
+      '@type': 'ItemList',
+      name: 'Empreendimentos',
+      url: listUrl,
+      numberOfItems: items.length,
+      itemListElement: items,
+    },
+  ]
+})
 
 const resultLabel = computed(() => {
   const count = projects.value.length

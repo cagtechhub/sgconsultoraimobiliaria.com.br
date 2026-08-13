@@ -1,10 +1,13 @@
-# SG Consultora Imobiliária
+# Gutierres Consultoria
 
-Landing page institucional para consultoria imobiliária premium.
+> Consultoria de vendas imobiliárias com curadoria de empreendimentos e acompanhamento comercial. Não somos corretora de imóveis e não possuímos registro CRECI.
 
-## Principais temas
+## Links principais
 
-- Consultoria imobiliária personalizada
-- Curadoria de empreendimentos
-- Compra, venda e investimento em imóveis
-- Agendamento comercial via formulário ou WhatsApp
+- [Página inicial](/): Posicionamento, serviços, empreendimentos em destaque e contato.
+- [Empreendimentos](/empreendimentos): Lista com filtro por categoria e disponibilidade.
+- [Admin](/admin): Área restrita (não indexar).
+
+## Contato
+
+Agendamento comercial pelo formulário do site ou WhatsApp.

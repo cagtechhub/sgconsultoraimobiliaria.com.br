@@ -1,133 +1,217 @@
 import { useSchemaOrg } from '@unhead/schema-org/vue'
+import { limitSeoText, useCanonicalUrl, usePublicSiteOrigin } from './useSiteSeoUrls'
 
-export function useSiteSeoHead(overrides?: {
-  title?: string
-  description?: string
-  image?: string
-  path?: string
-  type?: 'website' | 'article'
-}) {
+function trimUrl(value: string) {
+  return value.trim().replace(/\/$/, '')
+}
+
+function absoluteAssetUrl(origin: string, value: string) {
+  const trimmed = value.trim()
+  if (!trimmed) return ''
+  if (/^https?:\/\//i.test(trimmed)) return trimmed
+  if (!origin) return trimmed
+  return `${trimUrl(origin)}${trimmed.startsWith('/') ? trimmed : `/${trimmed}`}`
+}
+
+/** Metadados globais: canônico, robots, Open Graph, Twitter e Schema.org. */
+export function useSiteSeoHead() {
   const settings = useSiteSettings()
-  const canonicalUrl = useCanonicalUrl(overrides?.path)
+  const route = useRoute()
+  const canonicalUrl = useCanonicalUrl()
+  const origin = usePublicSiteOrigin()
+
+  const isAdminRoute = computed(
+    () => route.path === '/admin' || route.path.startsWith('/admin/'),
+  )
 
   const siteName = computed(() => settings.siteName.value.trim())
   const locality = computed(() => settings.seoLocality.value.trim())
-  const noIndex = computed(() => settings.noIndex.value)
-  const pageTitle = computed(() => overrides?.title || 'Consultora de vendas imobiliárias')
-  const socialTitle = computed(() =>
-    overrides?.title ? `${overrides.title} | ${siteName.value}` : `${siteName.value} | ${pageTitle.value}`,
-  )
-  const description = computed(() => {
-    if (overrides?.description) return overrides.description
-    const localText = locality.value ? ` Atendimento em ${locality.value}.` : ''
-    return `Consultora de vendas imobiliárias. Apresentação comercial de empreendimentos com curadoria e acompanhamento — sem registro CRECI.${localText}`
+  const noIndex = computed(() => {
+    if (isAdminRoute.value) return true
+    return settings.noIndex.value
   })
-  const ogImage = computed(
-    () => String(overrides?.image || settings.defaultOgImageUrl.value || '').trim(),
+
+  const pageTitle = computed(() => {
+    const loc = locality.value
+    if (loc) return `Consultoria imobiliária em ${loc}`
+    return 'Consultora de vendas imobiliárias'
+  })
+
+  const documentTitle = computed(() =>
+    limitSeoText(`${pageTitle.value} | ${siteName.value}`, 65),
   )
-  const ogType = computed(() => overrides?.type || 'website')
+
+  const metaDescription = computed(() => {
+    const loc = locality.value
+    const name = siteName.value
+    const localBit = loc ? ` em ${loc}` : ''
+    const core = `${name}: consultoria de vendas imobiliárias${localBit}. Curadoria de empreendimentos e acompanhamento comercial — sem registro CRECI.`
+    return limitSeoText(core, 160)
+  })
+
+  const ogImage = computed(() =>
+    absoluteAssetUrl(origin.value, settings.defaultOgImageUrl.value),
+  )
+
+  const sameAs = computed(() =>
+    [settings.instagramUrl.value, settings.facebookUrl.value, settings.linkedinUrl.value]
+      .map((url) => url.trim())
+      .filter((url) => url.length > 0 && /^https?:\/\//i.test(url)),
+  )
+
+  const seoKeywords = computed(() =>
+    [
+      'consultoria imobiliária',
+      'empreendimentos',
+      'curadoria de imóveis',
+      'consultora de vendas',
+      'lançamentos imobiliários',
+      siteName.value,
+    ]
+      .filter(Boolean)
+      .join(', '),
+  )
 
   useSeoMeta({
-    title: pageTitle,
-    description,
+    title: documentTitle,
+    description: metaDescription,
+    applicationName: siteName,
+    keywords: seoKeywords,
     ogSiteName: siteName,
-    ogType,
+    ogType: 'website',
     ogLocale: 'pt_BR',
-    ogTitle: socialTitle,
-    ogDescription: description,
+    ogTitle: documentTitle,
+    ogDescription: metaDescription,
     ogImage,
-    ogImageAlt: socialTitle,
+    ogImageWidth: '1200',
+    ogImageHeight: '630',
+    ogImageAlt: `${siteName.value} — consultoria imobiliária`,
     ogUrl: canonicalUrl,
     twitterCard: 'summary_large_image',
-    twitterTitle: socialTitle,
-    twitterDescription: description,
+    twitterTitle: documentTitle,
+    twitterDescription: metaDescription,
     twitterImage: ogImage,
+    themeColor: '#11100e',
     author: siteName,
   })
 
-  useSchemaOrg(() => {
-    const phone = String(
+  const schemaNodes = computed(() => {
+    if (isAdminRoute.value) return []
+    const baseOrigin = trimUrl(origin.value)
+    const url = canonicalUrl.value || (baseOrigin ? `${baseOrigin}/` : '')
+    if (!url) return []
+
+    const phoneDigits = String(
       settings.businessPhone.value || settings.whatsappNumber.value || '',
     ).replace(/\D/g, '')
-    const tel = phone ? `+${phone}` : ''
+    const tel = phoneDigits ? `+${phoneDigits}` : ''
+    const addressLine = settings.businessAddress.value.trim()
     const contactEmail = settings.contactEmail.value.trim()
-    const instagram = settings.instagramUrl.value.trim()
-    const facebook = settings.facebookUrl.value.trim()
-    const linkedin = settings.linkedinUrl.value.trim()
-    const sameAs = [instagram, facebook, linkedin].filter(Boolean)
-    const siteOrigin = canonicalUrl.value.replace(/\/empreendimentos\/.*$/, '').replace(/\/$/, '') || canonicalUrl.value
+    const logoUrl = baseOrigin ? `${baseOrigin}/img/logo-mark.png` : ''
 
     const organization: Record<string, unknown> = {
       '@type': 'ProfessionalService',
-      '@id': `${siteOrigin}/#organization`,
+      '@id': `${baseOrigin || url}/#organization`,
       name: siteName.value,
-      url: `${siteOrigin}/`,
-      description: description.value,
-      image: String(settings.defaultOgImageUrl.value || ogImage.value).trim(),
+      url: baseOrigin ? `${baseOrigin}/` : url,
+      description: metaDescription.value,
       areaServed: 'BR',
-      address: {
-        '@type': 'PostalAddress',
-        addressCountry: 'BR',
-        ...(locality.value ? { addressLocality: locality.value } : {}),
-      },
     }
 
+    if (logoUrl) {
+      organization.logo = { '@type': 'ImageObject', url: logoUrl }
+      organization.image = logoUrl
+    }
+
+    if (sameAs.value.length) organization.sameAs = [...sameAs.value]
     if (tel) organization.telephone = tel
-    if (sameAs.length) organization.sameAs = sameAs
     if (contactEmail || tel) {
       organization.contactPoint = {
         '@type': 'ContactPoint',
         contactType: 'sales',
         areaServed: 'BR',
-        availableLanguage: 'Portuguese',
+        availableLanguage: ['Portuguese'],
         ...(contactEmail ? { email: contactEmail } : {}),
         ...(tel ? { telephone: tel } : {}),
       }
     }
 
-    const nodes: Record<string, unknown>[] = [
-      organization,
-      {
-        '@type': 'WebSite',
-        '@id': `${siteOrigin}/#website`,
-        url: `${siteOrigin}/`,
-        name: siteName.value,
-        description: description.value,
-        inLanguage: 'pt-BR',
-        publisher: { '@id': `${siteOrigin}/#organization` },
-      },
-    ]
+    const graph: Array<Record<string, unknown>> = [organization]
 
-    if (overrides?.title && overrides?.path?.includes('/empreendimentos/')) {
-      nodes.push({
-        '@type': 'RealEstateListing',
-        '@id': `${canonicalUrl.value}#listing`,
-        name: overrides.title,
-        description: description.value,
-        url: canonicalUrl.value,
-        image: ogImage.value || undefined,
-        inLanguage: 'pt-BR',
+    if (tel || addressLine || locality.value) {
+      const postal: Record<string, string> = {
+        '@type': 'PostalAddress',
+        addressCountry: 'BR',
+      }
+      if (addressLine) postal.streetAddress = addressLine
+      if (locality.value) postal.addressLocality = locality.value
+
+      graph.push({
+        '@type': 'LocalBusiness',
+        '@id': `${baseOrigin || url}/#localbusiness`,
+        name: siteName.value,
+        url: baseOrigin ? `${baseOrigin}/` : url,
+        description: metaDescription.value,
+        parentOrganization: { '@id': `${baseOrigin || url}/#organization` },
+        ...(logoUrl ? { image: logoUrl } : {}),
+        ...(sameAs.value.length ? { sameAs: [...sameAs.value] } : {}),
+        ...(tel ? { telephone: tel } : {}),
+        address: postal,
       })
     }
 
-    return nodes
+    graph.push({
+      '@type': 'WebSite',
+      '@id': `${baseOrigin || url}/#website`,
+      url: baseOrigin ? `${baseOrigin}/` : url,
+      name: siteName.value,
+      description: metaDescription.value,
+      inLanguage: 'pt-BR',
+      publisher: { '@id': `${baseOrigin || url}/#organization` },
+    })
+
+    return graph
   })
 
-  useHead(() => ({
-    meta: [
-      {
-        name: 'robots',
-        content: noIndex.value
-          ? 'noindex, nofollow'
-          : 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1',
-      },
-    ],
-    link: [
-      { rel: 'canonical', href: canonicalUrl.value },
-      { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
-      { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: '' },
-      { rel: 'preconnect', href: 'https://images.unsplash.com' },
-      { rel: 'icon', type: 'image/png', href: '/favicon.png' },
-    ],
-  }))
+  useSchemaOrg(() => schemaNodes.value)
+
+  useHead(() => {
+    const admin = isAdminRoute.value
+    const canon = admin ? '' : canonicalUrl.value
+    const hreflang =
+      canon && !noIndex.value
+        ? ([
+            { rel: 'alternate' as const, hreflang: 'pt-BR', href: canon },
+            { rel: 'alternate' as const, hreflang: 'x-default', href: canon },
+          ] as const)
+        : ([] as const)
+
+    return {
+      title: admin ? `${siteName.value} | Admin` : undefined,
+      meta: [
+        {
+          name: 'robots',
+          content: noIndex.value
+            ? 'noindex, nofollow'
+            : 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1',
+        },
+      ],
+      link: [
+        ...(canon ? [{ rel: 'canonical' as const, href: canon }] : []),
+        ...hreflang,
+        ...(admin
+          ? []
+          : [
+              { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
+              { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: '' },
+            ]),
+        { rel: 'icon', type: 'image/png', href: '/favicon.png' },
+        {
+          rel: 'apple-touch-icon',
+          href: '/img/logo-mark.png',
+          sizes: '180x180',
+        },
+      ],
+    }
+  })
 }

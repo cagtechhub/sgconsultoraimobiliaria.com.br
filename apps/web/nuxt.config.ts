@@ -46,8 +46,12 @@ export default defineNuxtConfig({
   },
   app: {
     head: {
-      titleTemplate: '%s | Stefanny Gutierres',
+      titleTemplate: '%s',
       htmlAttrs: { lang: 'pt-BR' },
+      meta: [
+        { name: 'language', content: 'pt-BR' },
+        { name: 'theme-color', content: '#11100e' },
+      ],
     },
   },
   tailwindcss: {

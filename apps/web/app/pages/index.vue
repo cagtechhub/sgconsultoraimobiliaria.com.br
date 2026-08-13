@@ -14,8 +14,65 @@ import {
   Sparkles,
   TrendingUp,
 } from 'lucide-vue-next'
+import { useSchemaOrg } from '@unhead/schema-org/vue'
 
-useSiteSeoHead()
+const settings = useSiteSettings()
+const origin = usePublicSiteOrigin()
+
+const homeTitle = computed(() => {
+  const name = settings.siteName.value
+  const loc = settings.seoLocality.value.trim()
+  const base = loc
+    ? `Consultoria imobiliária em ${loc} | ${name}`
+    : `Consultora de vendas imobiliárias | ${name}`
+  return limitSeoText(base, 65)
+})
+
+const homeDescription = computed(() => {
+  const name = settings.siteName.value
+  const loc = settings.seoLocality.value.trim()
+  const localBit = loc ? ` em ${loc}` : ''
+  return limitSeoText(
+    `${name}: consultoria de vendas imobiliárias${localBit}. Curadoria de empreendimentos e acompanhamento comercial — sem registro CRECI.`,
+    160,
+  )
+})
+
+const homeCanonical = computed(() => {
+  const o = origin.value
+  return o ? `${o}/` : ''
+})
+
+useSeoMeta({
+  title: homeTitle,
+  description: homeDescription,
+  ogTitle: homeTitle,
+  ogDescription: homeDescription,
+  ogUrl: homeCanonical,
+  twitterTitle: homeTitle,
+  twitterDescription: homeDescription,
+})
+
+useHead(() => ({
+  link: homeCanonical.value ? [{ rel: 'canonical', href: homeCanonical.value }] : [],
+}))
+
+useSchemaOrg(() => {
+  const home = homeCanonical.value || '/'
+  return [
+    {
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        {
+          '@type': 'ListItem',
+          position: 1,
+          name: 'Início',
+          item: home,
+        },
+      ],
+    },
+  ]
+})
 
 const { featuredProject, allProjects } = useProjects()
 const { soldCases } = useSoldCases()

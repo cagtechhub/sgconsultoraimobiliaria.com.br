@@ -1,16 +1,6 @@
-import { getRequestURL } from 'h3'
-
-function noIndexFlag(config: { public?: Record<string, unknown> }) {
-  const value = config.public?.noIndex
-  return value === true || value === 'true' || value === '1'
-}
-
 export default defineEventHandler((event) => {
   const config = useRuntimeConfig(event)
-  const configured = String(config.public?.siteUrl || '')
-    .trim()
-    .replace(/\/$/, '')
-  const origin = configured || getRequestURL(event).origin
+  const siteUrl = resolveSiteOrigin(event)
 
   setResponseHeader(event, 'content-type', 'text/plain; charset=utf-8')
 
@@ -20,11 +10,23 @@ Disallow: /
 `
   }
 
-  return `User-agent: *
-Allow: /
-Disallow: /admin
-Disallow: /admin/
+  const lines = [
+    'User-agent: *',
+    'Allow: /',
+    'Disallow: /admin',
+    'Disallow: /admin/',
+    'Disallow: /api/',
+    '',
+    'User-agent: Mediapartners-Google',
+    'Disallow: /admin',
+    'Disallow: /admin/',
+    '',
+    'User-agent: AdsBot-Google',
+    'Disallow: /admin',
+    'Disallow: /admin/',
+    '',
+    ...(siteUrl ? [`Sitemap: ${siteUrl}/sitemap.xml`] : []),
+  ]
 
-Sitemap: ${origin}/sitemap.xml
-`
+  return lines.join('\n')
 })

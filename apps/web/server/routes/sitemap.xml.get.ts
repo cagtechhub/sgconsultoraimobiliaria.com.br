@@ -1,14 +1,7 @@
-import { getRequestURL } from 'h3'
-
 type SitemapProperty = {
   slug: string
   updatedAt?: string | Date
   published?: boolean
-}
-
-function noIndexFlag(config: { public?: Record<string, unknown> }) {
-  const value = config.public?.noIndex
-  return value === true || value === 'true' || value === '1'
 }
 
 function escapeXml(value: string) {
@@ -44,10 +37,13 @@ export default defineEventHandler(async (event) => {
     return 'Not found'
   }
 
-  const configured = String(config.public?.siteUrl || '')
-    .trim()
-    .replace(/\/$/, '')
-  const origin = configured || getRequestURL(event).origin
+  const origin = resolveSiteOrigin(event)
+  if (!origin) {
+    setResponseStatus(event, 404)
+    setResponseHeader(event, 'content-type', 'text/plain; charset=utf-8')
+    return 'Not found'
+  }
+
   const apiBase = resolveApiBase()
 
   let properties: SitemapProperty[] = []
@@ -67,14 +63,15 @@ export default defineEventHandler(async (event) => {
       }),
     )
 
+  const now = toLastmod()
   const staticUrls = [
     urlEntry(`${origin}/`, {
-      lastmod: toLastmod(),
+      lastmod: now,
       changefreq: 'weekly',
       priority: '1',
     }),
     urlEntry(`${origin}/empreendimentos`, {
-      lastmod: toLastmod(),
+      lastmod: now,
       changefreq: 'weekly',
       priority: '0.9',
     }),
