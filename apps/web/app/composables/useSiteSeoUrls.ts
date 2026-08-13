@@ -10,12 +10,19 @@ export function limitSeoText(value: string, max: number) {
 
 export function usePublicSiteOrigin() {
   const { siteUrl } = useSiteSettings()
-  const requestUrl = import.meta.server ? useRequestURL() : null
+  let requestOrigin = ''
+  if (import.meta.server) {
+    try {
+      requestOrigin = normalizeOrigin(useRequestURL().origin)
+    } catch {
+      requestOrigin = ''
+    }
+  }
 
   return computed(() => {
     const configured = normalizeOrigin(siteUrl.value)
     if (configured) return configured
-    if (requestUrl) return normalizeOrigin(requestUrl.origin)
+    if (requestOrigin) return requestOrigin
     if (import.meta.client) return window.location.origin.replace(/\/$/, '')
     return ''
   })

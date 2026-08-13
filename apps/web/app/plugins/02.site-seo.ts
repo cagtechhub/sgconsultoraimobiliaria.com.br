@@ -1,8 +1,7 @@
 export default defineNuxtPlugin({
-  name: 'site-settings',
+  name: 'site-seo',
   enforce: 'pre',
-  async setup() {
-    await loadSiteSettings()
+  setup() {
     useSiteSeoHead()
   },
 })
