@@ -44,19 +44,26 @@ Opcional no backend:
 - `ADMIN_ALLOWED_EMAILS` — CSV de e-mails autorizados
 - `ADMIN_REQUIRE_ROLE=true` — exige `app_metadata.role = "admin"` no usuário
 
-## Docker + Traefik (produção)
+## Docker + Traefik + Cloudflare
 
-Padrão da OS Up2tech: Compose **sem** Postgres local e **sem** `ports:` no host. O Traefik alcança os containers pela rede bridge `web`. Banco = Postgres do Supabase (`DATABASE_URL`).
+O Compose sobe **backend** e **web** na rede externa do Traefik (sem publicar portas no host). O banco é o Postgres do Supabase. O Cloudflare fica **na frente** (CDN/WAF); o Traefik continua na origem.
 
-### Pré-requisitos na VPS
+Pré-requisitos:
+- Docker + Compose; Traefik na OS (rede `web`, entrypoint `websecure`, **não** `network_mode: host`)
+- No Traefik da OS: certificado **Cloudflare Origin CA** como default (apex, `www` e `API_DOMAIN`)
+- DNS no Cloudflare: A/AAAA de `DOMAIN`, `www` e `API_DOMAIN` para o IP da VPS, **Proxied**
+- SSL/TLS no Cloudflare: **Full (strict)** — não Flexible
+- Sem Let’s Encrypt HTTP-01 nestes routers (o proxy intercepta o desafio)
+- `.env` de produção **só na VPS** (copie de `.env.example`)
+- Uma vez contra o Supabase: `yarn db:push` (ou `yarn db:migrate`) — **não** rodar em todo deploy
 
-1. Traefik em modo bridge (não `network_mode: host`), com entrypoints `web`/`websecure` e certresolver `letsencrypt`.
-2. Rede externa: `docker network create web`
-3. DNS de `DOMAIN` (site) e `API_DOMAIN` (API) apontando para a OS — **domínios distintos**.
-4. `.env` de produção **só na VPS** (copie de `.env.example`). Não commitar segredos.
-5. Uma vez contra o Supabase: `yarn db:push` (ou `yarn db:migrate`) — **não** rodar em todo deploy.
+`TRAEFIK_NETWORK` deve ser `web`. **Nunca** `host`.
 
-`TRAEFIK_NETWORK` deve ser `web`. **Nunca** `host` (a rede built-in não aceita aliases e quebra o Compose).
+Roteamento:
+- `https://DOMAIN` (e `www` → apex) → `web:3000`
+- `https://API_DOMAIN` → `backend:3001`
+
+Não hospedar o mesmo `DOMAIN` no Cloudflare Pages e no Traefik.
 
 ### Variáveis Nuxt
 

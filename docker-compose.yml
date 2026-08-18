@@ -1,11 +1,6 @@
-# Produção na OS (Traefik + Supabase). Não publica ports; não sobe Postgres local.
-#
-# Pré-requisitos na VPS:
-#   docker network create web
-#   DNS de DOMAIN e API_DOMAIN apontando para a OS
-#   .env de produção só na VPS (ver .env.example)
-#
-# Subir: ./deploy.sh   ou   docker compose build && docker compose up -d
+# Produção: Cloudflare (proxy laranja) → VPS → Traefik → containers.
+# Sem ports no host. Sem Postgres local. TLS na origem = Origin CA no Traefik da OS
+# (não Let's Encrypt / HTTP-01 — conflita com o proxy da Cloudflare).
 #
 # SSR: NUXT_API_BASE usa container_name único (não o service name `backend`).
 
@@ -39,7 +34,6 @@ services:
       - traefik.http.routers.gutierresconsultoria-api.rule=Host(`${API_DOMAIN}`)
       - traefik.http.routers.gutierresconsultoria-api.entrypoints=${TRAEFIK_ENTRYPOINT:-websecure}
       - traefik.http.routers.gutierresconsultoria-api.tls=true
-      - traefik.http.routers.gutierresconsultoria-api.tls.certresolver=${TRAEFIK_CERT_RESOLVER:-letsencrypt}
       - traefik.http.services.gutierresconsultoria-api.loadbalancer.server.port=3001
 
   web:
@@ -79,10 +73,13 @@ services:
     labels:
       - traefik.enable=true
       - traefik.docker.network=${TRAEFIK_NETWORK:-web}
-      - traefik.http.routers.gutierresconsultoria-web.rule=Host(`${DOMAIN}`)
+      - traefik.http.middlewares.gutierresconsultoria-www.redirectregex.regex=^https://www\.(.+)
+      - traefik.http.middlewares.gutierresconsultoria-www.redirectregex.replacement=https://$${1}
+      - traefik.http.middlewares.gutierresconsultoria-www.redirectregex.permanent=true
+      - traefik.http.routers.gutierresconsultoria-web.rule=Host(`${DOMAIN}`) || Host(`www.${DOMAIN}`)
       - traefik.http.routers.gutierresconsultoria-web.entrypoints=${TRAEFIK_ENTRYPOINT:-websecure}
       - traefik.http.routers.gutierresconsultoria-web.tls=true
-      - traefik.http.routers.gutierresconsultoria-web.tls.certresolver=${TRAEFIK_CERT_RESOLVER:-letsencrypt}
+      - traefik.http.routers.gutierresconsultoria-web.middlewares=gutierresconsultoria-www
       - traefik.http.services.gutierresconsultoria-web.loadbalancer.server.port=3000
 
 networks:
