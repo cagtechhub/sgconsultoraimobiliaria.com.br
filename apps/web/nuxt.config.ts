@@ -42,6 +42,7 @@ export default defineNuxtConfig({
         'https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=1200&q=80',
       ga4MeasurementId: '',
       metaPixelId: '',
+      googleSiteVerification: '',
     },
   },
   app: {

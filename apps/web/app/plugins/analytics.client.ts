@@ -65,15 +65,24 @@ export default defineNuxtPlugin({
 
     const gaId = settings.ga4MeasurementId.value.trim()
     const pixelId = settings.metaPixelId.value.trim()
+    const gaAlreadyInHead =
+      typeof document !== 'undefined' &&
+      Boolean(document.querySelector('script[src*="googletagmanager.com/gtag/js"]'))
 
-    if (gaId) loadGa4(gaId)
+    if (gaId && !gaAlreadyInHead) loadGa4(gaId)
     if (pixelId) loadMetaPixel(pixelId)
 
-    // PageView inicial (exceto admin)
     const initialPath = router.currentRoute.value.fullPath
     if (!initialPath.startsWith('/admin')) {
-      // aguarda title/head estabilizar
-      requestAnimationFrame(() => trackPageView(initialPath))
+      requestAnimationFrame(() => {
+        if (gaAlreadyInHead) {
+          if (pixelId && typeof window.fbq === 'function') {
+            window.fbq('track', 'PageView')
+          }
+          return
+        }
+        trackPageView(initialPath)
+      })
     }
 
     router.afterEach((to, from) => {

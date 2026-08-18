@@ -19,6 +19,7 @@ export function useSiteSeoHead() {
   const route = useRoute()
   const canonicalUrl = useCanonicalUrl()
   const origin = usePublicSiteOrigin()
+  const runtimeConfig = useRuntimeConfig()
 
   const isAdminRoute = computed(
     () => route.path === '/admin' || route.path.startsWith('/admin/'),
@@ -26,6 +27,13 @@ export function useSiteSeoHead() {
 
   const siteName = computed(() => settings.siteName.value.trim())
   const locality = computed(() => settings.seoLocality.value.trim())
+  const ga4Id = computed(() => {
+    const raw = settings.ga4MeasurementId.value.trim()
+    return /^G-[A-Z0-9]+$/i.test(raw) ? raw : ''
+  })
+  const googleSiteVerification = computed(() =>
+    String(runtimeConfig.public.googleSiteVerification || '').trim(),
+  )
   const noIndex = computed(() => {
     if (isAdminRoute.value) return true
     return settings.noIndex.value
@@ -186,6 +194,28 @@ export function useSiteSeoHead() {
           ] as const)
         : ([] as const)
 
+    const measurementId = ga4Id.value
+    const gaScripts =
+      !admin && measurementId
+        ? [
+            {
+              key: 'ga4-src',
+              src: `https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(measurementId)}`,
+              async: true,
+            },
+            {
+              key: 'ga4-inline',
+              innerHTML: [
+                'window.dataLayer=window.dataLayer||[];',
+                'function gtag(){dataLayer.push(arguments);}',
+                'window.gtag=window.gtag||gtag;',
+                "gtag('js',new Date());",
+                `gtag('config','${measurementId}');`,
+              ].join(''),
+            },
+          ]
+        : []
+
     return {
       title: admin ? `${siteName.value} | Admin` : undefined,
       meta: [
@@ -195,7 +225,16 @@ export function useSiteSeoHead() {
             ? 'noindex, nofollow'
             : 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1',
         },
+        ...(googleSiteVerification.value
+          ? [
+              {
+                name: 'google-site-verification',
+                content: googleSiteVerification.value,
+              },
+            ]
+          : []),
       ],
+      script: gaScripts,
       link: [
         ...(canon ? [{ rel: 'canonical' as const, href: canon }] : []),
         ...hreflang,
