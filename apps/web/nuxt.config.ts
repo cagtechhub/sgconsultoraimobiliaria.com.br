@@ -32,7 +32,7 @@ export default defineNuxtConfig({
       seoLocality: 'Brasil',
       businessAddress: '',
       businessPhone: '',
-      contactEmail: 'contato@gutierresconsultoria.com.br',
+      contactEmail: 'contato@sgconsultoraimobiliaria.com.br',
       whatsappNumber: '',
       whatsappMessage: 'Olá! Gostaria de agendar uma consultoria imobiliária.',
       instagramUrl: '',

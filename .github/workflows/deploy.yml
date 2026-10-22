@@ -30,7 +30,7 @@ jobs:
           script_stop: true
           script: |
             set -euo pipefail
-            APP_DIR="${APP_DIR:-/opt/gutierresconsultoria.com.br}"
+            APP_DIR="${APP_DIR:-/opt/sgconsultoraimobiliaria.com.br}"
             cd "$APP_DIR"
             git fetch origin
             git checkout main

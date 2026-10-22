@@ -1,7 +1,7 @@
 import type { SiteSettings } from '@gutierres/shared'
 
 const DEFAULT_SITE_NAME = 'Stefanny Gutierres'
-const DEFAULT_CONTACT_EMAIL = 'contato@gutierresconsultoria.com.br'
+const DEFAULT_CONTACT_EMAIL = 'contato@sgconsultoraimobiliaria.com.br'
 const DEFAULT_WHATSAPP_MESSAGE =
   'Olá! Gostaria de agendar uma consultoria imobiliária.'
 

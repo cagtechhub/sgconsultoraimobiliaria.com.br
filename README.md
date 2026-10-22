@@ -26,6 +26,7 @@ Monorepo com landing Nuxt 4 + painel admin e API Express + Effect (clean archite
 ## Desenvolvimento
 
 ```bash
+nvm use            # Node >= 24 (.nvmrc)
 corepack yarn install
 cp .env.example .env   # preencha SUPABASE_URL, ANON_KEY e SERVICE_ROLE_KEY
 # Crie um usuário em Authentication → Users no Supabase (Studio local ou cloud)
@@ -35,9 +36,9 @@ corepack yarn db:migrate
 corepack yarn dev
 ```
 
-- Site: http://localhost:3000  
-- Admin: http://localhost:3000/admin/login  
-- API: http://localhost:3001  
+- Site: http://localhost:3000
+- Admin: http://localhost:3000/admin/login
+- API: http://localhost:3001
 
 Opcional no backend:
 
@@ -49,6 +50,7 @@ Opcional no backend:
 O Compose sobe **backend** e **web** na rede externa do Traefik (sem publicar portas no host). O banco é o Postgres do Supabase. O Cloudflare fica **na frente** (CDN/WAF); o Traefik continua na origem.
 
 Pré-requisitos:
+
 - Docker + Compose; Traefik na OS (rede `web`, entrypoint `websecure`, **não** `network_mode: host`)
 - No Traefik da OS: certificado **Cloudflare Origin CA** como default (apex, `www` e `API_DOMAIN`)
 - DNS no Cloudflare: A/AAAA de `DOMAIN`, `www` e `API_DOMAIN` para o IP da VPS, **Proxied**
@@ -60,6 +62,7 @@ Pré-requisitos:
 `TRAEFIK_NETWORK` deve ser `web`. **Nunca** `host`.
 
 Roteamento:
+
 - `https://DOMAIN` (e `www` → apex) → `web:3000`
 - `https://API_DOMAIN` → `backend:3001`
 
@@ -70,8 +73,8 @@ Não hospedar o mesmo `DOMAIN` no Cloudflare Pages e no Traefik.
 | Variável                        | Onde                       | Valor                                        |
 | ------------------------------- | -------------------------- | -------------------------------------------- |
 | `NUXT_API_BASE`                 | runtime SSR (Compose)      | `http://gutierresconsultoria-backend:3001`   |
-| `NUXT_PUBLIC_API_BASE`          | browser + CSP no **build** | `https://api.gutierresconsultoria.com.br`    |
-| `NUXT_PUBLIC_SITE_URL`          | SEO / runtime              | `https://gutierresconsultoria.com.br`        |
+| `NUXT_PUBLIC_API_BASE`          | browser + CSP no **build** | `https://api.sgconsultoraimobiliaria.com.br` |
+| `NUXT_PUBLIC_SITE_URL`          | SEO / runtime              | `https://sgconsultoraimobiliaria.com.br`     |
 | `NUXT_PUBLIC_SUPABASE_URL`      | Auth no browser            | `https://xxxx.supabase.co`                   |
 | `NUXT_PUBLIC_SUPABASE_ANON_KEY` | Auth no browser            | anon/publishable key                         |
 
@@ -95,16 +98,16 @@ A web segue o razconms / Gutierres Recomenda: o container roda `apps/web/.output
 Workflow: `.github/workflows/deploy.yml` (SSH + `git pull` + `./deploy.sh`).
 
 Secrets: `SSH_HOST`, `SSH_USER`, `SSH_PRIVATE_KEY`.  
-Vars opcionais: `APP_DIR` (default `/opt/gutierresconsultoria.com.br`), `DOMAIN`.
+Vars opcionais: `APP_DIR` (default `/opt/sgconsultoraimobiliaria.com.br`), `DOMAIN`.
 
 O usuário `deploy` deve estar no grupo `docker`. Build acontece na VPS (a web precisa dos build args do `.env`).
 
 ## API (resumo)
 
-| Método | Rota | Auth |
-|--------|------|------|
-| GET | `/health` | — |
-| GET | `/properties` | — |
-| GET | `/properties/:slug` | — |
-| POST | `/contacts` | — (cria Contact + Lead WEBSITE) |
-| * | `/admin/*` | Bearer JWT Supabase Auth |
+| Método | Rota                | Auth                            |
+| ------ | ------------------- | ------------------------------- |
+| GET    | `/health`           | —                               |
+| GET    | `/properties`       | —                               |
+| GET    | `/properties/:slug` | —                               |
+| POST   | `/contacts`         | — (cria Contact + Lead WEBSITE) |
+| *      | `/admin/*`          | Bearer JWT Supabase Auth        |
