@@ -145,7 +145,7 @@ export const useAdminApi = () => {
       body: JSON.stringify(updatePropertySchema.parse(input)),
     })
   const removeProperty = (id: string) =>
-    request<void>(`/admin/properties/${id}`, { method: 'DELETE' })
+    request<undefined>(`/admin/properties/${id}`, { method: 'DELETE' })
 
   const uploadPropertyMedia = async (id: string, file: File) => {
     const form = new FormData()
@@ -157,7 +157,7 @@ export const useAdminApi = () => {
   }
 
   const removePropertyMedia = (id: string, mediaId: string) =>
-    request<void>(`/admin/properties/${id}/media/${mediaId}`, { method: 'DELETE' })
+    request<undefined>(`/admin/properties/${id}/media/${mediaId}`, { method: 'DELETE' })
 
   const reorderPropertyMedia = (id: string, mediaIds: string[]) =>
     request(`/admin/properties/${id}/media/order`, {
@@ -179,7 +179,7 @@ export const useAdminApi = () => {
       method: 'PATCH',
       body: JSON.stringify(updateLeadSchema.parse(input)),
     })
-  const removeLead = (id: string) => request<void>(`/admin/leads/${id}`, { method: 'DELETE' })
+  const removeLead = (id: string) => request<undefined>(`/admin/leads/${id}`, { method: 'DELETE' })
 
   const listCategories = () => request<PropertyCategory[]>('/admin/categories')
   const createCategory = (input: CreatePropertyCategoryInput) => {
@@ -206,7 +206,7 @@ export const useAdminApi = () => {
       body: JSON.stringify(updatePropertyCategorySchema.parse(input)),
     })
   const removeCategory = (id: string) =>
-    request<void>(`/admin/categories/${id}`, { method: 'DELETE' })
+    request<undefined>(`/admin/categories/${id}`, { method: 'DELETE' })
 
   const getSettings = () => request<SiteSettings>('/admin/settings')
   const updateSettings = (input: UpdateSiteSettingsInput) =>
@@ -227,7 +227,7 @@ export const useAdminApi = () => {
       body: JSON.stringify(updateSoldCaseSchema.parse(input)),
     })
   const removeSoldCase = (id: string) =>
-    request<void>(`/admin/sold-cases/${id}`, { method: 'DELETE' })
+    request<undefined>(`/admin/sold-cases/${id}`, { method: 'DELETE' })
   const uploadSoldCaseCover = async (id: string, file: File) => {
     const form = new FormData()
     form.append('file', file)

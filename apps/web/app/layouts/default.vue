@@ -3,7 +3,7 @@ useSiteSeoHead()
 </script>
 
 <template>
-  <div class="min-h-screen bg-paper">
+  <div class="min-h-screen bg-surface-dark text-on-surface">
     <LayoutAppHeader />
     <slot />
     <LayoutAppFooter />

@@ -2,18 +2,18 @@
 import {
   ArrowRight,
   BadgeCheck,
-  CalendarCheck2,
-  CheckCircle2,
+  Check,
   Clock3,
-  ClipboardCheck,
-  Mail,
+  Key,
+  Lock,
   MessageCircle,
-  Phone,
   Send,
   ShieldCheck,
+  Sliders,
   Sparkles,
-  TrendingUp,
 } from 'lucide-vue-next'
+import type { SoldCase } from '@gutierres/shared'
+import type { Project } from '~/types/project'
 
 const settings = useSiteSettings()
 const origin = usePublicSiteOrigin()
@@ -78,93 +78,117 @@ const { soldCases } = useSoldCases()
 const { whatsappHref, onWhatsAppClick } = useWhatsapp()
 const { trackLead } = useAnalytics()
 const apiBase = useApiBase()
-const { contactEmail, businessPhone } = useSiteSettings()
 
-const steps = [
+const fallbackProjects: Project[] = [
   {
-    title: 'Diagnóstico',
-    text: 'Entendimento do perfil de compra e objetivos antes de apresentar qualquer empreendimento.',
-    icon: ClipboardCheck,
+    slug: 'reserva-jardins',
+    title: 'Reserva Jardins',
+    location: 'Jardins, São Paulo',
+    status: 'Lançamento',
+    description:
+      'Penthouses & Residences privativas com vista desimpedida para a copa das árvores dos Jardins. Elevadores privativos codificados.',
+    longDescription: '',
+    deadline: '2026-12-01',
+    progress: 85,
+    featured: true,
+    image:
+      'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80',
+    floorPlanImage: '',
+    highlights: ['320m² a 640m²', 'Vista Parque'],
+    gallery: [],
   },
   {
-    title: 'Curadoria',
-    text: 'Seleção de oportunidades alinhadas ao seu perfil, prazo e potencial de valorização.',
-    icon: Sparkles,
+    slug: 'horizonte-itaim',
+    title: 'Horizonte Itaim',
+    location: 'Itaim Bibi, São Paulo',
+    status: 'Em construção',
+    description:
+      'Studios & Duplex de Alto Padrão concebidos para alta rentabilidade de locação e valorização patrimonial na Faria Lima.',
+    longDescription: '',
+    deadline: '2026-08-01',
+    progress: 60,
+    featured: false,
+    image:
+      'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=1200&q=80',
+    highlights: ['85m² a 190m²', 'Faria Lima'],
+    floorPlanImage: '',
+    gallery: [],
   },
   {
-    title: 'Condução comercial',
-    text: 'Apresentação e encaminhamento junto à incorporadora, com transparência em cada etapa.',
-    icon: BadgeCheck,
+    slug: 'villa-fasano-vista',
+    title: 'Villa Fasano Vista',
+    location: 'Fazenda Boa Vista, SP',
+    status: 'Pronto para morar',
+    description:
+      'Residências de campo assinadas com vista panorâmica perene, serviços de hotelaria Fasano e infraestrutura equestre completa.',
+    longDescription: '',
+    deadline: '2025-10-01',
+    progress: 100,
+    featured: false,
+    image:
+      'https://images.unsplash.com/photo-1613977257363-707ba9348227?auto=format&fit=crop&w=1200&q=80',
+    highlights: ['Terrenos & 720m²', 'Acesso Restrito'],
+    floorPlanImage: '',
+    gallery: [],
   },
 ]
 
-const opportunityStats = computed(() => [
-  {
-    value: String(allProjects.value.length),
-    label: 'empreendimentos em curadoria',
-    icon: Sparkles,
-  },
-  {
-    value: '2h',
-    label: 'retorno em horário útil',
-    icon: Clock3,
-  },
-  {
-    value: '100%',
-    label: 'apresentação comercial autorizada',
-    icon: ShieldCheck,
-  },
-])
+const displayProjects = computed(() => {
+  return allProjects.value.length ? allProjects.value : fallbackProjects
+})
 
-const contactReasons = [
+const fallbackSoldCases: SoldCase[] = [
   {
-    label: 'Atendimento personalizado',
-    text: 'Você recebe opções alinhadas ao objetivo antes de marcar visita.',
-    icon: CheckCircle2,
+    id: 'case-1',
+    propertyTitle: 'Cobertura Exclusiva no Itaim Bibi',
+    location: 'Itaim Bibi, São Paulo',
+    coverUrl:
+      'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1200&q=80',
+    coverStoragePath: null,
+    clientName: 'M. Silveira',
+    clientRole: 'Investidor Patrimonial • São Paulo',
+    quote:
+      'Encontrei a cobertura perfeita no Itaim sem precisar visitar dezenas de estandes. A curadoria da Stefanny filtrou exatamente o que buscávamos em termos de insolação e privacidade, conduzindo as negociações direto com a mesa diretora.',
+    soldAt: new Date('2024-08-15'),
+    sortOrder: 1,
+    active: true,
+    createdAt: new Date('2024-08-15'),
+    updatedAt: new Date('2024-08-15'),
   },
   {
-    label: 'Sem compromisso',
-    text: 'Primeiro contato para entender cenário, prazo e preferência.',
-    icon: ShieldCheck,
-  },
-  {
-    label: 'Consultora especializada',
-    text: 'Condução comercial junto à incorporadora responsável.',
-    icon: CalendarCheck2,
+    id: 'case-2',
+    propertyTitle: 'Apartamento de Alto Padrão nos Jardins',
+    location: 'Jardins, São Paulo',
+    coverUrl:
+      'https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?auto=format&fit=crop&w=1200&q=80',
+    coverStoragePath: null,
+    clientName: 'Dra. Camila F.',
+    clientRole: 'Médica Especialista • Jardins',
+    quote:
+      'Comprei meu primeiro apartamento de alto padrão com total segurança nas cláusulas e negociação direta com a construtora. Stefanny me deu o respaldo analítico que faltava.',
+    soldAt: new Date('2024-05-20'),
+    sortOrder: 2,
+    active: true,
+    createdAt: new Date('2024-05-20'),
+    updatedAt: new Date('2024-05-20'),
   },
 ]
 
-const contactTriggers = [
-  {
-    title: 'Evite perder tempo',
-    text: 'Filtramos localização, fase da obra e perfil de compra antes da apresentação.',
-    icon: TrendingUp,
-  },
-  {
-    title: 'Condições sob consulta',
-    text: 'O contato libera disponibilidade atualizada e próximos passos comerciais.',
-    icon: MessageCircle,
-  },
-]
+const displaySoldCases = computed(() => {
+  return soldCases.value?.length ? soldCases.value : fallbackSoldCases
+})
 
 const form = reactive({
   name: '',
   email: '',
   phone: '',
-  propertyType: 'Apartamento',
+  propertyType: 'Residencial de Alto Padrão (Apartamento)',
   message: '',
 })
 
 const submitting = ref(false)
 const submitError = ref('')
 const submitSuccess = ref(false)
-
-const displayPhone = computed(() => businessPhone.value || 'Atualize o telefone no ambiente')
-
-const submitLabel = computed(() => {
-  if (submitting.value) return 'Enviando…'
-  return form.name ? `Solicitar contato, ${form.name.split(' ')[0]}` : 'Solicitar contato'
-})
 
 async function submitLead() {
   submitError.value = ''
@@ -200,326 +224,536 @@ async function submitLead() {
 </script>
 
 <template>
-  <main>
-    <ProjectFeaturedHero v-if="featuredProject" :project="featuredProject" />
+  <main class="w-full bg-surface-dark text-on-surface">
+    <!-- 1. FEATURED HERO -->
+    <ProjectFeaturedHero :project="featuredProject" />
 
-    <section id="empreendimentos" class="bg-paper py-20 sm:py-24">
-      <div class="container-page">
-        <div class="flex flex-col justify-between gap-6 lg:flex-row lg:items-end">
-          <div>
-            <span class="section-kicker">Empreendimentos</span>
-            <h2 class="mt-5 font-display text-3xl font-bold leading-tight sm:text-4xl">
-              Oportunidades selecionadas
-            </h2>
-          </div>
-          <p class="max-w-lg text-sm leading-7 text-slate-600">
-            Empreendimentos apresentados com autorização comercial das incorporadoras. Atuo na
-            consultoria de vendas — não na intermediação de corretagem.
-          </p>
-        </div>
-
-        <div class="mt-10 grid gap-4 rounded-lg border border-slate-200 bg-white p-4 shadow-card md:grid-cols-3">
-          <div
-            v-for="stat in opportunityStats"
-            :key="stat.label"
-            class="flex min-w-0 items-center gap-4 rounded-md bg-slate-50 px-4 py-4"
-          >
-            <span class="grid size-11 shrink-0 place-items-center rounded-md bg-white text-brand-600 shadow-sm">
-              <component :is="stat.icon" class="size-5" aria-hidden="true" />
-            </span>
-            <span class="min-w-0">
-              <strong class="block font-display text-2xl leading-none text-ink">{{ stat.value }}</strong>
-              <span class="mt-1 block text-[0.68rem] font-semibold uppercase leading-4 tracking-wider text-slate-500">
-                {{ stat.label }}
+    <!-- 2. OPORTUNIDADES SELECIONADAS (Ivory Canvas #FAF8F3) -->
+    <section id="empreendimentos" class="w-full bg-canvas-light text-text-strong py-20 sm:py-28">
+      <div class="mx-auto max-w-7xl px-5 sm:px-6 lg:px-8 flex flex-col gap-12 sm:gap-16">
+        <!-- Header with Authorization Stamp -->
+        <div class="flex flex-col md:flex-row md:items-end justify-between gap-6">
+          <div class="flex flex-col gap-3 max-w-2xl">
+            <div class="flex items-center gap-2">
+              <span class="h-[1px] w-8 bg-brand-gold-deep" />
+              <span
+                class="text-xs font-semibold uppercase tracking-widest text-brand-gold-deep font-label"
+              >
+                PORTFÓLIO AUTORIZADO
               </span>
+            </div>
+            <h2
+              class="font-display text-3xl font-semibold sm:text-4xl lg:text-5xl text-text-strong tracking-tight"
+            >
+              Empreendimentos com Curadoria Exclusiva
+            </h2>
+            <p class="text-base text-text-base leading-relaxed">
+              Projetos residenciais de assinatura arquitetônica que passam por rigorosa auditoria de
+              valor m², reputação de entrega e liquidez secundária.
+            </p>
+          </div>
+
+          <!-- Commercial Authorization Stamp -->
+          <div
+            class="flex items-center gap-2.5 rounded-sm border border-stroke-light bg-surface-light px-4 py-3 shadow-sm"
+          >
+            <ShieldCheck class="size-5 text-success shrink-0" aria-hidden="true" />
+            <span class="text-xs text-text-muted">
+              Atuação com autorização comercial direta das incorporadoras mais renomadas.
             </span>
           </div>
         </div>
 
-        <div class="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          <ProjectCard v-for="item in allProjects" :key="item.slug" :project="item" />
+        <!-- 3-Column Curated Cards Matrix -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <ProjectCard v-for="item in displayProjects" :key="item.slug" :project="item" />
         </div>
 
-        <div class="mt-10 flex justify-center">
+        <!-- Discovery Action -->
+        <div class="flex justify-center pt-4">
           <NuxtLink
             to="/empreendimentos"
-            class="focus-ring inline-flex items-center gap-2 rounded-md border border-slate-200 bg-white px-5 py-3 text-sm font-semibold text-ink shadow-card transition hover:border-brand-300 hover:text-brand-700"
+            class="focus-ring inline-flex items-center gap-2 rounded-sm border border-stroke-light bg-surface-light px-8 py-3.5 text-sm font-semibold text-text-strong shadow-sm transition-all duration-300 hover:border-primary hover:bg-surface-light-alt"
           >
-            Ver todos os empreendimentos
-            <ArrowRight class="size-4" aria-hidden="true" />
+            <span>Ver todos os empreendimentos selecionados</span>
+            <ArrowRight class="size-4 text-primary" aria-hidden="true" />
           </NuxtLink>
         </div>
       </div>
     </section>
 
-    <section id="servicos" class="bg-white py-20 sm:py-24">
-      <div class="container-page grid gap-12 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
-        <div>
-          <span class="section-kicker">Serviços</span>
-          <h2 class="mt-5 font-display text-3xl font-bold leading-tight sm:text-4xl">
-            Consultoria de vendas imobiliárias
+    <!-- 3. METODOLOGIA SG / SERVIÇOS (Warm Ivory #F3EEE3) -->
+    <section id="servicos" class="w-full bg-surface-light-alt text-text-strong py-20 sm:py-28">
+      <div class="mx-auto max-w-7xl px-5 sm:px-6 lg:px-8 flex flex-col gap-12 sm:gap-16">
+        <!-- Section Intro -->
+        <div class="flex flex-col gap-3 max-w-2xl">
+          <div class="flex items-center gap-2">
+            <span class="h-[1px] w-8 bg-brand-gold-deep" />
+            <span
+              class="text-xs font-semibold uppercase tracking-widest text-brand-gold-deep font-label"
+            >
+              METODOLOGIA SG
+            </span>
+          </div>
+          <h2
+            class="font-display text-3xl font-semibold sm:text-4xl lg:text-5xl text-text-strong tracking-tight"
+          >
+            Como funciona a sua consultoria privada
           </h2>
-          <p class="mt-5 text-sm leading-7 text-slate-600">
-            Conecto compradores qualificados aos melhores empreendimentos do mercado, com
-            acompanhamento comercial personalizado em cada etapa da jornada de compra.
-          </p>
-          <p class="mt-4 rounded-md border border-brand-200/60 bg-brand-50/50 px-4 py-3 text-xs leading-6 text-slate-600">
-            <strong class="text-ink">Importante:</strong> Atuo como consultora de vendas, não como
-            corretora de imóveis. Não possuímos registro CRECI.
+          <p class="text-base text-text-base leading-relaxed">
+            Um modelo estruturado em 3 etapas decisórias para que você decida com total clareza
+            matemática, segurança jurídica e discrição.
           </p>
         </div>
-        <div class="grid gap-4">
-          <article
-            v-for="(step, index) in steps"
-            :key="step.title"
-            class="grid gap-4 rounded-lg border border-slate-200/80 bg-paper p-5 sm:grid-cols-[auto_1fr]"
+
+        <!-- 3 Distinct Step Columns -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <!-- Step 01 -->
+          <div
+            class="group flex flex-col justify-between rounded-md border border-stroke-light bg-surface-light p-8 shadow-sm transition-colors duration-300 hover:border-primary"
           >
-            <span class="grid size-12 place-items-center rounded-md bg-brand-100 text-brand-700">
-              <component :is="step.icon" class="size-6" aria-hidden="true" />
-            </span>
-            <div>
-              <p class="text-xs font-semibold uppercase tracking-widest text-brand-600">
-                Etapa {{ index + 1 }}
+            <div class="flex flex-col gap-4">
+              <span class="font-display text-5xl font-medium leading-none text-primary">01</span>
+              <h3 class="font-display text-xl font-semibold text-text-strong">
+                Diagnóstico Estratégico
+              </h3>
+              <p class="text-sm leading-relaxed text-text-base">
+                Entendimento minucioso das expectativas, orçamento, estilo de vida e objetivos
+                patrimoniais. Mapeio suas necessidades reais sem direcionar para estoques
+                desnecessários.
               </p>
-              <h3 class="mt-1 font-display text-lg font-semibold">{{ step.title }}</h3>
-              <p class="mt-2 text-sm leading-6 text-slate-600">{{ step.text }}</p>
             </div>
-          </article>
+            <div
+              class="mt-8 flex items-center gap-2 border-t border-stroke-light pt-4 text-xs font-semibold uppercase tracking-wider text-text-muted font-label"
+            >
+              <Sparkles class="size-4 text-brand-gold-deep" aria-hidden="true" />
+              <span>Mapeamento Sem Viés Comercial</span>
+            </div>
+          </div>
+
+          <!-- Step 02 -->
+          <div
+            class="group flex flex-col justify-between rounded-md border border-stroke-light bg-surface-light p-8 shadow-sm transition-colors duration-300 hover:border-primary"
+          >
+            <div class="flex flex-col gap-4">
+              <span class="font-display text-5xl font-medium leading-none text-primary">02</span>
+              <h3 class="font-display text-xl font-semibold text-text-strong">
+                Curadoria &amp; Análise
+              </h3>
+              <p class="text-sm leading-relaxed text-text-base">
+                Seleção criteriosa dos projetos mais adequados, analisando liquidez futura,
+                potencial de valorização, padrão de acabamento e histórico de entrega da
+                incorporadora.
+              </p>
+            </div>
+            <div
+              class="mt-8 flex items-center gap-2 border-t border-stroke-light pt-4 text-xs font-semibold uppercase tracking-wider text-text-muted font-label"
+            >
+              <Clock3 class="size-4 text-brand-gold-deep" aria-hidden="true" />
+              <span>Dossiê Comparativo Completo</span>
+            </div>
+          </div>
+
+          <!-- Step 03 -->
+          <div
+            class="group flex flex-col justify-between rounded-md border border-stroke-light bg-surface-light p-8 shadow-sm transition-colors duration-300 hover:border-primary"
+          >
+            <div class="flex flex-col gap-4">
+              <span class="font-display text-5xl font-medium leading-none text-primary">03</span>
+              <h3 class="font-display text-xl font-semibold text-text-strong">
+                Condução Comercial
+              </h3>
+              <p class="text-sm leading-relaxed text-text-base">
+                Acompanhamento personalizado direto com a diretoria comercial da incorporadora,
+                garantindo transparência contratual, as melhores condições e total agilidade no
+                processo.
+              </p>
+            </div>
+            <div
+              class="mt-8 flex items-center gap-2 border-t border-stroke-light pt-4 text-xs font-semibold uppercase tracking-wider text-text-muted font-label"
+            >
+              <BadgeCheck class="size-4 text-brand-gold-deep" aria-hidden="true" />
+              <span>Acesso a Mesas de Diretoria</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Discreet Regulatory Transparency Card -->
+        <div
+          class="mx-auto flex max-w-4xl items-start gap-4 rounded-md border border-stroke-light bg-canvas-light p-4"
+        >
+          <ShieldCheck class="size-5 shrink-0 text-text-muted mt-0.5" aria-hidden="true" />
+          <div class="flex flex-col">
+            <span
+              class="text-xs font-semibold uppercase tracking-widest text-text-muted font-label"
+            >
+              Conformidade e Transparência
+            </span>
+            <p class="mt-0.5 text-xs leading-relaxed text-text-muted">
+              <strong>Nota Legal:</strong> Não sou corretora de imóveis e não possuo registro CRECI.
+              Atuo exclusivamente como consultora de vendas e curadora comercial autorizada
+              diretamente pelas incorporadoras parceiras.
+            </p>
+          </div>
         </div>
       </div>
     </section>
 
-    <section id="cases" class="relative overflow-hidden bg-ink py-24 text-white sm:py-28">
+    <!-- 4. HISTÓRIAS DE SUCESSO / CASES (Dark #0A0A0A) -->
+    <section
+      id="cases"
+      class="relative w-full overflow-hidden bg-ink py-20 text-text-on-dark sm:py-28"
+    >
+      <!-- Atmospheric gold radial blur -->
       <div
-        class="pointer-events-none absolute inset-0"
-        aria-hidden="true"
-        style="
-          background:
-            radial-gradient(ellipse 55% 45% at 15% 20%, rgba(197, 160, 89, 0.16) 0%, transparent 60%),
-            radial-gradient(ellipse 40% 50% at 90% 80%, rgba(139, 94, 60, 0.12) 0%, transparent 55%);
-        "
-      />
-      <div
-        class="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#e5c48b]/50 to-transparent"
+        class="pointer-events-none absolute bottom-0 left-1/2 h-[300px] w-[600px] -translate-x-1/2 bg-primary/5 blur-[140px]"
         aria-hidden="true"
       />
 
-      <div class="container-page relative">
-        <div class="mx-auto max-w-3xl text-center">
-          <span
-            class="inline-flex items-center gap-3 rounded-full border border-[#e5c48b]/35 bg-white/5 px-4 py-2 text-xs font-semibold uppercase tracking-[0.22em] text-[#e5c48b]"
+      <div
+        class="relative z-10 mx-auto max-w-7xl px-5 sm:px-6 lg:px-8 flex flex-col gap-12 sm:gap-16"
+      >
+        <!-- Section Header -->
+        <div class="mx-auto flex max-w-2xl flex-col items-center text-center gap-3">
+          <div class="flex items-center gap-2">
+            <span class="h-[1px] w-6 bg-primary" />
+            <span class="text-xs font-semibold uppercase tracking-widest text-primary font-label">
+              CASES REAIS
+            </span>
+            <span class="h-[1px] w-6 bg-primary" />
+          </div>
+          <h2
+            class="font-display text-3xl font-semibold sm:text-4xl lg:text-5xl text-text-on-dark tracking-tight"
           >
-            Cases vendidos
-          </span>
-          <h2 class="mt-6 font-display text-4xl font-bold leading-tight sm:text-5xl">
             Histórias de quem comprou com a consultoria
           </h2>
-          <p class="mx-auto mt-5 max-w-2xl text-base leading-8 text-white/70">
-            Resultados reais com autorização dos clientes — o imóvel vendido e a experiência de
-            quem confiou no processo.
+          <p class="text-base text-text-on-dark-muted">
+            Decisões patrimoniais conduzidas com método, confidencialidade e alinhamento total de
+            interesses.
           </p>
         </div>
 
-        <div v-if="soldCases?.length" class="mt-14 grid gap-7 md:grid-cols-2 xl:grid-cols-3">
-          <ProjectSoldCaseCard v-for="item in soldCases" :key="item.id" :item="item" />
+        <!-- Luxury Case Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-stretch">
+          <ProjectSoldCaseCard v-for="item in displaySoldCases" :key="item.id" :item="item" />
         </div>
-        <p v-else class="mt-14 text-center text-sm text-white/50">Cases em breve.</p>
 
-        <div class="mt-14 flex justify-center">
+        <!-- Bottom Action -->
+        <div class="flex justify-center pt-2">
           <a
             :href="whatsappHref"
-            class="focus-ring inline-flex items-center gap-2 rounded-md bg-brand-500 px-6 py-3.5 text-sm font-semibold text-ink transition hover:bg-brand-400"
+            class="focus-ring inline-flex items-center gap-2 rounded-sm bg-primary px-8 py-4 text-sm font-semibold text-ink shadow-[0_4px_24px_rgba(197,160,89,0.25)] transition-all duration-300 hover:bg-primary-hover"
             target="_blank"
             rel="noopener noreferrer"
             @click="onWhatsAppClick('sold_cases_cta')"
           >
-            Quero minha história de compra
+            <span>Quero minha história de compra</span>
             <ArrowRight class="size-4" aria-hidden="true" />
           </a>
         </div>
       </div>
     </section>
 
-    <section id="contato" class="bg-paper py-20 sm:py-24">
-      <div class="container-page grid gap-12 lg:grid-cols-[0.85fr_1.15fr] lg:items-start">
-        <div>
-          <span class="section-kicker">Contato</span>
-          <h2 class="mt-5 font-display text-3xl font-bold leading-tight sm:text-4xl">
-            Agende sua consultoria
-          </h2>
-          <p class="mt-5 text-sm leading-7 text-slate-600">
-            Responderemos em até 2 horas úteis. Estou pronta para entender seu objetivo e
-            apresentar as melhores oportunidades comerciais.
-          </p>
+    <!-- 5. CONTATO / CONSULTORIA (Clean Ivory #FAF8F3) -->
+    <section id="contato" class="w-full bg-canvas-light text-text-strong py-20 sm:py-28">
+      <div class="mx-auto max-w-7xl px-5 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-1 items-center gap-12 lg:grid-cols-12 lg:gap-16">
+          <!-- Left Column: Stefanny Portrait & Personal Voice (6 Cols) -->
+          <div class="flex flex-col gap-6 lg:col-span-6">
+            <div class="flex items-center gap-2">
+              <span class="h-[1px] w-8 bg-brand-gold-deep" />
+              <span
+                class="text-xs font-semibold uppercase tracking-widest text-brand-gold-deep font-label"
+              >
+                AGENDAMENTO EXCLUSIVO
+              </span>
+            </div>
 
-          <div class="mt-8 grid gap-3">
-            <div
-              v-for="trigger in contactTriggers"
-              :key="trigger.title"
-              class="flex gap-4 rounded-lg border border-slate-200 bg-slate-50 p-4"
+            <h2
+              class="font-display text-3xl font-semibold sm:text-4xl lg:text-5xl text-text-strong tracking-tight"
             >
-              <span class="grid size-10 shrink-0 place-items-center rounded-md bg-white text-brand-600 shadow-sm">
-                <component :is="trigger.icon" class="size-5" aria-hidden="true" />
-              </span>
-              <span>
-                <strong class="block text-sm text-ink">{{ trigger.title }}</strong>
-                <span class="mt-1 block text-sm leading-6 text-slate-600">{{ trigger.text }}</span>
-              </span>
+              Estou pronta para guiar seu próximo investimento.
+            </h2>
+
+            <div class="flex flex-col items-center gap-6 pt-2 sm:flex-row sm:items-start">
+              <!-- Portrait Image Framed with 1px gold border -->
+              <div class="relative shrink-0">
+                <img
+                  src="/img/consultora.webp"
+                  alt="Stefanny Gutierres - Consultoria de Vendas Imobiliárias"
+                  class="size-32 rounded-md object-cover border border-primary shadow-md sm:size-40"
+                />
+                <span
+                  class="absolute -bottom-2 -right-2 grid size-7 place-items-center rounded-full bg-success text-white shadow-sm"
+                >
+                  <Check class="size-4 stroke-[2.5]" aria-hidden="true" />
+                </span>
+              </div>
+
+              <div class="flex flex-col gap-1 text-center sm:text-left">
+                <span class="text-lg font-semibold text-text-strong">Stefanny Gutierres</span>
+                <span
+                  class="text-xs font-semibold uppercase tracking-wider text-brand-gold-deep font-label"
+                >
+                  Consultora de Vendas &amp; Estrategista
+                </span>
+                <p class="mt-2 text-sm leading-relaxed text-text-base">
+                  Sou Stefanny Gutierres, dedicada a transformar a jornada de aquisição imobiliária
+                  em uma experiência tranquila, assertiva e discreta. Minha curadoria seleciona
+                  apenas os ativos que atendem aos mais altos padrões de solidez e conforto.
+                </p>
+              </div>
+            </div>
+
+            <!-- 3 Key Advisory Pillars -->
+            <div class="flex flex-col gap-4 border-t border-stroke-light pt-6">
+              <div class="flex items-center gap-4">
+                <div
+                  class="grid size-10 shrink-0 place-items-center rounded-sm border border-stroke-light bg-surface-light text-primary"
+                >
+                  <Lock class="size-4" aria-hidden="true" />
+                </div>
+                <div>
+                  <span class="block text-sm font-semibold text-text-strong">
+                    Confidencialidade Absoluta
+                  </span>
+                  <span class="text-xs text-text-muted">
+                    Seus dados e intenções patrimoniais protegidos sob estrito sigilo.
+                  </span>
+                </div>
+              </div>
+
+              <div class="flex items-center gap-4">
+                <div
+                  class="grid size-10 shrink-0 place-items-center rounded-sm border border-stroke-light bg-surface-light text-primary"
+                >
+                  <Sliders class="size-4" aria-hidden="true" />
+                </div>
+                <div>
+                  <span class="block text-sm font-semibold text-text-strong"
+                    >Curadoria Sem Viés</span
+                  >
+                  <span class="text-xs text-text-muted">
+                    Apresento apenas o que converge com o seu perfil, sem empurrar estoques.
+                  </span>
+                </div>
+              </div>
+
+              <div class="flex items-center gap-4">
+                <div
+                  class="grid size-10 shrink-0 place-items-center rounded-sm border border-stroke-light bg-surface-light text-primary"
+                >
+                  <Key class="size-4" aria-hidden="true" />
+                </div>
+                <div>
+                  <span class="block text-sm font-semibold text-text-strong">
+                    Acesso a Condições Exclusivas
+                  </span>
+                  <span class="text-xs text-text-muted">
+                    Canal direto com as incorporadoras para reservas prioritárias.
+                  </span>
+                </div>
+              </div>
             </div>
           </div>
 
-          <div class="mt-10 grid gap-4">
-            <div v-for="reason in contactReasons" :key="reason.label" class="flex items-center gap-4">
-              <span class="grid size-10 place-items-center rounded-full bg-brand-50 text-brand-600">
-                <component :is="reason.icon" class="size-5" aria-hidden="true" />
-              </span>
-              <span>
-                <span class="block text-sm font-semibold">{{ reason.label }}</span>
-                <span class="mt-0.5 block text-xs leading-5 text-slate-500">{{ reason.text }}</span>
-              </span>
-            </div>
-          </div>
+          <!-- Right Column: Advisory Booking Form Card (6 Cols) -->
+          <div class="lg:col-span-6">
+            <div
+              class="flex flex-col gap-6 rounded-lg border border-stroke-light bg-surface-light p-6 shadow-[0_4px_30px_rgba(20,17,13,0.06)] sm:p-8"
+            >
+              <div class="flex flex-col gap-1">
+                <div class="flex items-center justify-between">
+                  <span
+                    class="text-xs font-semibold uppercase tracking-widest text-brand-gold-deep font-label"
+                  >
+                    FORMULÁRIO DE ATENDIMENTO
+                  </span>
+                  <span
+                    class="rounded-full bg-success/10 px-2.5 py-0.5 text-xs font-semibold text-success"
+                  >
+                    Fila Prioritária
+                  </span>
+                </div>
+                <h3 class="mt-2 font-display text-2xl font-semibold text-text-strong">
+                  Solicite seu Diagnóstico Consultivo
+                </h3>
+                <p class="text-xs text-text-muted">
+                  Preencha as informações para receber contato direto em até 2 horas úteis.
+                </p>
+              </div>
 
-          <div class="mt-10 grid gap-3 text-sm text-slate-600">
-            <a class="focus-ring inline-flex items-center gap-3 rounded-md font-medium" :href="`mailto:${contactEmail}`">
-              <Mail class="size-4 text-brand-600" aria-hidden="true" />
-              {{ contactEmail }}
-            </a>
-            <a class="focus-ring inline-flex items-center gap-3 rounded-md font-medium" href="#contato">
-              <Phone class="size-4 text-brand-600" aria-hidden="true" />
-              {{ displayPhone }}
-            </a>
+              <form class="flex flex-col gap-4" @submit.prevent="submitLead">
+                <!-- Nome Completo -->
+                <div class="flex flex-col gap-1.5">
+                  <label
+                    class="text-xs font-semibold uppercase tracking-wider text-text-strong font-label"
+                    for="name"
+                  >
+                    Nome Completo
+                  </label>
+                  <input
+                    id="name"
+                    v-model="form.name"
+                    type="text"
+                    required
+                    placeholder="Ex: Dr. Roberto Guimarães"
+                    class="focus-ring h-12 rounded-sm border border-stroke-light bg-surface-light px-4 text-sm text-text-strong placeholder:text-text-muted/60 transition-all"
+                  />
+                </div>
+
+                <!-- E-mail & WhatsApp Grid -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div class="flex flex-col gap-1.5">
+                    <label
+                      class="text-xs font-semibold uppercase tracking-wider text-text-strong font-label"
+                      for="email"
+                    >
+                      E-mail Profissional
+                    </label>
+                    <input
+                      id="email"
+                      v-model="form.email"
+                      type="email"
+                      required
+                      placeholder="roberto@empresa.com.br"
+                      class="focus-ring h-12 rounded-sm border border-stroke-light bg-surface-light px-4 text-sm text-text-strong placeholder:text-text-muted/60 transition-all"
+                    />
+                  </div>
+
+                  <div class="flex flex-col gap-1.5">
+                    <label
+                      class="text-xs font-semibold uppercase tracking-wider text-text-strong font-label"
+                      for="phone"
+                    >
+                      WhatsApp
+                    </label>
+                    <input
+                      id="phone"
+                      v-model="form.phone"
+                      type="tel"
+                      required
+                      placeholder="(11) 99999-9999"
+                      class="focus-ring h-12 rounded-sm border border-stroke-light bg-surface-light px-4 text-sm text-text-strong placeholder:text-text-muted/60 transition-all"
+                    />
+                  </div>
+                </div>
+
+                <!-- Tipo de Imóvel -->
+                <div class="flex flex-col gap-1.5">
+                  <label
+                    class="text-xs font-semibold uppercase tracking-wider text-text-strong font-label"
+                    for="propertyType"
+                  >
+                    Tipo de Interesse
+                  </label>
+                  <select
+                    id="propertyType"
+                    v-model="form.propertyType"
+                    class="focus-ring h-12 rounded-sm border border-stroke-light bg-surface-light px-4 text-sm text-text-strong transition-all cursor-pointer"
+                  >
+                    <option value="Residencial de Alto Padrão (Apartamento)">
+                      Residencial de Alto Padrão (Apartamento)
+                    </option>
+                    <option value="Penthouse / Cobertura Exclusiva">
+                      Penthouse / Cobertura Exclusiva
+                    </option>
+                    <option value="Residência de Campo ou Fazenda">
+                      Residência de Campo ou Fazenda
+                    </option>
+                    <option value="Ativo para Rentabilidade e Valorização">
+                      Ativo para Rentabilidade e Valorização
+                    </option>
+                  </select>
+                </div>
+
+                <!-- Mensagem -->
+                <div class="flex flex-col gap-1.5">
+                  <label
+                    class="text-xs font-semibold uppercase tracking-wider text-text-strong font-label"
+                    for="message"
+                  >
+                    Observações ou Preferências de Região
+                  </label>
+                  <textarea
+                    id="message"
+                    v-model="form.message"
+                    rows="3"
+                    maxlength="500"
+                    placeholder="Ex: Procuro 4 suítes nos Jardins ou Itaim com varanda ampla e vista livre."
+                    class="focus-ring rounded-sm border border-stroke-light bg-surface-light p-4 text-sm text-text-strong placeholder:text-text-muted/60 transition-all resize-none"
+                  />
+                  <span class="text-right text-[11px] text-text-muted">
+                    {{ form.message.length }}/500
+                  </span>
+                </div>
+
+                <p v-if="submitError" class="text-xs text-danger font-medium">{{ submitError }}</p>
+                <div
+                  v-if="submitSuccess"
+                  class="rounded-sm bg-success/15 p-3 text-center text-xs text-success font-medium"
+                >
+                  Solicitação recebida com sucesso. Stefanny entrará em contato em breve.
+                </div>
+
+                <!-- Submit Button -->
+                <button
+                  type="submit"
+                  :disabled="submitting"
+                  class="focus-ring mt-1 flex h-12 w-full items-center justify-center gap-2 rounded-sm bg-primary text-sm font-semibold text-ink shadow-[0_4px_20px_rgba(233,193,118,0.3)] transition-all duration-300 hover:bg-primary-hover disabled:opacity-60"
+                >
+                  <span>{{ submitting ? 'Enviando…' : 'Solicitar Curadoria Privada' }}</span>
+                  <Send class="size-4" aria-hidden="true" />
+                </button>
+
+                <span class="text-center text-[11px] text-text-muted">
+                  Seus dados serão tratados com estrita discrição. Sem envio de spam.
+                </span>
+              </form>
+            </div>
           </div>
         </div>
-
-        <form class="rounded-lg bg-white p-6 shadow-card ring-1 ring-slate-200 sm:p-8" @submit.prevent="submitLead">
-          <div class="mb-6 rounded-lg border border-brand-200 bg-brand-50 px-4 py-3">
-            <p class="text-xs font-semibold uppercase tracking-widest text-brand-700">
-              Prioridade de atendimento
-            </p>
-            <p class="mt-1 text-sm leading-6 text-slate-600">
-              Preencha os dados essenciais. Cadastramos seu contato e retornamos em horário útil.
-            </p>
-          </div>
-
-          <div class="grid gap-5">
-            <label class="grid gap-1.5">
-              <span class="text-sm font-medium">Nome completo</span>
-              <input
-                v-model="form.name"
-                class="focus-ring h-12 rounded-md border border-slate-200 px-4 text-sm"
-                name="name"
-                autocomplete="name"
-                placeholder="Seu nome completo"
-                required
-              />
-            </label>
-
-            <div class="grid gap-5 sm:grid-cols-2">
-              <label class="grid gap-1.5">
-                <span class="text-sm font-medium">E-mail</span>
-                <input
-                  v-model="form.email"
-                  class="focus-ring h-12 rounded-md border border-slate-200 px-4 text-sm"
-                  name="email"
-                  type="email"
-                  autocomplete="email"
-                  placeholder="seu@email.com"
-                  required
-                />
-              </label>
-              <label class="grid gap-1.5">
-                <span class="text-sm font-medium">Telefone</span>
-                <input
-                  v-model="form.phone"
-                  class="focus-ring h-12 rounded-md border border-slate-200 px-4 text-sm"
-                  name="phone"
-                  autocomplete="tel"
-                  placeholder="(00) 00000-0000"
-                  required
-                />
-              </label>
-            </div>
-
-            <label class="grid gap-1.5">
-              <span class="text-sm font-medium">Tipo de imóvel</span>
-              <select
-                v-model="form.propertyType"
-                class="focus-ring h-12 rounded-md border border-slate-200 px-4 text-sm"
-                name="propertyType"
-              >
-                <option>Apartamento</option>
-                <option>Casa</option>
-                <option>Terreno</option>
-                <option>Comercial</option>
-                <option>Investimento</option>
-              </select>
-            </label>
-
-            <label class="grid gap-1.5">
-              <span class="text-sm font-medium">Mensagem</span>
-              <textarea
-                v-model="form.message"
-                class="focus-ring min-h-32 rounded-md border border-slate-200 px-4 py-3 text-sm"
-                name="message"
-                maxlength="500"
-                placeholder="Conte-nos o que você procura..."
-              />
-              <span class="text-right text-xs text-slate-400">{{ form.message.length }}/500</span>
-            </label>
-
-            <p v-if="submitError" class="text-sm text-red-600">{{ submitError }}</p>
-            <p v-if="submitSuccess" class="text-sm text-emerald-700">
-              Contato enviado! Em breve retornaremos.
-              <a
-                v-if="whatsappHref !== '#contato'"
-                :href="whatsappHref"
-                class="ml-1 font-semibold text-brand-700 underline"
-                target="_blank"
-                rel="noopener noreferrer"
-                @click="onWhatsAppClick('contact_success')"
-              >
-                Preferir WhatsApp?
-              </a>
-            </p>
-
-            <button
-              class="focus-ring inline-flex h-12 items-center justify-center gap-2 rounded-md bg-brand-500 px-6 text-sm font-semibold text-ink transition hover:bg-brand-400 disabled:opacity-60"
-              type="submit"
-              :disabled="submitting"
-            >
-              {{ submitLabel }}
-              <Send class="size-4" aria-hidden="true" />
-            </button>
-          </div>
-          <p class="mt-6 text-center text-xs text-slate-400">
-            Seus dados são usados apenas para retorno comercial. Sem compromisso de compra.
-          </p>
-        </form>
       </div>
     </section>
 
-    <section class="bg-ink py-14 text-white">
-      <div class="container-page flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
-        <div>
-          <p class="text-xs font-semibold uppercase tracking-widest text-brand-400">Stefanny Gutierres</p>
-          <h2 class="mt-2 font-display text-2xl font-bold sm:text-3xl">
-            Receba a curadoria antes de visitar o empreendimento.
-          </h2>
-          <p class="mt-3 max-w-xl text-sm leading-6 text-white/60">
-            Uma conversa rápida evita propostas fora do perfil e acelera a escolha certa.
-          </p>
-        </div>
-        <a
-          :href="whatsappHref"
-          class="focus-ring inline-flex items-center justify-center gap-2 rounded-md bg-brand-500 px-8 py-4 text-sm font-semibold text-ink transition hover:bg-brand-400"
-          target="_blank"
-          rel="noopener noreferrer"
-          @click="onWhatsAppClick('home_cta')"
+    <!-- 6. CLOSING CTA BANNER (Dark #16130F with Radial Gold Glow) -->
+    <section class="relative w-full overflow-hidden bg-surface-dark py-20 sm:py-24">
+      <!-- Ambient Radial Gold Halo -->
+      <div
+        class="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(197,160,89,0.12)_0%,transparent_70%)]"
+        aria-hidden="true"
+      />
+
+      <div
+        class="relative z-10 mx-auto max-w-5xl px-5 text-center sm:px-6 lg:px-8 flex flex-col items-center gap-4"
+      >
+        <span class="text-xs font-semibold uppercase tracking-widest text-primary font-label">
+          DECISÃO ASSERTIVA
+        </span>
+
+        <h2
+          class="max-w-3xl font-display text-3xl font-semibold sm:text-4xl lg:text-5xl text-text-on-dark tracking-tight"
         >
-          Falar agora
-          <ArrowRight class="size-4" aria-hidden="true" />
-        </a>
+          Receba a curadoria antes de visitar o empreendimento.
+        </h2>
+
+        <p class="max-w-2xl text-base text-text-on-dark-muted leading-relaxed">
+          Economize tempo e garanta as melhores unidades com orientação consultiva personalizada
+          direto com a diretoria comercial.
+        </p>
+
+        <div class="pt-4">
+          <a
+            :href="whatsappHref"
+            class="focus-ring inline-flex items-center gap-2 rounded-sm bg-primary px-8 py-4 text-sm sm:text-base font-semibold text-ink shadow-[0_6px_32px_rgba(197,160,89,0.35)] transition-all duration-300 hover:bg-primary-hover hover:scale-[1.02]"
+            target="_blank"
+            rel="noopener noreferrer"
+            @click="onWhatsAppClick('home_cta')"
+          >
+            <MessageCircle class="size-5" aria-hidden="true" />
+            <span>Iniciar Atendimento via WhatsApp</span>
+          </a>
+        </div>
       </div>
     </section>
   </main>

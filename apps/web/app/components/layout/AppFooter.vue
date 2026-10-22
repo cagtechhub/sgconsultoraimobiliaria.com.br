@@ -1,21 +1,12 @@
 <script setup lang="ts">
-import { ArrowRight, Facebook, Instagram, Linkedin, Mail, MapPin, MessageCircle, PhoneCall } from 'lucide-vue-next'
+import { Facebook, Instagram, Linkedin, Mail, MessageCircle, PhoneCall } from 'lucide-vue-next'
 import type { Component } from 'vue'
 
 const { whatsappHref, onWhatsAppClick } = useWhatsapp()
 const currentYear = new Date().getFullYear()
-const {
-  siteName,
-  instagramUrl,
-  facebookUrl,
-  linkedinUrl,
-  contactEmail,
-  businessPhone,
-  businessAddress,
-} = useSiteSettings()
+const { instagramUrl, facebookUrl, linkedinUrl, contactEmail, businessPhone } = useSiteSettings()
 
 const displayPhone = computed(() => businessPhone.value || 'WhatsApp disponível')
-const displayAddress = computed(() => businessAddress.value || 'Atendimento consultivo online')
 
 const footerLinks = [
   { label: 'Empreendimentos', href: '/empreendimentos' },
@@ -31,111 +22,130 @@ type FooterSocialLink = {
 }
 
 const socialLinks = computed<FooterSocialLink[]>(() => {
-  const links: FooterSocialLink[] = [{ label: 'WhatsApp', href: whatsappHref.value, icon: MessageCircle }]
-
-  if (instagramUrl.value) links.push({ label: 'Instagram', href: instagramUrl.value, icon: Instagram })
+  const links: FooterSocialLink[] = [
+    { label: 'WhatsApp', href: whatsappHref.value, icon: MessageCircle },
+  ]
+  if (instagramUrl.value)
+    links.push({ label: 'Instagram', href: instagramUrl.value, icon: Instagram })
   if (facebookUrl.value) links.push({ label: 'Facebook', href: facebookUrl.value, icon: Facebook })
   if (linkedinUrl.value) links.push({ label: 'LinkedIn', href: linkedinUrl.value, icon: Linkedin })
-
   return links
 })
 </script>
 
 <template>
-  <footer class="footer-bar relative text-white/70">
-    <div class="footer-bar-glow" aria-hidden="true" />
+  <footer class="relative z-20 w-full bg-ink text-text-on-dark-muted">
+    <!-- Top metallic gold hairline -->
+    <div class="h-[1px] w-full bg-gradient-to-r from-transparent via-primary/40 to-transparent" />
 
-    <div class="container-page relative py-16">
-      <div class="grid gap-10 lg:grid-cols-[1.15fr_0.75fr_0.9fr] lg:items-start">
-        <div>
-          <LayoutAppLogo variant="footer" />
-          <p class="max-w-md text-sm leading-7 text-white/65">
-            Consultora de vendas imobiliárias. Atuo na apresentação e condução comercial de
-            empreendimentos, conectando compradores às incorporadoras parceiras.
-            <strong class="mt-2 block font-medium text-[#e5c48b]/90">
-              Não somos corretora de imóveis e não possuímos registro CRECI.
-            </strong>
+    <div class="mx-auto max-w-7xl px-5 py-16 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-1 items-start gap-12 md:grid-cols-12">
+        <!-- Brand & Profile Column (5 cols) -->
+        <div class="flex flex-col gap-5 md:col-span-5">
+          <div class="flex items-center gap-4">
+            <LayoutAppLogo variant="footer" />
+          </div>
+
+          <p class="max-w-sm text-sm leading-relaxed text-text-on-dark-muted">
+            Consultoria de vendas e assessoria boutique especializada em lançamentos de alto padrão
+            e curadoria para investidores qualificados.
           </p>
 
-          <a
-            :href="whatsappHref"
-            class="focus-ring mt-7 inline-flex items-center justify-center gap-2 rounded-md bg-[#c5a059] px-5 py-3 text-sm font-semibold text-ink transition hover:bg-[#e5c48b]"
-            target="_blank"
-            rel="noopener noreferrer"
-            @click="onWhatsAppClick('footer_cta')"
-          >
-            Receber curadoria
-            <ArrowRight class="size-4" aria-hidden="true" />
-          </a>
+          <div class="flex items-center gap-4 pt-2">
+            <img
+              src="/img/consultora.webp"
+              alt="Stefanny Gutierres"
+              class="size-11 rounded-full object-cover ring-1 ring-primary/60"
+            />
+            <div class="flex flex-col">
+              <span class="text-sm font-semibold text-text-on-dark">Stefanny Gutierres</span>
+              <span class="text-xs font-semibold uppercase tracking-wider text-primary">
+                Consultora &amp; Estrategista
+              </span>
+            </div>
+          </div>
         </div>
 
-        <div>
-          <h3 class="mb-4 text-sm font-semibold uppercase tracking-widest text-[#c5a059]">
+        <!-- Navigation Column (3 cols) -->
+        <div class="flex flex-col gap-4 md:col-span-3">
+          <span class="text-xs font-semibold uppercase tracking-widest text-primary font-label">
             Navegação
-          </h3>
-          <nav class="grid gap-3" aria-label="Navegação do rodapé">
+          </span>
+          <nav class="flex flex-col gap-2.5" aria-label="Navegação do rodapé">
             <NuxtLink
               v-for="link in footerLinks"
               :key="link.href"
               :to="link.href"
-              class="focus-ring w-fit rounded-md text-sm text-white/60 transition hover:text-[#e5c48b]"
+              class="focus-ring w-fit text-sm text-text-on-dark-muted transition-colors hover:text-brand-gold-light"
             >
               {{ link.label }}
             </NuxtLink>
           </nav>
-        </div>
 
-        <div>
-          <h3 class="mb-4 text-sm font-semibold uppercase tracking-widest text-[#c5a059]">
-            Contato e redes
-          </h3>
-
-          <div class="grid gap-3 text-sm text-white/60">
+          <div class="mt-2 flex flex-col gap-2 pt-2 text-xs text-text-on-dark-muted">
             <a
-              class="focus-ring inline-flex items-center gap-3 rounded-md transition hover:text-[#e5c48b]"
+              class="focus-ring inline-flex items-center gap-2 hover:text-primary transition-colors"
               :href="`mailto:${contactEmail}`"
             >
-              <Mail class="size-4 text-[#e5c48b]" aria-hidden="true" />
+              <Mail class="size-3.5 text-primary" aria-hidden="true" />
               {{ contactEmail }}
             </a>
             <a
-              class="focus-ring inline-flex items-center gap-3 rounded-md transition hover:text-[#e5c48b]"
+              class="focus-ring inline-flex items-center gap-2 hover:text-primary transition-colors"
               :href="whatsappHref"
               target="_blank"
               rel="noopener noreferrer"
               @click="onWhatsAppClick('footer_phone')"
             >
-              <PhoneCall class="size-4 text-[#e5c48b]" aria-hidden="true" />
+              <PhoneCall class="size-3.5 text-primary" aria-hidden="true" />
               {{ displayPhone }}
             </a>
-            <p class="inline-flex items-center gap-3">
-              <MapPin class="size-4 text-[#e5c48b]" aria-hidden="true" />
-              {{ displayAddress }}
+          </div>
+        </div>
+
+        <!-- Compliance & Legal Column (4 cols) -->
+        <div class="flex flex-col gap-4 md:col-span-4">
+          <span class="text-xs font-semibold uppercase tracking-widest text-primary font-label">
+            Transparência &amp; Conformidade
+          </span>
+
+          <div class="rounded-md border border-stroke-dark bg-surface-dark-raised p-4">
+            <p class="text-xs leading-relaxed text-text-on-dark-muted">
+              Não sou corretora de imóveis; não possuo registro CRECI. Atuação exclusiva em
+              consultoria comercial e curadoria estratégica de lançamentos imobiliários.
             </p>
           </div>
 
-          <div class="mt-6 flex flex-wrap gap-3">
+          <div class="flex items-center gap-3 pt-2">
             <a
               v-for="social in socialLinks"
               :key="social.label"
               :href="social.href"
-              class="focus-ring grid size-11 place-items-center rounded-md border border-[#c5a059]/20 bg-[#c5a059]/5 text-[#e5c48b] transition hover:border-[#e5c48b]/40 hover:bg-[#c5a059]/10"
               target="_blank"
               rel="noopener noreferrer"
               :aria-label="social.label"
+              class="focus-ring grid size-9 place-items-center rounded-sm border border-stroke-dark bg-surface-dark text-text-on-dark-muted transition hover:border-primary/50 hover:text-primary"
             >
-              <component :is="social.icon" class="size-5" aria-hidden="true" />
+              <component :is="social.icon" class="size-4" aria-hidden="true" />
             </a>
           </div>
         </div>
       </div>
 
+      <div class="my-10 h-[1px] w-full bg-stroke-dark" />
+
       <div
-        class="mt-12 flex flex-col gap-3 border-t pt-8 text-xs text-white/35 sm:flex-row sm:items-center sm:justify-between"
-        style="border-color: rgba(197, 160, 89, 0.15)"
+        class="flex flex-col items-center justify-between gap-4 text-xs text-text-on-dark-muted sm:flex-row"
       >
-        <p>© {{ currentYear }} {{ siteName }}. Todos os direitos reservados.</p>
-        <p>Consultoria de vendas imobiliárias — sem registro CRECI.</p>
+        <p>
+          © {{ currentYear }} Stefanny Gutierres Consultoria Imobiliária. Todos os direitos
+          reservados.
+        </p>
+        <div class="flex items-center gap-2">
+          <span class="text-xs uppercase tracking-widest text-primary font-label">
+            High-End Real Estate Advisory
+          </span>
+        </div>
       </div>
     </div>
   </footer>

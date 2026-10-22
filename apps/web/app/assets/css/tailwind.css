@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Montserrat:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,400;1,500;1,600&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -81,7 +81,14 @@
   }
 
   .footer-bar {
-    background: linear-gradient(to bottom, #0a0a0a 0%, #0d0b09 20%, #12100c 45%, #181410 70%, #1e1914 100%);
+    background: linear-gradient(
+      to bottom,
+      #0a0a0a 0%,
+      #0d0b09 20%,
+      #12100c 45%,
+      #181410 70%,
+      #1e1914 100%
+    );
   }
 
   .footer-bar::before {
@@ -99,6 +106,10 @@
 
   .footer-bar-glow {
     @apply pointer-events-none absolute inset-0;
-    background: radial-gradient(ellipse 70% 40% at 50% 0%, rgba(197, 160, 89, 0.07) 0%, transparent 70%);
+    background: radial-gradient(
+      ellipse 70% 40% at 50% 0%,
+      rgba(197, 160, 89, 0.07) 0%,
+      transparent 70%
+    );
   }
 }
