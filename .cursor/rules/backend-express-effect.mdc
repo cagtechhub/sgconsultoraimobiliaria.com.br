@@ -1,0 +1,17 @@
+---
+description: Backend Express + Effect + Prisma (apps/backend) — clean architecture (ports, use-cases, adapters/layers), auth admin Supabase, Zod via @gutierres/shared.
+globs: apps/backend/src/**/*.ts
+alwaysApply: false
+---
+
+# Backend — Express / Effect / Prisma
+
+Papel: `.ai/agents/backend-engineer.md`. Padrões: `.ai/standards/backend/coding.md`. Stacks: `.ai/stacks/express.md`, `effect3.md`, `prisma.md`, `supabase.md`, `typescript.md`. Contratos: `docs/contracts.md`.
+
+- Camadas: `domain/` ← `application/` (ports + contexts + use-cases) ← `infrastructure/` (adapters Prisma/Supabase + layers) ← `presentation/http/` (rotas em `create-app.ts`).
+- Novo recurso: port → use-case → adapter + layer → rota. Use-case não importa Prisma/Express.
+- Validar input com Zod de `@gutierres/shared`; erros com status correto, sem vazar stack; não logar PII/tokens.
+- `/admin/*` sempre com `requireAdmin`.
+- Prisma client gerado em `src/infrastructure/prisma/output` (não editar); `yarn db:generate` após schema.
+- Rota nova/alterada → atualizar `docs/contracts.md` e consumidor em `apps/web`.
+- Validar: `yarn workspace @gutierres/backend build`.

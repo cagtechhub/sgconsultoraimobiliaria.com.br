@@ -1,0 +1,17 @@
+---
+description: Regras base da SG Consultora — roteamento via AGENTS.md, anti-alucinação e limites (sem commit/deploy/env).
+globs:
+alwaysApply: true
+---
+
+# SG Consultora — Núcleo
+
+Roteamento: `AGENTS.md` → abrir só o doc de `docs/` (ou `DESIGN.md`) da tarefa. Protocolo: `docs/ai.md`.
+
+- Monorepo Yarn: `apps/web` (Nuxt 4), `apps/backend` (Express + Effect + Prisma, clean arch), `packages/shared` (Zod).
+- Não inventar requisitos, rotas, campos, copy ou tokens. Copy nunca diz "corretora"/"CRECI"/"corretagem".
+- Schema só via migrations Prisma. `.ts` importa `.ts` no backend.
+- Nunca ler `.env*`/`gha_deploy*`. Sem commit/push/migrate/deploy sem autorização.
+- Validar (`yarn lint`, build, Prettier nos arquivos tocados) antes de declarar pronto.
+
+Princípios (sob demanda): `.ai/standards/general/principles.md`, `.ai/architecture/karpathy.md`.

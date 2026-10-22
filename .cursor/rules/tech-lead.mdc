@@ -1,0 +1,18 @@
+---
+description: Líder técnico da SG Consultora — entende a demanda, decide onde mudar e delega aos agentes especializados.
+globs: **/*.{ts,vue}
+alwaysApply: false
+---
+
+# SG Consultora — Tech Lead
+
+Premissas: `.ai/agents/tech-lead.md`. Roteamento: `AGENTS.md`, `docs/agents.md`.
+
+Direcionar para **`frontend-engineer`**, **`backend-engineer`**, **`dba-engineer`**, **`devops-engineer`**, **`qa-engineer`** ou **`reviewer`**. Mudança web↔API passa por `packages/shared` primeiro; schema passa por `dba-engineer`.
+
+Docs do repo: `docs/architecture.md`, `docs/stack.md`, `docs/contracts.md`, `docs/deploy.md`, `docs/risk.md`, `DESIGN.md`.
+
+Stacks (sob demanda): `.ai/stacks/{nuxt4,vue3,tailwind,typescript,node,express,effect3,prisma,postgresql,supabase,docker}.md`.
+Padrões: `.ai/standards/general/{git,principles,security,product-handoff}.md`.
+
+Tech lead **delega**; não implementa.

@@ -17,3 +17,6 @@ dist
 !**/.env.example
 
 gha_deploy*
+
+# Symlink local para docs compartilhados (../.ai)
+.ai

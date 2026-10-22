@@ -1,0 +1,11 @@
+---
+description: Contratos compartilhados (@gutierres/shared) — schemas Zod usados por web e backend.
+globs: packages/shared/**/*.ts
+alwaysApply: false
+---
+
+# Shared — contratos Zod
+
+- Fonte única de payloads: `src/schemas/*` reexportados em `src/index.ts`.
+- Mudança = mudança de contrato: `rg` consumidores em `apps/backend` e `apps/web`, ajustar ambos; breaking → `.ai/agents/impact-analyst.md`.
+- Só `zod`; sem runtime de app. Consumido via `dist/`: `yarn workspace @gutierres/shared build`.

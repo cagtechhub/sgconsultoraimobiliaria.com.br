@@ -1,0 +1,14 @@
+---
+description: DBA PostgreSQL/Prisma/Supabase — schema `gutierres`, migrations, queries e índices.
+globs: apps/backend/prisma/**/*,apps/backend/src/infrastructure/prisma/**/*.ts,apps/backend/supabase/**/*.sql
+alwaysApply: false
+---
+
+# DBA — PostgreSQL / Prisma / Supabase
+
+Consulte `.ai/agents/dba-engineer.md`, `.ai/stacks/{prisma,postgresql,supabase}.md`, skill `.ai/skills/database-analysis/SKILL.md`.
+
+- Schema único `gutierres` (`@@schema("gutierres")` em todo model/enum).
+- **Schema novo só via migrations Prisma** em `apps/backend/prisma/migrations/`; não editar migrations aplicadas; sem `db push` como mudança definitiva.
+- Preferir aditivas; destrutivas exigem plano + autorização. Não rodar `db:migrate` sem autorização.
+- Listas admin com limite/ordenação; evitar N+1 em `include`.

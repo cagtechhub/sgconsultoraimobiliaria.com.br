@@ -1,0 +1,14 @@
+---
+description: Infra/deploy — Docker, Traefik, Cloudflare, CSP, GitHub Actions, env.
+globs: docker-compose.yml,deploy.sh,apps/*/Dockerfile,.github/workflows/**,.dockerignore,.env.example,apps/web/nuxt.config.ts
+alwaysApply: false
+---
+
+# Infra / Deploy
+
+Papel: `.ai/agents/devops-engineer.md`. Stacks: `.ai/stacks/docker.md`, `node.md`. Projeto: `docs/deploy.md`.
+
+- Cloudflare (Full strict) → Traefik com Origin CA; routers **sem** `tls.certresolver`. Rede `web`, sem `ports:`; `container_name` `gutierresconsultoria-web`/`-backend`.
+- CSP: manter Cloudflare Insights em `script-src`/`connect-src` e `connect-src` explícito (ver `docs/deploy.md`).
+- Prisma generate depois do `COPY .`. Node consistente entre engines e Dockerfiles.
+- Push em `main` = produção. Nunca ler `.env*`/`gha_deploy*`. Atualizar `docs/deploy.md` na mesma entrega.

@@ -1,0 +1,17 @@
+---
+description: Frontend Nuxt 4 / Vue 3 (apps/web) — páginas, componentes, composables, SEO, nuxt-security, Nitro e admin.
+globs: apps/web/**/*.{vue,ts}
+alwaysApply: false
+---
+
+# Frontend — Nuxt 4 / Vue 3
+
+Papel: `.ai/agents/frontend-engineer.md`. Padrões: `.ai/standards/frontend/coding.md`. Stacks: `.ai/stacks/nuxt4.md`, `vue3.md`, `tailwind.md`. Visual: `DESIGN.md` (rule `design-system`). Estrutura: `docs/architecture.md`.
+
+- `<script setup lang="ts">`, auto-imports (`srcDir: app/`); lógica em `composables/`; tipos de payload de `@gutierres/shared`.
+- Dados: `useApiBase` (SSR interno × público); admin via `useAdminApi` (Bearer). WhatsApp via `useWhatsapp` + `onWhatsAppClick(<origem>)`; eventos via `useAnalytics`.
+- SEO: `useSeoMeta`/`useHead`/`useJsonLdGraph` no `setup()` **antes de qualquer `await`**; não usar `@unhead/schema-org`.
+- Admin: layout sidebar 16rem + header sticky + drawer (não top-nav).
+- Não relaxar CSP (`nuxt.config.ts`); nada sensível em `NUXT_PUBLIC_*`.
+- Nitro (`server/`): validar input; `useRuntimeConfig(event)`.
+- Entrega: mobile-first, acessível, `yarn lint`.

@@ -1,0 +1,28 @@
+---
+description: Design system SG Consultora (DESIGN.md) — paleta, tipografia, tokens, componentes, motion e acessibilidade. Use em trabalho visual/redesign do site ou admin.
+globs: apps/web/app/**/*.vue,apps/web/app/assets/**/*.css,apps/web/tailwind.config.ts,DESIGN.md
+alwaysApply: false
+---
+
+# Design system — fonte: `DESIGN.md`
+
+| Tarefa                     | Seção de `DESIGN.md` |
+| -------------------------- | -------------------- |
+| Posicionamento, tom, copy  | Overview             |
+| Cores (dark / light)       | Colors               |
+| Fontes                     | Typography           |
+| Grid, espaçamento          | Layout               |
+| Sombras, vidro, dourado    | Elevation & Depth    |
+| Raios / formas             | Shapes               |
+| Header, hero, cards, form… | Components           |
+| O que evitar               | Do's and Don'ts      |
+| Animações                  | Motion               |
+| A11y                       | Accessibility        |
+| Ordem das seções / páginas | Page Structure       |
+| Prompts Google Stitch      | Stitch Prompts       |
+
+- Tokens via `tailwind.config.ts` — sem hex solto (hoje há `#e5c48b` inline em `index.vue`; migrar ao tocar).
+- Token novo/alterado → `DESIGN.md` (front matter + seção) e `tailwind.config.ts` na mesma entrega.
+- Preservar logo (`/img/logo-mark.png`, `/img/logo-footer.png`) e o dourado da marca.
+- Manter âncoras `#empreendimentos`, `#servicos`, `#cases`, `#contato` e rotas `/empreendimentos`.
+- `prefers-reduced-motion` e contraste AA. Prompts Stitch são referência, não código.
