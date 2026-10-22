@@ -9,7 +9,7 @@ defineProps<{
 
 <template>
   <article
-    class="group relative flex flex-col overflow-hidden rounded-md border border-stroke-light bg-surface-light shadow-[0_1px_2px_rgba(20,17,13,0.04),0_12px_32px_rgba(20,17,13,0.06)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_20px_48px_rgba(20,17,13,0.12)]"
+    class="group relative flex flex-col overflow-hidden rounded-md border border-stroke-light bg-surface-light shadow-[0_1px_2px_rgba(20,17,13,0.04),0_12px_32px_rgba(20,17,13,0.06)] transition-all duration-200 transform-gpu hover:-translate-y-1 hover:shadow-[0_20px_48px_rgba(20,17,13,0.12)]"
   >
     <!-- Top dual metallic gold line -->
     <div class="h-1 w-full bg-gradient-to-r from-primary-container via-primary to-success" />
@@ -17,7 +17,7 @@ defineProps<{
     <!-- Image ratio 4:5 -->
     <div class="relative aspect-[4/5] w-full overflow-hidden bg-surface-light-alt">
       <img
-        class="h-full w-full object-cover transition-transform duration-500 ease-out group-hover:scale-105"
+        class="h-full w-full object-cover transition-transform duration-200 ease-out transform-gpu group-hover:scale-103"
         :src="project.image"
         :alt="`Empreendimento ${project.title}`"
       />
@@ -70,11 +70,11 @@ defineProps<{
         <span class="text-xs text-text-muted font-medium">Condução Direta</span>
         <NuxtLink
           :to="`/empreendimentos/${project.slug}`"
-          class="focus-ring inline-flex items-center gap-1 text-sm font-semibold text-brand-gold-deep transition-colors hover:text-ink"
+          class="focus-ring inline-flex items-center gap-1 text-sm font-semibold text-brand-gold-deep transition-colors duration-150 hover:text-ink"
         >
           <span>Ver empreendimento</span>
           <ArrowRight
-            class="size-4 transition-transform group-hover:translate-x-1"
+            class="size-4 transition-transform duration-150 group-hover:translate-x-1"
             aria-hidden="true"
           />
         </NuxtLink>

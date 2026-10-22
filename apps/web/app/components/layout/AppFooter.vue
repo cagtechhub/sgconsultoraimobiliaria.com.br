@@ -76,7 +76,7 @@ const socialLinks = computed<FooterSocialLink[]>(() => {
               v-for="link in footerLinks"
               :key="link.href"
               :to="link.href"
-              class="focus-ring w-fit text-sm text-text-on-dark-muted transition-colors hover:text-brand-gold-light"
+              class="focus-ring w-fit text-sm text-text-on-dark-muted transition-colors duration-150 hover:text-brand-gold-light"
             >
               {{ link.label }}
             </NuxtLink>
@@ -84,14 +84,14 @@ const socialLinks = computed<FooterSocialLink[]>(() => {
 
           <div class="mt-2 flex flex-col gap-2 pt-2 text-xs text-text-on-dark-muted">
             <a
-              class="focus-ring inline-flex items-center gap-2 hover:text-primary transition-colors"
+              class="focus-ring inline-flex items-center gap-2 hover:text-primary transition-colors duration-150"
               :href="`mailto:${contactEmail}`"
             >
               <Mail class="size-3.5 text-primary" aria-hidden="true" />
               {{ contactEmail }}
             </a>
             <a
-              class="focus-ring inline-flex items-center gap-2 hover:text-primary transition-colors"
+              class="focus-ring inline-flex items-center gap-2 hover:text-primary transition-colors duration-150"
               :href="whatsappHref"
               target="_blank"
               rel="noopener noreferrer"

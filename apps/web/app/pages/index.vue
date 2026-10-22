@@ -229,7 +229,10 @@ async function submitLead() {
     <ProjectFeaturedHero :project="featuredProject" />
 
     <!-- 2. OPORTUNIDADES SELECIONADAS (Ivory Canvas #FAF8F3) -->
-    <section id="empreendimentos" class="w-full bg-canvas-light text-text-strong py-20 sm:py-28">
+    <section
+      id="empreendimentos"
+      class="w-full bg-canvas-light text-text-strong py-20 sm:py-28 scroll-mt-20 sm:scroll-mt-24"
+    >
       <div class="mx-auto max-w-7xl px-5 sm:px-6 lg:px-8 flex flex-col gap-12 sm:gap-16">
         <!-- Header with Authorization Stamp -->
         <div class="flex flex-col md:flex-row md:items-end justify-between gap-6">
@@ -273,7 +276,7 @@ async function submitLead() {
         <div class="flex justify-center pt-4">
           <NuxtLink
             to="/empreendimentos"
-            class="focus-ring inline-flex items-center gap-2 rounded-sm border border-stroke-light bg-surface-light px-8 py-3.5 text-sm font-semibold text-text-strong shadow-sm transition-all duration-300 hover:border-primary hover:bg-surface-light-alt"
+            class="focus-ring inline-flex items-center gap-2 rounded-sm border border-stroke-light bg-surface-light px-8 py-3.5 text-sm font-semibold text-text-strong shadow-sm transition-all duration-150 hover:border-primary hover:bg-surface-light-alt"
           >
             <span>Ver todos os empreendimentos selecionados</span>
             <ArrowRight class="size-4 text-primary" aria-hidden="true" />
@@ -283,7 +286,10 @@ async function submitLead() {
     </section>
 
     <!-- 3. METODOLOGIA SG / SERVIÇOS (Warm Ivory #F3EEE3) -->
-    <section id="servicos" class="w-full bg-surface-light-alt text-text-strong py-20 sm:py-28">
+    <section
+      id="servicos"
+      class="w-full bg-surface-light-alt text-text-strong py-20 sm:py-28 scroll-mt-20 sm:scroll-mt-24"
+    >
       <div class="mx-auto max-w-7xl px-5 sm:px-6 lg:px-8 flex flex-col gap-12 sm:gap-16">
         <!-- Section Intro -->
         <div class="flex flex-col gap-3 max-w-2xl">
@@ -310,7 +316,7 @@ async function submitLead() {
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
           <!-- Step 01 -->
           <div
-            class="group flex flex-col justify-between rounded-md border border-stroke-light bg-surface-light p-8 shadow-sm transition-colors duration-300 hover:border-primary"
+            class="group flex flex-col justify-between rounded-md border border-stroke-light bg-surface-light p-8 shadow-sm transition-colors duration-150 hover:border-primary"
           >
             <div class="flex flex-col gap-4">
               <span class="font-display text-5xl font-medium leading-none text-primary">01</span>
@@ -333,7 +339,7 @@ async function submitLead() {
 
           <!-- Step 02 -->
           <div
-            class="group flex flex-col justify-between rounded-md border border-stroke-light bg-surface-light p-8 shadow-sm transition-colors duration-300 hover:border-primary"
+            class="group flex flex-col justify-between rounded-md border border-stroke-light bg-surface-light p-8 shadow-sm transition-colors duration-150 hover:border-primary"
           >
             <div class="flex flex-col gap-4">
               <span class="font-display text-5xl font-medium leading-none text-primary">02</span>
@@ -356,7 +362,7 @@ async function submitLead() {
 
           <!-- Step 03 -->
           <div
-            class="group flex flex-col justify-between rounded-md border border-stroke-light bg-surface-light p-8 shadow-sm transition-colors duration-300 hover:border-primary"
+            class="group flex flex-col justify-between rounded-md border border-stroke-light bg-surface-light p-8 shadow-sm transition-colors duration-150 hover:border-primary"
           >
             <div class="flex flex-col gap-4">
               <span class="font-display text-5xl font-medium leading-none text-primary">03</span>
@@ -402,7 +408,7 @@ async function submitLead() {
     <!-- 4. HISTÓRIAS DE SUCESSO / CASES (Dark #0A0A0A) -->
     <section
       id="cases"
-      class="relative w-full overflow-hidden bg-ink py-20 text-text-on-dark sm:py-28"
+      class="relative w-full overflow-hidden bg-ink py-20 text-text-on-dark sm:py-28 scroll-mt-20 sm:scroll-mt-24"
     >
       <!-- Atmospheric gold radial blur -->
       <div
@@ -442,7 +448,7 @@ async function submitLead() {
         <div class="flex justify-center pt-2">
           <a
             :href="whatsappHref"
-            class="focus-ring inline-flex items-center gap-2 rounded-sm bg-primary px-8 py-4 text-sm font-semibold text-ink shadow-[0_4px_24px_rgba(197,160,89,0.25)] transition-all duration-300 hover:bg-primary-hover"
+            class="focus-ring inline-flex items-center gap-2 rounded-sm bg-primary px-8 py-4 text-sm font-semibold text-ink shadow-[0_4px_24px_rgba(197,160,89,0.25)] transition-all duration-150 hover:bg-primary-hover"
             target="_blank"
             rel="noopener noreferrer"
             @click="onWhatsAppClick('sold_cases_cta')"
@@ -455,7 +461,10 @@ async function submitLead() {
     </section>
 
     <!-- 5. CONTATO / CONSULTORIA (Clean Ivory #FAF8F3) -->
-    <section id="contato" class="w-full bg-canvas-light text-text-strong py-20 sm:py-28">
+    <section
+      id="contato"
+      class="w-full bg-canvas-light text-text-strong py-20 sm:py-28 scroll-mt-20 sm:scroll-mt-24"
+    >
       <div class="mx-auto max-w-7xl px-5 sm:px-6 lg:px-8">
         <div class="grid grid-cols-1 items-center gap-12 lg:grid-cols-12 lg:gap-16">
           <!-- Left Column: Stefanny Portrait & Personal Voice (6 Cols) -->
@@ -598,7 +607,7 @@ async function submitLead() {
                     type="text"
                     required
                     placeholder="Ex: Dr. Roberto Guimarães"
-                    class="focus-ring h-12 rounded-sm border border-stroke-light bg-surface-light px-4 text-sm text-text-strong placeholder:text-text-muted/60 transition-all"
+                    class="focus-ring h-12 rounded-sm border border-stroke-light bg-surface-light px-4 text-sm text-text-strong placeholder:text-text-muted/60 transition-colors duration-150"
                   />
                 </div>
 
@@ -617,7 +626,7 @@ async function submitLead() {
                       type="email"
                       required
                       placeholder="roberto@empresa.com.br"
-                      class="focus-ring h-12 rounded-sm border border-stroke-light bg-surface-light px-4 text-sm text-text-strong placeholder:text-text-muted/60 transition-all"
+                      class="focus-ring h-12 rounded-sm border border-stroke-light bg-surface-light px-4 text-sm text-text-strong placeholder:text-text-muted/60 transition-colors duration-150"
                     />
                   </div>
 
@@ -634,7 +643,7 @@ async function submitLead() {
                       type="tel"
                       required
                       placeholder="(11) 99999-9999"
-                      class="focus-ring h-12 rounded-sm border border-stroke-light bg-surface-light px-4 text-sm text-text-strong placeholder:text-text-muted/60 transition-all"
+                      class="focus-ring h-12 rounded-sm border border-stroke-light bg-surface-light px-4 text-sm text-text-strong placeholder:text-text-muted/60 transition-colors duration-150"
                     />
                   </div>
                 </div>
@@ -650,7 +659,7 @@ async function submitLead() {
                   <select
                     id="propertyType"
                     v-model="form.propertyType"
-                    class="focus-ring h-12 rounded-sm border border-stroke-light bg-surface-light px-4 text-sm text-text-strong transition-all cursor-pointer"
+                    class="focus-ring h-12 rounded-sm border border-stroke-light bg-surface-light px-4 text-sm text-text-strong transition-colors duration-150 cursor-pointer"
                   >
                     <option value="Residencial de Alto Padrão (Apartamento)">
                       Residencial de Alto Padrão (Apartamento)
@@ -681,7 +690,7 @@ async function submitLead() {
                     rows="3"
                     maxlength="500"
                     placeholder="Ex: Procuro 4 suítes nos Jardins ou Itaim com varanda ampla e vista livre."
-                    class="focus-ring rounded-sm border border-stroke-light bg-surface-light p-4 text-sm text-text-strong placeholder:text-text-muted/60 transition-all resize-none"
+                    class="focus-ring rounded-sm border border-stroke-light bg-surface-light p-4 text-sm text-text-strong placeholder:text-text-muted/60 transition-colors duration-150 resize-none"
                   />
                   <span class="text-right text-[11px] text-text-muted">
                     {{ form.message.length }}/500
@@ -700,7 +709,7 @@ async function submitLead() {
                 <button
                   type="submit"
                   :disabled="submitting"
-                  class="focus-ring mt-1 flex h-12 w-full items-center justify-center gap-2 rounded-sm bg-primary text-sm font-semibold text-ink shadow-[0_4px_20px_rgba(233,193,118,0.3)] transition-all duration-300 hover:bg-primary-hover disabled:opacity-60"
+                  class="focus-ring mt-1 flex h-12 w-full items-center justify-center gap-2 rounded-sm bg-primary text-sm font-semibold text-ink shadow-[0_4px_20px_rgba(233,193,118,0.3)] transition-all duration-150 hover:bg-primary-hover disabled:opacity-60"
                 >
                   <span>{{ submitting ? 'Enviando…' : 'Solicitar Curadoria Privada' }}</span>
                   <Send class="size-4" aria-hidden="true" />
@@ -745,7 +754,7 @@ async function submitLead() {
         <div class="pt-4">
           <a
             :href="whatsappHref"
-            class="focus-ring inline-flex items-center gap-2 rounded-sm bg-primary px-8 py-4 text-sm sm:text-base font-semibold text-ink shadow-[0_6px_32px_rgba(197,160,89,0.35)] transition-all duration-300 hover:bg-primary-hover hover:scale-[1.02]"
+            class="focus-ring inline-flex items-center gap-2 rounded-sm bg-primary px-8 py-4 text-sm sm:text-base font-semibold text-ink shadow-[0_6px_32px_rgba(197,160,89,0.35)] transition-all duration-150 transform-gpu hover:bg-primary-hover hover:scale-[1.02]"
             target="_blank"
             rel="noopener noreferrer"
             @click="onWhatsAppClick('home_cta')"

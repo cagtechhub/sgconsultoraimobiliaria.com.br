@@ -19,18 +19,18 @@ const soldLabel = computed(() => {
 
 <template>
   <article
-    class="group relative flex flex-col justify-between overflow-hidden rounded-md border border-stroke-dark bg-surface-dark transition-all duration-300 hover:border-primary/40"
+    class="group relative flex flex-col justify-between overflow-hidden rounded-md border border-stroke-dark bg-surface-dark transition-colors duration-200 hover:border-primary/40"
   >
     <div class="relative h-64 w-full overflow-hidden sm:h-72 bg-surface-dark-raised">
       <img
         v-if="item.coverUrl"
         :src="item.coverUrl"
         :alt="item.propertyTitle"
-        class="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+        class="h-full w-full object-cover transition-transform duration-200 ease-out transform-gpu group-hover:scale-103"
       />
       <div
         v-else
-        class="h-full w-full bg-cover bg-center transition-transform duration-700 ease-out group-hover:scale-105"
+        class="h-full w-full bg-cover bg-center transition-transform duration-200 ease-out transform-gpu group-hover:scale-103"
         style="
           background-image: url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80');
         "

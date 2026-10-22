@@ -37,7 +37,7 @@ function onMobileWhatsAppClick() {
 
 <template>
   <header
-    class="fixed inset-x-0 top-0 z-50 transition-all duration-500"
+    class="fixed inset-x-0 top-0 z-50 transition-colors duration-200"
     :class="scrolled ? 'header-bar-scrolled' : 'header-bar'"
   >
     <div class="container-page">
@@ -51,7 +51,7 @@ function onMobileWhatsAppClick() {
           <NuxtLink
             v-for="link in navLinks"
             :key="link.href"
-            class="focus-ring rounded-sm text-sm font-medium tracking-wide text-text-on-dark-muted transition-colors hover:text-brand-gold-light py-1"
+            class="focus-ring rounded-sm text-sm font-medium tracking-wide text-text-on-dark-muted transition-colors duration-150 hover:text-brand-gold-light py-1"
             :to="link.href"
           >
             {{ link.label }}
@@ -61,7 +61,7 @@ function onMobileWhatsAppClick() {
         <div class="flex items-center gap-4">
           <a
             :href="whatsappHref"
-            class="focus-ring hidden sm:inline-flex items-center gap-2 rounded-sm border border-primary/40 bg-surface-dark-raised px-4 py-2 text-xs font-semibold uppercase tracking-widest text-primary transition-all duration-300 hover:bg-primary hover:text-ink"
+            class="focus-ring hidden sm:inline-flex items-center gap-2 rounded-sm border border-primary/40 bg-surface-dark-raised px-4 py-2 text-xs font-semibold uppercase tracking-widest text-primary transition-colors duration-150 hover:bg-primary hover:text-ink"
             target="_blank"
             rel="noopener noreferrer"
             @click="onWhatsAppClick('header')"

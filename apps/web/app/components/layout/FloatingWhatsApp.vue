@@ -11,7 +11,7 @@ const { whatsappHref, onWhatsAppClick } = useWhatsapp()
       target="_blank"
       rel="noopener noreferrer"
       aria-label="Consultoria Direta via WhatsApp"
-      class="group relative flex size-14 items-center justify-center rounded-full bg-whatsapp text-ink shadow-[0_4px_24px_rgba(37,211,102,0.35)] transition-transform duration-300 hover:scale-105 active:scale-95"
+      class="group relative flex size-14 items-center justify-center rounded-full bg-whatsapp text-ink shadow-[0_4px_24px_rgba(37,211,102,0.35)] transition-transform duration-150 transform-gpu hover:scale-105 active:scale-95"
       @click="onWhatsAppClick('floating')"
     >
       <MessageCircle class="size-7 text-ink stroke-[2.2]" aria-hidden="true" />

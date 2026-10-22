@@ -53,7 +53,7 @@ const formattedDeadline = computed(() => {
       <img
         :src="currentProject.image"
         :alt="currentProject.title"
-        class="h-full w-full object-cover opacity-35 scale-105 transition-transform duration-1000 ease-out"
+        class="h-full w-full object-cover opacity-35"
       />
       <div class="absolute inset-0 bg-gradient-to-r from-ink via-ink/90 to-transparent" />
       <div class="absolute inset-0 bg-gradient-to-t from-ink via-transparent to-ink/60" />
@@ -148,7 +148,7 @@ const formattedDeadline = computed(() => {
           <div class="flex flex-col gap-4 pt-2 sm:flex-row sm:items-center">
             <NuxtLink
               :to="`/empreendimentos/${currentProject.slug}`"
-              class="focus-ring inline-flex items-center justify-center gap-2 rounded-sm bg-primary px-6 py-4 text-sm font-semibold text-ink shadow-[0_4px_24px_rgba(197,160,89,0.25)] transition-all duration-300 hover:bg-primary-hover"
+              class="focus-ring inline-flex items-center justify-center gap-2 rounded-sm bg-primary px-6 py-4 text-sm font-semibold text-ink shadow-[0_4px_24px_rgba(197,160,89,0.25)] transition-all duration-150 hover:bg-primary-hover"
             >
               <span>Ver detalhes do empreendimento</span>
               <ArrowRight class="size-4" aria-hidden="true" />
@@ -156,7 +156,7 @@ const formattedDeadline = computed(() => {
 
             <a
               :href="whatsappHref"
-              class="focus-ring inline-flex items-center justify-center gap-2 rounded-sm border border-primary/40 bg-transparent px-6 py-4 text-sm font-medium text-text-on-dark transition-all duration-300 hover:border-primary hover:bg-surface-dark-raised"
+              class="focus-ring inline-flex items-center justify-center gap-2 rounded-sm border border-primary/40 bg-transparent px-6 py-4 text-sm font-medium text-text-on-dark transition-all duration-150 hover:border-primary hover:bg-surface-dark-raised"
               target="_blank"
               rel="noopener noreferrer"
               @click="onWhatsAppClick('hero')"
@@ -173,7 +173,7 @@ const formattedDeadline = computed(() => {
             class="group relative aspect-[4/5] w-full overflow-hidden rounded-md border border-stroke-dark/80 shadow-2xl"
           >
             <img
-              class="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+              class="h-full w-full object-cover transition-transform duration-200 ease-out transform-gpu group-hover:scale-103"
               :src="currentProject.image"
               :alt="currentProject.title"
             />
