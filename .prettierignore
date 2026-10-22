@@ -1,0 +1,15 @@
+node_modules
+**/node_modules
+**/.nuxt
+**/.output
+**/dist
+.data
+.cache
+.nitro
+apps/backend/src/infrastructure/prisma/output
+apps/backend/prisma/migrations
+yarn.lock
+.env*
+gha_deploy*
+apps/web/public
+.ai

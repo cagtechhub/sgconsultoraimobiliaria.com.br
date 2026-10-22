@@ -3,7 +3,7 @@
   "private": true,
   "type": "module",
   "engines": {
-    "node": "^20.19.0 || >=22.12.0"
+    "node": ">=24"
   },
   "workspaces": [
     "apps/*",
@@ -20,7 +20,9 @@
     "db:generate": "yarn workspace @gutierres/backend db:generate",
     "db:migrate": "yarn workspace @gutierres/backend db:migrate",
     "db:push": "yarn workspace @gutierres/backend db:push",
-    "postinstall": "yarn workspace @gutierres/shared build && yarn workspace @gutierres/web postinstall"
+    "postinstall": "yarn workspace @gutierres/shared build && yarn workspace @gutierres/web postinstall",
+    "format": "prettier --check .",
+    "format:write": "prettier --write ."
   },
   "resolutions": {
     "vue": "3.5.39",
@@ -34,6 +36,7 @@
     "@vue/shared": "3.5.39"
   },
   "devDependencies": {
-    "concurrently": "^9.1.2"
+    "concurrently": "^9.1.2",
+    "prettier": "^3.6.0"
   }
 }
