@@ -29,13 +29,6 @@ const soldLabel = computed(() => {
         class="h-full w-full object-cover transition-transform duration-200 ease-out transform-gpu group-hover:scale-103"
       />
       <div
-        v-else
-        class="h-full w-full bg-cover bg-center transition-transform duration-200 ease-out transform-gpu group-hover:scale-103"
-        style="
-          background-image: url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80');
-        "
-      />
-      <div
         class="absolute inset-0 bg-gradient-to-t from-surface-dark via-surface-dark/40 to-transparent"
       />
 

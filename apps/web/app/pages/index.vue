@@ -12,7 +12,6 @@ import {
   Sliders,
   Sparkles,
 } from 'lucide-vue-next'
-import type { SoldCase } from '@gutierres/shared'
 import type { Project } from '~/types/project'
 
 const settings = useSiteSettings()
@@ -135,47 +134,6 @@ const fallbackProjects: Project[] = [
 
 const displayProjects = computed(() => {
   return allProjects.value.length ? allProjects.value : fallbackProjects
-})
-
-const fallbackSoldCases: SoldCase[] = [
-  {
-    id: 'case-1',
-    propertyTitle: 'Cobertura Exclusiva no Itaim Bibi',
-    location: 'Itaim Bibi, São Paulo',
-    coverUrl:
-      'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1200&q=80',
-    coverStoragePath: null,
-    clientName: 'M. Silveira',
-    clientRole: 'Investidor Patrimonial • São Paulo',
-    quote:
-      'Encontrei a cobertura perfeita no Itaim sem precisar visitar dezenas de estandes. A curadoria da Stefanny filtrou exatamente o que buscávamos em termos de insolação e privacidade, conduzindo as negociações direto com a mesa diretora.',
-    soldAt: new Date('2024-08-15'),
-    sortOrder: 1,
-    active: true,
-    createdAt: new Date('2024-08-15'),
-    updatedAt: new Date('2024-08-15'),
-  },
-  {
-    id: 'case-2',
-    propertyTitle: 'Apartamento de Alto Padrão nos Jardins',
-    location: 'Jardins, São Paulo',
-    coverUrl:
-      'https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?auto=format&fit=crop&w=1200&q=80',
-    coverStoragePath: null,
-    clientName: 'Dra. Camila F.',
-    clientRole: 'Médica Especialista • Jardins',
-    quote:
-      'Comprei meu primeiro apartamento de alto padrão com total segurança nas cláusulas e negociação direta com a construtora. Stefanny me deu o respaldo analítico que faltava.',
-    soldAt: new Date('2024-05-20'),
-    sortOrder: 2,
-    active: true,
-    createdAt: new Date('2024-05-20'),
-    updatedAt: new Date('2024-05-20'),
-  },
-]
-
-const displaySoldCases = computed(() => {
-  return soldCases.value?.length ? soldCases.value : fallbackSoldCases
 })
 
 const form = reactive({
@@ -439,10 +397,10 @@ async function submitLead() {
           </p>
         </div>
 
-        <!-- Luxury Case Cards -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-stretch">
-          <ProjectSoldCaseCard v-for="item in displaySoldCases" :key="item.id" :item="item" />
+        <div v-if="soldCases?.length" class="grid grid-cols-1 md:grid-cols-2 gap-8 items-stretch">
+          <ProjectSoldCaseCard v-for="item in soldCases" :key="item.id" :item="item" />
         </div>
+        <p v-else class="text-sm text-text-on-dark-muted">Cases em breve.</p>
 
         <!-- Bottom Action -->
         <div class="flex justify-center pt-2">
